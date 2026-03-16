@@ -1,24 +1,24 @@
 """Denote — Portal and facade for audio-to-symbol tools.
 
-Simple usage:
+Simple usage::
 
-    >>> import denote
-    >>> result = denote.transcribe("song.wav")         # audio -> MIDI
-    >>> chords = denote.get_chords("song.wav")         # audio -> chord labels
-    >>> pitch = denote.get_pitch("vocal.wav")           # audio -> F0
-    >>> beats = denote.get_beats("song.wav")            # audio -> beat times
+    import denote
+    result = denote.transcribe("song.wav")         # audio -> MIDI
+    chords = denote.get_chords("song.wav")         # audio -> chord labels
+    pitch = denote.get_pitch("vocal.wav")           # audio -> F0
+    beats = denote.get_beats("song.wav")            # audio -> beat times
 
-    >>> denote.list_backends()                          # see what's available
-    >>> denote.list_backends('pitch')                   # backends for a task
+    denote.list_backends()                          # see what's available
+    denote.list_backends('pitch')                   # backends for a task
 
-Service-level access:
+Service-level access::
 
-    >>> denote.services.basic_pitch.transcribe("song.wav", onset_threshold=0.3)
-    >>> denote.services.torchcrepe.get_pitch("vocal.wav", model='tiny')
+    denote.services.basic_pitch.transcribe("song.wav", onset_threshold=0.3)
+    denote.services.torchcrepe.get_pitch("vocal.wav", model='tiny')
 
-Native adapter access:
+Native adapter access::
 
-    >>> denote.services.basic_pitch.adapter  # raw adapter instance
+    denote.services.basic_pitch.adapter  # raw adapter instance
 """
 
 from denote.base import (
