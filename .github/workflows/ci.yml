@@ -114,8 +114,8 @@ jobs:
             CMD="$CMD $PYTEST_ARGS"
           fi
 
-          # Add root dir
-          CMD="$CMD $ROOT_DIR"
+          # Add test directories (both tests/ and source for doctests)
+          CMD="$CMD tests/"
 
           echo "Running: $CMD"
           eval $CMD
