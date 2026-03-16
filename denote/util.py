@@ -57,9 +57,7 @@ def load_audio(
         if y.ndim > 1:
             y = y.squeeze()
         if sr is None:
-            raise ValueError(
-                "Sample rate (sr) is required when audio is a tensor."
-            )
+            raise ValueError("Sample rate (sr) is required when audio is a tensor.")
         return load_audio(y, sr=sr, mono=mono, target_sr=target_sr)
     except AttributeError:
         pass
@@ -91,10 +89,8 @@ def ensure_file_path(
     import soundfile as sf
 
     if sr is None:
-        raise ValueError(
-            "Sample rate (sr) is required when audio is an array."
-        )
+        raise ValueError("Sample rate (sr) is required when audio is an array.")
     y, actual_sr = load_audio(audio, sr=sr, mono=True)
-    tmp = tempfile.NamedTemporaryFile(suffix='.wav', delete=False)
+    tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
     sf.write(tmp.name, y, actual_sr)
     return tmp.name

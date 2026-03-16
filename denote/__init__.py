@@ -54,7 +54,7 @@ def transcribe(audio, *, sr=None, backend=None, **kwargs):
     Returns:
         TranscriptionResult with .midi, .notes, and .raw fields.
     """
-    backend = backend or get_default_backend('transcribe')
+    backend = backend or get_default_backend("transcribe")
     handle = services[backend]
     return handle.transcribe(audio, sr=sr, **kwargs)
 
@@ -73,7 +73,7 @@ def get_pitch(audio, *, sr=None, backend=None, **kwargs):
     Returns:
         PitchResult with .times, .frequencies, .confidence fields.
     """
-    backend = backend or get_default_backend('pitch')
+    backend = backend or get_default_backend("pitch")
     handle = services[backend]
     return handle.get_pitch(audio, sr=sr, **kwargs)
 
@@ -90,7 +90,7 @@ def get_chords(audio, *, sr=None, backend=None, **kwargs):
     Returns:
         ChordResult with .intervals, .labels fields.
     """
-    backend = backend or get_default_backend('chords')
+    backend = backend or get_default_backend("chords")
     handle = services[backend]
     return handle.get_chords(audio, sr=sr, **kwargs)
 
@@ -107,6 +107,6 @@ def get_beats(audio, *, sr=None, backend=None, **kwargs):
     Returns:
         BeatResult with .beats, .downbeats, .tempo fields.
     """
-    backend = backend or get_default_backend('beats')
+    backend = backend or get_default_backend("beats")
     handle = services[backend]
     return handle.get_beats(audio, sr=sr, **kwargs)

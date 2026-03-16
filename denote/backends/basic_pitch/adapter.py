@@ -10,7 +10,7 @@ class Adapter:
 
     def __init__(self, config: dict):
         self._config = config
-        self._translate = make_kwargs_translator(config['param_map'])
+        self._translate = make_kwargs_translator(config["param_map"])
 
     def transcribe(self, audio, *, sr=None, **kwargs):
         """Transcribe audio to MIDI using Basic Pitch.
@@ -29,14 +29,14 @@ class Adapter:
         import pathlib
 
         # Prefer ONNX model (more compatible across TF versions)
-        onnx_path = pathlib.Path(str(ICASSP_2022_MODEL_PATH) + '.onnx')
+        onnx_path = pathlib.Path(str(ICASSP_2022_MODEL_PATH) + ".onnx")
         model_path = onnx_path if onnx_path.exists() else ICASSP_2022_MODEL_PATH
 
         audio_path = ensure_file_path(audio, sr=sr)
         native_kwargs = self._translate(**kwargs)
 
         # Remove audio_path from native_kwargs if present (it's positional)
-        native_kwargs.pop('audio_path', None)
+        native_kwargs.pop("audio_path", None)
 
         model_output, midi_data, note_events = predict(
             audio_path, model_path, **native_kwargs
@@ -56,6 +56,6 @@ class Adapter:
         return TranscriptionResult(
             midi=midi_data,
             notes=notes,
-            raw={'model_output': model_output, 'note_events': note_events},
-            backend='basic_pitch',
+            raw={"model_output": model_output, "note_events": note_events},
+            backend="basic_pitch",
         )

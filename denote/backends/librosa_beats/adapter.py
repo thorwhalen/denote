@@ -12,7 +12,7 @@ class Adapter:
 
     def __init__(self, config: dict):
         self._config = config
-        self._translate = make_kwargs_translator(config['param_map'])
+        self._translate = make_kwargs_translator(config["param_map"])
 
     def get_beats(self, audio, *, sr=None, **kwargs):
         """Track beats in audio using librosa.
@@ -30,13 +30,13 @@ class Adapter:
         y, actual_sr = load_audio(audio, sr=sr, mono=True)
 
         native_kwargs = self._translate(sr=actual_sr, **kwargs)
-        native_kwargs.pop('y', None)
+        native_kwargs.pop("y", None)
 
         tempo, beat_frames = librosa.beat.beat_track(
-            y=y, units='frames', **native_kwargs
+            y=y, units="frames", **native_kwargs
         )
 
-        hop = native_kwargs.get('hop_length', 512)
+        hop = native_kwargs.get("hop_length", 512)
         beat_times = librosa.frames_to_time(beat_frames, sr=actual_sr, hop_length=hop)
 
         # Handle scalar vs array tempo
@@ -46,6 +46,6 @@ class Adapter:
             beats=beat_times,
             downbeats=np.array([]),  # librosa doesn't track downbeats
             tempo=tempo_val,
-            raw={'tempo': tempo, 'beat_frames': beat_frames},
-            backend='librosa_beats',
+            raw={"tempo": tempo, "beat_frames": beat_frames},
+            backend="librosa_beats",
         )

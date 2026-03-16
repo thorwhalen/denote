@@ -12,7 +12,7 @@ class Adapter:
 
     def __init__(self, config: dict):
         self._config = config
-        self._translate = make_kwargs_translator(config['param_map'])
+        self._translate = make_kwargs_translator(config["param_map"])
 
     def get_pitch(self, audio, *, sr=None, **kwargs):
         """Estimate pitch from audio using CREPE.
@@ -36,7 +36,7 @@ class Adapter:
 
         native_kwargs = self._translate(sr=actual_sr, **kwargs)
         # Remove audio from native_kwargs (passed positionally)
-        native_kwargs.pop('audio', None)
+        native_kwargs.pop("audio", None)
 
         # Always request periodicity for confidence
         pitch, periodicity = torchcrepe.predict(
@@ -49,7 +49,7 @@ class Adapter:
         periodicity_np = periodicity.squeeze().numpy()
 
         # Build time axis
-        hop = native_kwargs.get('hop_length') or int(actual_sr / 100)
+        hop = native_kwargs.get("hop_length") or int(actual_sr / 100)
         n_frames = len(pitch_np)
         times = np.arange(n_frames) * hop / actual_sr
 
@@ -61,6 +61,6 @@ class Adapter:
             times=times,
             frequencies=frequencies,
             confidence=periodicity_np,
-            raw={'pitch': pitch, 'periodicity': periodicity},
-            backend='torchcrepe',
+            raw={"pitch": pitch, "periodicity": periodicity},
+            backend="torchcrepe",
         )

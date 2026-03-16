@@ -34,18 +34,18 @@ class ServiceHandle:
 
     @functools.cached_property
     def adapter(self) -> Any:
-        return registry.get_backend(self._name)['adapter']
+        return registry.get_backend(self._name)["adapter"]
 
     @functools.cached_property
     def info(self) -> dict:
         """Lightweight summary of the backend."""
         c = self.config
         return {
-            'name': c['name'],
-            'display_name': c.get('display_name', c['name']),
-            'tasks': c.get('tasks', []),
-            'license': c.get('license', 'unknown'),
-            'pip_install': c.get('pip_install', ''),
+            "name": c["name"],
+            "display_name": c.get("display_name", c["name"]),
+            "tasks": c.get("tasks", []),
+            "license": c.get("license", "unknown"),
+            "pip_install": c.get("pip_install", ""),
         }
 
     def __getattr__(self, name: str):
@@ -53,12 +53,10 @@ class ServiceHandle:
         try:
             return getattr(self.adapter, name)
         except AttributeError:
-            raise AttributeError(
-                f"Backend '{self._name}' has no method '{name}'"
-            )
+            raise AttributeError(f"Backend '{self._name}' has no method '{name}'")
 
     def __repr__(self):
-        tasks = self.config.get('tasks', [])
+        tasks = self.config.get("tasks", [])
         return f"<ServiceHandle '{self._name}' tasks={tasks}>"
 
 
@@ -88,7 +86,7 @@ class ServiceCollection(Mapping):
         return self._handles[name]
 
     def __getattr__(self, name: str) -> ServiceHandle:
-        if name.startswith('_'):
+        if name.startswith("_"):
             raise AttributeError(name)
         try:
             return self[name]
@@ -145,7 +143,7 @@ class SliceMapping(Mapping):
         return getattr(handle, self._method_name)
 
     def __getattr__(self, name: str):
-        if name.startswith('_'):
+        if name.startswith("_"):
             raise AttributeError(name)
         return self[name]
 

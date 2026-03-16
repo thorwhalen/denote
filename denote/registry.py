@@ -25,20 +25,20 @@ def _discover_backends():
         return
 
     for importer, modname, ispkg in pkgutil.iter_modules(
-        backends_pkg.__path__, prefix='denote.backends.'
+        backends_pkg.__path__, prefix="denote.backends."
     ):
         if not ispkg:
             continue
         try:
-            config_mod = importlib.import_module(f'{modname}.config')
-            config = getattr(config_mod, 'BACKEND_CONFIG', None)
+            config_mod = importlib.import_module(f"{modname}.config")
+            config = getattr(config_mod, "BACKEND_CONFIG", None)
             if config is None:
                 continue
-            name = config['name']
+            name = config["name"]
             _registry[name] = {
-                'config': config,
-                'adapter': None,  # lazy
-                'module_path': modname,
+                "config": config,
+                "adapter": None,  # lazy
+                "module_path": modname,
             }
         except Exception as e:
             warnings.warn(
@@ -53,24 +53,23 @@ def _load_adapter(name: str):
     if entry is None:
         raise KeyError(f"Unknown backend: '{name}'")
 
-    if entry['adapter'] is not None:
-        return entry['adapter']
+    if entry["adapter"] is not None:
+        return entry["adapter"]
 
-    module_path = entry['module_path']
-    config = entry['config']
+    module_path = entry["module_path"]
+    config = entry["config"]
 
     try:
-        adapter_mod = importlib.import_module(f'{module_path}.adapter')
-        adapter_cls = getattr(adapter_mod, 'Adapter')
-        entry['adapter'] = adapter_cls(config)
+        adapter_mod = importlib.import_module(f"{module_path}.adapter")
+        adapter_cls = getattr(adapter_mod, "Adapter")
+        entry["adapter"] = adapter_cls(config)
     except ImportError as e:
-        pip_install = config.get('pip_install', name)
+        pip_install = config.get("pip_install", name)
         raise ImportError(
-            f"Backend '{name}' requires: pip install {pip_install}\n"
-            f"Original error: {e}"
+            f"Backend '{name}' requires: pip install {pip_install}\nOriginal error: {e}"
         ) from e
 
-    return entry['adapter']
+    return entry["adapter"]
 
 
 def register_backend(
@@ -87,9 +86,9 @@ def register_backend(
             lazily from the module path if available.
     """
     _registry[name] = {
-        'config': config,
-        'adapter': adapter,
-        'module_path': config.get('module_path', ''),
+        "config": config,
+        "adapter": adapter,
+        "module_path": config.get("module_path", ""),
     }
 
 
@@ -102,11 +101,10 @@ def get_backend(name: str) -> dict:
     _discover_backends()
     if name not in _registry:
         raise KeyError(
-            f"Unknown backend: '{name}'. "
-            f"Available: {sorted(_registry.keys())}"
+            f"Unknown backend: '{name}'. Available: {sorted(_registry.keys())}"
         )
     adapter = _load_adapter(name)
-    return {'config': _registry[name]['config'], 'adapter': adapter}
+    return {"config": _registry[name]["config"], "adapter": adapter}
 
 
 def list_backends(task: Optional[str] = None) -> List[str]:
@@ -125,7 +123,7 @@ def list_backends(task: Optional[str] = None) -> List[str]:
     return sorted(
         name
         for name, entry in _registry.items()
-        if task in entry['config'].get('tasks', [])
+        if task in entry["config"].get("tasks", [])
     )
 
 
@@ -138,7 +136,7 @@ def get_default_backend(task: str) -> str:
     _discover_backends()
     # First pass: look for explicit default_for
     for name, entry in _registry.items():
-        if task in entry['config'].get('default_for', []):
+        if task in entry["config"].get("default_for", []):
             return name
     # Second pass: first available backend for the task
     candidates = list_backends(task)
@@ -155,7 +153,7 @@ def get_config(name: str) -> dict:
     _discover_backends()
     if name not in _registry:
         raise KeyError(f"Unknown backend: '{name}'")
-    return _registry[name]['config']
+    return _registry[name]["config"]
 
 
 def clear_registry():

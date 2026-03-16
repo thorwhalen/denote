@@ -12,7 +12,7 @@ class Adapter:
 
     def __init__(self, config: dict):
         self._config = config
-        self._translate = make_kwargs_translator(config['param_map'])
+        self._translate = make_kwargs_translator(config["param_map"])
 
     def get_pitch(self, audio, *, sr=None, **kwargs):
         """Estimate pitch from audio using pYIN.
@@ -32,12 +32,12 @@ class Adapter:
 
         native_kwargs = self._translate(sr=actual_sr, **kwargs)
         # Extract y from native_kwargs (passed as array)
-        native_kwargs.pop('y', None)
+        native_kwargs.pop("y", None)
 
         f0, voiced_flag, voiced_probs = librosa.pyin(y, **native_kwargs)
 
         # Build time axis
-        hop = native_kwargs.get('hop_length') or 512
+        hop = native_kwargs.get("hop_length") or 512
         n_frames = len(f0)
         times = librosa.frames_to_time(
             np.arange(n_frames), sr=actual_sr, hop_length=hop
@@ -51,6 +51,6 @@ class Adapter:
             times=times,
             frequencies=frequencies,
             confidence=voiced_probs,
-            raw={'f0': f0, 'voiced_flag': voiced_flag, 'voiced_probs': voiced_probs},
-            backend='librosa_pyin',
+            raw={"f0": f0, "voiced_flag": voiced_flag, "voiced_probs": voiced_probs},
+            backend="librosa_pyin",
         )

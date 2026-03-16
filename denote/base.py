@@ -28,7 +28,7 @@ class TranscriptionResult:
     midi: Any  # pretty_midi.PrettyMIDI (typed as Any to avoid hard dependency)
     notes: List[NoteEvent] = field(default_factory=list)
     raw: Any = None  # backend-specific raw output
-    backend: str = ''
+    backend: str = ""
 
 
 @dataclass
@@ -39,7 +39,7 @@ class PitchResult:
     frequencies: np.ndarray  # Hz (NaN for unvoiced frames)
     confidence: np.ndarray  # confidence/voicing probability [0, 1]
     raw: Any = None
-    backend: str = ''
+    backend: str = ""
 
 
 @dataclass
@@ -49,7 +49,7 @@ class ChordResult:
     intervals: np.ndarray  # (N, 2) array of [start_time, end_time]
     labels: List[str] = field(default_factory=list)  # chord symbol strings
     raw: Any = None
-    backend: str = ''
+    backend: str = ""
 
 
 @dataclass
@@ -60,14 +60,14 @@ class BeatResult:
     downbeats: np.ndarray = field(default_factory=lambda: np.array([]))
     tempo: Optional[float] = None  # BPM estimate
     raw: Any = None
-    backend: str = ''
+    backend: str = ""
 
 
 # Supported task identifiers
 TASKS = {
-    'transcribe': 'Audio to MIDI transcription',
-    'pitch': 'Pitch / F0 estimation',
-    'chords': 'Chord recognition',
-    'beats': 'Beat and downbeat tracking',
-    'separate': 'Source separation',
+    "transcribe": "Audio to MIDI transcription",
+    "pitch": "Pitch / F0 estimation",
+    "chords": "Chord recognition",
+    "beats": "Beat and downbeat tracking",
+    "separate": "Source separation",
 }
