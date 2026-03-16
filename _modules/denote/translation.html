@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>denote.translation &mdash; denote 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            denote
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote.html">denote</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends.html">denote.backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/basic_pitch/adapter.html">denote.backends.basic_pitch.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/basic_pitch/config.html">denote.backends.basic_pitch.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/librosa_beats/adapter.html">denote.backends.librosa_beats.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/librosa_beats/config.html">denote.backends.librosa_beats.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/librosa_pyin/adapter.html">denote.backends.librosa_pyin.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/librosa_pyin/config.html">denote.backends.librosa_pyin.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/torchcrepe/adapter.html">denote.backends.torchcrepe.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/torchcrepe/config.html">denote.backends.torchcrepe.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/base.html">denote.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/registry.html">denote.registry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/services.html">denote.services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/translation.html">denote.translation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/util.html">denote.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">denote</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../denote.html">denote</a></li>
+      <li class="breadcrumb-item active">denote.translation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for denote.translation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Parameter translation between normalized and native backend interfaces.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
+
+<div class="viewcode-block" id="make_kwargs_translator">
+<a class="viewcode-back" href="../../module_docs/denote/translation.html#denote.translation.make_kwargs_translator">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_kwargs_translator</span><span class="p">(</span>
+    <span class="n">param_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">on_unsupported</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;warn&#39;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a function that translates normalized kwargs to native kwargs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        param_map: Mapping of normalized_name -&gt; native config dict.</span>
+<span class="sd">            Each config dict can have:</span>
+<span class="sd">            - &#39;native_name&#39;: str — the backend&#39;s parameter name</span>
+<span class="sd">            - &#39;coerce&#39;: callable — transform the value</span>
+<span class="sd">            - &#39;default&#39;: Any — default value if not provided</span>
+<span class="sd">            - None — parameter is not supported by this backend</span>
+<span class="sd">        on_unsupported: What to do with params not in param_map.</span>
+<span class="sd">            &#39;warn&#39; (default), &#39;raise&#39;, or &#39;ignore&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A function that translates kwargs dicts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">supported_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">param_map</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">translate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">native_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param_map</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">on_unsupported</span> <span class="o">==</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Unsupported parameter: &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Supported: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">supported_names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">on_unsupported</span> <span class="o">==</span> <span class="s1">&#39;warn&#39;</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is not supported by this backend &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;and will be ignored.&quot;</span><span class="p">,</span>
+                        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">config</span> <span class="o">=</span> <span class="n">param_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Explicitly unsupported</span>
+                <span class="k">if</span> <span class="n">on_unsupported</span> <span class="o">==</span> <span class="s1">&#39;warn&#39;</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; is not supported by this backend.&quot;</span><span class="p">,</span>
+                        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">native_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;native_name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">coerce</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">coerce</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">native_kwargs</span><span class="p">[</span><span class="n">native_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># Apply defaults for params not provided</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">param_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">native_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;native_name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">native_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">native_kwargs</span> <span class="ow">and</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+                <span class="n">native_kwargs</span><span class="p">[</span><span class="n">native_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">native_kwargs</span>
+
+    <span class="k">return</span> <span class="n">translate</span></div>
+
+
+
+<div class="viewcode-block" id="validate_param">
+<a class="viewcode-back" href="../../module_docs/denote/translation.html#denote.translation.validate_param">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_param</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate a single parameter against its config constraints.</span>
+
+<span class="sd">    Checks &#39;min&#39;, &#39;max&#39;, and &#39;choices&#39; constraints.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;min&#39;</span> <span class="ow">in</span> <span class="n">config</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; value </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> is below minimum </span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;max&#39;</span> <span class="ow">in</span> <span class="n">config</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; value </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> is above maximum </span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;choices&#39;</span> <span class="ow">in</span> <span class="n">config</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;choices&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Parameter &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; value </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> not in </span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;choices&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

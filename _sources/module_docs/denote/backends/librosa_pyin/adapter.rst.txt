@@ -1,0 +1,4 @@
+denote.backends.librosa_pyin.adapter
+====================================
+.. automodule:: denote.backends.librosa_pyin.adapter
+   :members:

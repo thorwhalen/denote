@@ -1,0 +1,4 @@
+denote.backends.librosa_pyin.config
+===================================
+.. automodule:: denote.backends.librosa_pyin.config
+   :members:

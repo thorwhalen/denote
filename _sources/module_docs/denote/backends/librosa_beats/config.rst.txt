@@ -1,0 +1,4 @@
+denote.backends.librosa_beats.config
+====================================
+.. automodule:: denote.backends.librosa_beats.config
+   :members:

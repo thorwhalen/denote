@@ -1,0 +1,4 @@
+denote.translation
+==================
+.. automodule:: denote.translation
+   :members:

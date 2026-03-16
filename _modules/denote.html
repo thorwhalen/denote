@@ -1,0 +1,244 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>denote &mdash; denote 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            denote
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote.html">denote</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends.html">denote.backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends/basic_pitch/adapter.html">denote.backends.basic_pitch.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends/basic_pitch/config.html">denote.backends.basic_pitch.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends/librosa_beats/adapter.html">denote.backends.librosa_beats.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends/librosa_beats/config.html">denote.backends.librosa_beats.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends/librosa_pyin/adapter.html">denote.backends.librosa_pyin.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends/librosa_pyin/config.html">denote.backends.librosa_pyin.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends/torchcrepe/adapter.html">denote.backends.torchcrepe.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/backends/torchcrepe/config.html">denote.backends.torchcrepe.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/base.html">denote.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/registry.html">denote.registry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/services.html">denote.services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/translation.html">denote.translation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_docs/denote/util.html">denote.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">denote</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">denote</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for denote</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Denote — Portal and facade for audio-to-symbol tools.</span>
+
+<span class="sd">Simple usage::</span>
+
+<span class="sd">    import denote</span>
+<span class="sd">    result = denote.transcribe(&quot;song.wav&quot;)         # audio -&gt; MIDI</span>
+<span class="sd">    chords = denote.get_chords(&quot;song.wav&quot;)         # audio -&gt; chord labels</span>
+<span class="sd">    pitch = denote.get_pitch(&quot;vocal.wav&quot;)           # audio -&gt; F0</span>
+<span class="sd">    beats = denote.get_beats(&quot;song.wav&quot;)            # audio -&gt; beat times</span>
+
+<span class="sd">    denote.list_backends()                          # see what&#39;s available</span>
+<span class="sd">    denote.list_backends(&#39;pitch&#39;)                   # backends for a task</span>
+
+<span class="sd">Service-level access::</span>
+
+<span class="sd">    denote.services.basic_pitch.transcribe(&quot;song.wav&quot;, onset_threshold=0.3)</span>
+<span class="sd">    denote.services.torchcrepe.get_pitch(&quot;vocal.wav&quot;, model=&#39;tiny&#39;)</span>
+
+<span class="sd">Native adapter access::</span>
+
+<span class="sd">    denote.services.basic_pitch.adapter  # raw adapter instance</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">denote.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AudioInput</span><span class="p">,</span>
+    <span class="n">NoteEvent</span><span class="p">,</span>
+    <span class="n">TranscriptionResult</span><span class="p">,</span>
+    <span class="n">PitchResult</span><span class="p">,</span>
+    <span class="n">ChordResult</span><span class="p">,</span>
+    <span class="n">BeatResult</span><span class="p">,</span>
+    <span class="n">TASKS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">denote.registry</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">list_backends</span><span class="p">,</span>
+    <span class="n">get_default_backend</span><span class="p">,</span>
+    <span class="n">register_backend</span><span class="p">,</span>
+    <span class="n">get_config</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">denote.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServiceCollection</span>
+
+<span class="c1"># Lazy singleton for service-level access</span>
+<span class="n">services</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="transcribe">
+<a class="viewcode-back" href="../module_docs/denote.html#denote.transcribe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">transcribe</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transcribe audio to MIDI.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        audio: File path (str/Path) or numpy array.</span>
+<span class="sd">        sr: Sample rate (required when audio is an array).</span>
+<span class="sd">        backend: Backend name. Defaults to &#39;basic_pitch&#39; if installed.</span>
+<span class="sd">        **kwargs: Backend-specific parameters (onset_threshold, min_note_length, etc.)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        TranscriptionResult with .midi, .notes, and .raw fields.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s1">&#39;transcribe&#39;</span><span class="p">)</span>
+    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">transcribe</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_pitch">
+<a class="viewcode-back" href="../module_docs/denote.html#denote.get_pitch">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pitch</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate pitch/F0 from audio.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        audio: File path (str/Path) or numpy array.</span>
+<span class="sd">        sr: Sample rate (required when audio is an array).</span>
+<span class="sd">        backend: Backend name. Defaults to &#39;torchcrepe&#39; if installed,</span>
+<span class="sd">            falls back to &#39;librosa_pyin&#39;.</span>
+<span class="sd">        **kwargs: Backend-specific parameters (min_frequency, max_frequency,</span>
+<span class="sd">            model, device, hop_length).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        PitchResult with .times, .frequencies, .confidence fields.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s1">&#39;pitch&#39;</span><span class="p">)</span>
+    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_pitch</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_chords">
+<a class="viewcode-back" href="../module_docs/denote.html#denote.get_chords">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_chords</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recognize chords from audio.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        audio: File path (str/Path) or numpy array.</span>
+<span class="sd">        sr: Sample rate (required when audio is an array).</span>
+<span class="sd">        backend: Backend name.</span>
+<span class="sd">        **kwargs: Backend-specific parameters.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ChordResult with .intervals, .labels fields.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s1">&#39;chords&#39;</span><span class="p">)</span>
+    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_chords</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_beats">
+<a class="viewcode-back" href="../module_docs/denote.html#denote.get_beats">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Track beats in audio.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        audio: File path (str/Path) or numpy array.</span>
+<span class="sd">        sr: Sample rate (required when audio is an array).</span>
+<span class="sd">        backend: Backend name. Defaults to &#39;librosa_beats&#39;.</span>
+<span class="sd">        **kwargs: Backend-specific parameters (hop_length, start_bpm).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        BeatResult with .beats, .downbeats, .tempo fields.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s1">&#39;beats&#39;</span><span class="p">)</span>
+    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

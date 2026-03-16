@@ -1,0 +1,19 @@
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   module_docs/denote
+   module_docs/denote/backends
+   module_docs/denote/backends/basic_pitch/adapter
+   module_docs/denote/backends/basic_pitch/config
+   module_docs/denote/backends/librosa_beats/adapter
+   module_docs/denote/backends/librosa_beats/config
+   module_docs/denote/backends/librosa_pyin/adapter
+   module_docs/denote/backends/librosa_pyin/config
+   module_docs/denote/backends/torchcrepe/adapter
+   module_docs/denote/backends/torchcrepe/config
+   module_docs/denote/base
+   module_docs/denote/registry
+   module_docs/denote/services
+   module_docs/denote/translation
+   module_docs/denote/util

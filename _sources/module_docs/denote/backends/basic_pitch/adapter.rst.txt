@@ -1,0 +1,4 @@
+denote.backends.basic_pitch.adapter
+===================================
+.. automodule:: denote.backends.basic_pitch.adapter
+   :members:

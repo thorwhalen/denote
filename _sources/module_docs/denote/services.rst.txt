@@ -1,0 +1,4 @@
+denote.services
+===============
+.. automodule:: denote.services
+   :members:

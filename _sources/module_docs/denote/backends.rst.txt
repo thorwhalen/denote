@@ -1,0 +1,4 @@
+denote.backends
+===============
+.. automodule:: denote.backends
+   :members:

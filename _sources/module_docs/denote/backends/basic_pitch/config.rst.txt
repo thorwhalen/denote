@@ -1,0 +1,4 @@
+denote.backends.basic_pitch.config
+==================================
+.. automodule:: denote.backends.basic_pitch.config
+   :members:

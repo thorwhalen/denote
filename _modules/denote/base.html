@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>denote.base &mdash; denote 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            denote
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote.html">denote</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends.html">denote.backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/basic_pitch/adapter.html">denote.backends.basic_pitch.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/basic_pitch/config.html">denote.backends.basic_pitch.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/librosa_beats/adapter.html">denote.backends.librosa_beats.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/librosa_beats/config.html">denote.backends.librosa_beats.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/librosa_pyin/adapter.html">denote.backends.librosa_pyin.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/librosa_pyin/config.html">denote.backends.librosa_pyin.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/torchcrepe/adapter.html">denote.backends.torchcrepe.adapter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/backends/torchcrepe/config.html">denote.backends.torchcrepe.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/base.html">denote.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/registry.html">denote.registry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/services.html">denote.services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/translation.html">denote.translation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/denote/util.html">denote.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">denote</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../denote.html">denote</a></li>
+      <li class="breadcrumb-item active">denote.base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for denote.base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Core types and result dataclasses for denote.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Type alias for audio input accepted by all facade functions</span>
+<span class="n">AudioInput</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="NoteEvent">
+<a class="viewcode-back" href="../../module_docs/denote/base.html#denote.base.NoteEvent">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoteEvent</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A single note event with timing, pitch, and optional pitch bends.&quot;&quot;&quot;</span>
+
+    <span class="n">start_time</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># seconds</span>
+    <span class="n">end_time</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># seconds</span>
+    <span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># MIDI note number (0-127)</span>
+    <span class="n">velocity</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># 0.0 - 1.0</span>
+    <span class="n">pitch_bends</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="TranscriptionResult">
+<a class="viewcode-back" href="../../module_docs/denote/base.html#denote.base.TranscriptionResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TranscriptionResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of audio-to-MIDI transcription.&quot;&quot;&quot;</span>
+
+    <span class="n">midi</span><span class="p">:</span> <span class="n">Any</span>  <span class="c1"># pretty_midi.PrettyMIDI (typed as Any to avoid hard dependency)</span>
+    <span class="n">notes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NoteEvent</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># backend-specific raw output</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="PitchResult">
+<a class="viewcode-back" href="../../module_docs/denote/base.html#denote.base.PitchResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PitchResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of pitch/F0 estimation.&quot;&quot;&quot;</span>
+
+    <span class="n">times</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># timestamps in seconds</span>
+    <span class="n">frequencies</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># Hz (NaN for unvoiced frames)</span>
+    <span class="n">confidence</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># confidence/voicing probability [0, 1]</span>
+    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="ChordResult">
+<a class="viewcode-back" href="../../module_docs/denote/base.html#denote.base.ChordResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChordResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of chord recognition.&quot;&quot;&quot;</span>
+
+    <span class="n">intervals</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># (N, 2) array of [start_time, end_time]</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># chord symbol strings</span>
+    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="BeatResult">
+<a class="viewcode-back" href="../../module_docs/denote/base.html#denote.base.BeatResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BeatResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of beat/downbeat tracking.&quot;&quot;&quot;</span>
+
+    <span class="n">beats</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># beat times in seconds</span>
+    <span class="n">downbeats</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
+    <span class="n">tempo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># BPM estimate</span>
+    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+
+
+
+<span class="c1"># Supported task identifiers</span>
+<span class="n">TASKS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;transcribe&#39;</span><span class="p">:</span> <span class="s1">&#39;Audio to MIDI transcription&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;pitch&#39;</span><span class="p">:</span> <span class="s1">&#39;Pitch / F0 estimation&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;chords&#39;</span><span class="p">:</span> <span class="s1">&#39;Chord recognition&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;beats&#39;</span><span class="p">:</span> <span class="s1">&#39;Beat and downbeat tracking&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;separate&#39;</span><span class="p">:</span> <span class="s1">&#39;Source separation&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
