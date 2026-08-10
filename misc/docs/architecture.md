@@ -82,53 +82,60 @@ from pathlib import Path
 import numpy as np
 
 # Input type that all facades accept
-AudioInput = Union[str, Path, np.ndarray, 'torch.Tensor']
+AudioInput = Union[str, Path, np.ndarray, "torch.Tensor"]
+
 
 @dataclass
 class NoteEvent:
-    start_time: float       # seconds
-    end_time: float         # seconds
-    pitch: int              # MIDI note number
-    velocity: float         # 0.0 - 1.0
+    start_time: float  # seconds
+    end_time: float  # seconds
+    pitch: int  # MIDI note number
+    velocity: float  # 0.0 - 1.0
     pitch_bends: Optional[List[int]] = None
+
 
 @dataclass
 class TranscriptionResult:
-    midi: Any               # pretty_midi.PrettyMIDI (typed as Any to avoid hard dep)
+    midi: Any  # pretty_midi.PrettyMIDI (typed as Any to avoid hard dep)
     notes: List[NoteEvent]
-    raw: Any = None         # backend-specific raw output
-    backend: str = ''
+    raw: Any = None  # backend-specific raw output
+    backend: str = ""
+
 
 @dataclass
 class PitchResult:
-    times: np.ndarray       # seconds
-    frequencies: np.ndarray # Hz (NaN for unvoiced)
+    times: np.ndarray  # seconds
+    frequencies: np.ndarray  # Hz (NaN for unvoiced)
     confidence: np.ndarray  # [0, 1]
     raw: Any = None
-    backend: str = ''
+    backend: str = ""
+
 
 @dataclass
 class ChordResult:
-    intervals: np.ndarray   # (N, 2) array of [start, end] times
-    labels: List[str]       # chord symbol strings
+    intervals: np.ndarray  # (N, 2) array of [start, end] times
+    labels: List[str]  # chord symbol strings
     raw: Any = None
-    backend: str = ''
+    backend: str = ""
+
 
 @dataclass
 class BeatResult:
-    beats: np.ndarray       # beat times in seconds
-    downbeats: np.ndarray   # downbeat times (may be empty)
+    beats: np.ndarray  # beat times in seconds
+    downbeats: np.ndarray  # downbeat times (may be empty)
     tempo: Optional[float] = None
     raw: Any = None
-    backend: str = ''
+    backend: str = ""
+
 
 class Task:
     """Enum-like for supported task types."""
-    TRANSCRIBE = 'transcribe'
-    CHORDS = 'chords'
-    PITCH = 'pitch'
-    BEATS = 'beats'
-    SEPARATE = 'separate'
+
+    TRANSCRIBE = "transcribe"
+    CHORDS = "chords"
+    PITCH = "pitch"
+    BEATS = "beats"
+    SEPARATE = "separate"
 ```
 
 ## Registry System (registry.py)
@@ -138,17 +145,22 @@ Following arioso's pattern but adapted for task-based organization:
 ```python
 _registry: Dict[str, Dict] = {}  # backend_name -> {config, adapter, tasks}
 
+
 def discover_backends() -> List[str]:
     """Scan denote.backends.* for BACKEND_CONFIG dicts."""
+
 
 def register_backend(name: str, config: dict, adapter=None):
     """Register a third-party backend. Plugin entry point."""
 
+
 def get_backend(name: str) -> dict:
     """Get backend config + lazily-loaded adapter."""
 
+
 def list_backends(task: Optional[str] = None) -> List[str]:
     """List available backends, optionally filtered by task."""
+
 
 def get_default_backend(task: str) -> str:
     """Return the default backend for a given task."""
@@ -160,26 +172,26 @@ Each backend provides a `BACKEND_CONFIG` dict:
 
 ```python
 BACKEND_CONFIG = {
-    'name': 'basic_pitch',
-    'display_name': 'Basic Pitch (Spotify)',
-    'pip_install': 'basic-pitch>=0.3',
-    'import_name': 'basic_pitch',
-    'license': 'Apache-2.0',
-    'tasks': ['transcribe'],
-    'default_for': ['transcribe'],       # this is the default for transcription
-    'supports_realtime': False,
-    'param_map': {
-        'audio': {'native_name': 'audio_path'},
-        'onset_threshold': {'native_name': 'onset_threshold', 'default': 0.5},
-        'frame_threshold': {'native_name': 'frame_threshold', 'default': 0.3},
-        'min_note_length': {
-            'native_name': 'minimum_note_length',
-            'coerce': lambda x: x * 1000,    # seconds -> ms
-            'default': 0.128,
+    "name": "basic_pitch",
+    "display_name": "Basic Pitch (Spotify)",
+    "pip_install": "basic-pitch>=0.3",
+    "import_name": "basic_pitch",
+    "license": "Apache-2.0",
+    "tasks": ["transcribe"],
+    "default_for": ["transcribe"],  # this is the default for transcription
+    "supports_realtime": False,
+    "param_map": {
+        "audio": {"native_name": "audio_path"},
+        "onset_threshold": {"native_name": "onset_threshold", "default": 0.5},
+        "frame_threshold": {"native_name": "frame_threshold", "default": 0.3},
+        "min_note_length": {
+            "native_name": "minimum_note_length",
+            "coerce": lambda x: x * 1000,  # seconds -> ms
+            "default": 0.128,
         },
-        'min_frequency': {'native_name': 'minimum_frequency'},
-        'max_frequency': {'native_name': 'maximum_frequency'},
-        'device': None,                       # not supported
+        "min_frequency": {"native_name": "minimum_frequency"},
+        "max_frequency": {"native_name": "maximum_frequency"},
+        "device": None,  # not supported
     },
 }
 ```
@@ -191,6 +203,7 @@ Three access levels, following arioso:
 ```python
 # Level 1: Simple facade (denote/__init__.py)
 import denote
+
 result = denote.transcribe("song.wav")
 chords = denote.get_chords("song.wav")
 pitch = denote.get_pitch("vocal.wav")
@@ -198,7 +211,7 @@ beats = denote.get_beats("song.wav")
 
 # Level 2: Backend-specific via service handles
 result = denote.services.basic_pitch.transcribe("song.wav", onset_threshold=0.3)
-pitch = denote.services.torchcrepe.get_pitch("vocal.wav", model='tiny')
+pitch = denote.services.torchcrepe.get_pitch("vocal.wav", model="tiny")
 
 # Level 3: Native API passthrough
 adapter = denote.services.basic_pitch.adapter
@@ -230,6 +243,7 @@ Per-backend parameter mapping:
 def make_kwargs_translator(param_map: dict) -> Callable:
     """Create a function that translates normalized kwargs to native kwargs."""
 
+
 def validate_params(kwargs: dict, param_map: dict) -> dict:
     """Validate parameter types and ranges."""
 ```
@@ -241,11 +255,14 @@ Tests are **conditional on backend availability**:
 ```python
 import pytest
 
-basic_pitch_available = pytest.importorskip("basic_pitch", reason="basic-pitch not installed")
+basic_pitch_available = pytest.importorskip(
+    "basic_pitch", reason="basic-pitch not installed"
+)
+
 
 class TestBasicPitchBackend:
     def test_transcribe_returns_result(self, audio_fixture):
-        result = denote.transcribe(audio_fixture, backend='basic_pitch')
+        result = denote.transcribe(audio_fixture, backend="basic_pitch")
         assert isinstance(result, TranscriptionResult)
         assert result.midi is not None
         assert len(result.notes) > 0
@@ -266,7 +283,8 @@ my_backend = "my_package.denote_plugin:BACKEND_CONFIG"
 2. **Programmatic registration**:
 ```python
 import denote
-denote.register_backend('my_tool', config=my_config, adapter=MyAdapter)
+
+denote.register_backend("my_tool", config=my_config, adapter=MyAdapter)
 ```
 
 ## Dependency Graph

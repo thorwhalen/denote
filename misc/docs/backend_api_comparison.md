@@ -40,7 +40,7 @@ predict(
 
 ```python
 # From documentation / source
-transcriptor = PianoTranscription(device='cuda', checkpoint_path=None)
+transcriptor = PianoTranscription(device="cuda", checkpoint_path=None)
 transcriptor.transcribe(audio, midi_path)
 # audio: np.ndarray (mono, 16kHz expected)
 # midi_path: str, path to save MIDI
@@ -58,6 +58,7 @@ transcriptor.transcribe(audio, midi_path)
 # CLI: omnizart music transcribe <audio_path> [--model-path] [--output]
 # Python:
 from omnizart.music import app as music_app
+
 music_app.transcribe(input_audio, model_path=None, output=None)
 ```
 
@@ -131,11 +132,12 @@ librosa.pyin(
 ```python
 # From docs:
 import pesto
+
 timesteps, pitch, confidence, activations = pesto.predict(
-    audio,                          # torch.Tensor or np.ndarray
-    sample_rate,                    # int
-    step_size=10.0,                 # ms
-    reduction='argmax',             # 'argmax', 'mean', 'alwa'
+    audio,  # torch.Tensor or np.ndarray
+    sample_rate,  # int
+    step_size=10.0,  # ms
+    reduction="argmax",  # 'argmax', 'mean', 'alwa'
     num_chunks=None,
 )
 ```
@@ -156,6 +158,7 @@ from madmom.features.chords import (
     CNNChordFeatureProcessor,
     CRFChordRecognitionProcessor,
 )
+
 # Pipeline:
 feat_proc = CNNChordFeatureProcessor()
 chord_proc = CRFChordRecognitionProcessor()
@@ -174,6 +177,7 @@ chords = chord_proc(feats)
 
 ```python
 import autochord
+
 result = autochord.recognize(audio_path, lab_fn=None)
 # Returns: list of (start_time, end_time, chord_label)
 ```
@@ -187,16 +191,17 @@ result = autochord.recognize(audio_path, lab_fn=None)
 
 ```python
 import vamp
+
 result = vamp.collect(
-    audio_data,         # np.ndarray
-    sample_rate,        # int
+    audio_data,  # np.ndarray
+    sample_rate,  # int
     "nnls-chroma:chordino",
     parameters={
         "useNNLS": 1,
         "rollon": 0.0,
         "tuningmode": 0,
         "whitening": 1.0,
-        "s": 0.7,       # smoothing
+        "s": 0.7,  # smoothing
         "boostn": 0.1,
     },
 )
@@ -235,6 +240,7 @@ from madmom.features.beats import (
     RNNBeatProcessor,
     DBNBeatTrackingProcessor,
 )
+
 beat_proc = RNNBeatProcessor()
 beat_track = DBNBeatTrackingProcessor(fps=100)
 activations = beat_proc(audio_file)
@@ -247,7 +253,8 @@ beats = beat_track(activations)
 ```python
 # From docs:
 from beat_this.inference import File2Beats
-file2beats = File2Beats(checkpoint_path=None, device='cpu', dbn=False)
+
+file2beats = File2Beats(checkpoint_path=None, device="cpu", dbn=False)
 beats, downbeats = file2beats(audio_path)
 # beats: np.ndarray of beat times (seconds)
 # downbeats: np.ndarray of downbeat times (seconds)
@@ -263,6 +270,7 @@ beats, downbeats = file2beats(audio_path)
 # CLI: demucs <audio_path> --out <output_dir> -n htdemucs
 # Python API:
 from demucs.api import Separator
+
 separator = Separator(model="htdemucs", device="cpu")
 origin, separated = separator.separate_audio_file(path)
 # separated: dict of {stem_name: torch.Tensor}
@@ -333,26 +341,29 @@ Each adapter handles the conversion internally.
 @dataclass
 class TranscriptionResult:
     midi: pretty_midi.PrettyMIDI
-    notes: list[NoteEvent]    # (start, end, pitch, velocity, pitch_bends)
-    raw: Any                  # backend-specific raw output
+    notes: list[NoteEvent]  # (start, end, pitch, velocity, pitch_bends)
+    raw: Any  # backend-specific raw output
+
 
 @dataclass
 class PitchResult:
-    times: np.ndarray         # seconds
-    frequencies: np.ndarray   # Hz (NaN for unvoiced)
-    confidence: np.ndarray    # [0, 1]
+    times: np.ndarray  # seconds
+    frequencies: np.ndarray  # Hz (NaN for unvoiced)
+    confidence: np.ndarray  # [0, 1]
     raw: Any
+
 
 @dataclass
 class ChordResult:
-    intervals: np.ndarray     # (N, 2) start/end times
-    labels: list[str]         # chord labels
+    intervals: np.ndarray  # (N, 2) start/end times
+    labels: list[str]  # chord labels
     raw: Any
+
 
 @dataclass
 class BeatResult:
-    beats: np.ndarray         # beat times in seconds
-    downbeats: np.ndarray     # downbeat times (may be empty)
-    tempo: Optional[float]    # BPM estimate
+    beats: np.ndarray  # beat times in seconds
+    downbeats: np.ndarray  # downbeat times (may be empty)
+    tempo: Optional[float]  # BPM estimate
     raw: Any
 ```

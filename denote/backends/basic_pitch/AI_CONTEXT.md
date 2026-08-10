@@ -9,12 +9,12 @@ It converts audio to MIDI, supporting pitch bends. Instrument-agnostic, runs on 
 from basic_pitch.inference import predict
 
 model_output, midi_data, note_events = predict(
-    audio_path,                    # str or Path
-    onset_threshold=0.5,           # float [0, 1]
-    frame_threshold=0.3,           # float [0, 1]
-    minimum_note_length=127.7,     # milliseconds
-    minimum_frequency=None,        # Hz
-    maximum_frequency=None,        # Hz
+    audio_path,  # str or Path
+    onset_threshold=0.5,  # float [0, 1]
+    frame_threshold=0.3,  # float [0, 1]
+    minimum_note_length=127.7,  # milliseconds
+    minimum_frequency=None,  # Hz
+    maximum_frequency=None,  # Hz
     multiple_pitch_bends=False,
     melodia_trick=True,
     midi_tempo=120,

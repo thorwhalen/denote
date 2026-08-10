@@ -9,17 +9,17 @@ Supports Viterbi decoding for temporally smooth output.
 import torchcrepe
 
 pitch = torchcrepe.predict(
-    audio,          # torch.Tensor shape (1, T)
-    sample_rate,    # int
-    hop_length=None,      # defaults to sr/100 (10ms)
-    fmin=50.0,            # Hz
-    fmax=2006.0,          # Hz
-    model='full',         # 'full' (22M params) or 'tiny'
+    audio,  # torch.Tensor shape (1, T)
+    sample_rate,  # int
+    hop_length=None,  # defaults to sr/100 (10ms)
+    fmin=50.0,  # Hz
+    fmax=2006.0,  # Hz
+    model="full",  # 'full' (22M params) or 'tiny'
     decoder=torchcrepe.viterbi,
     return_harmonicity=False,
     return_periodicity=False,
     batch_size=None,
-    device='cpu',
+    device="cpu",
     pad=True,
 )
 ```

@@ -28,7 +28,7 @@ arioso.services.sunoapi.upload_cover(path)
 **For denote:** Same pattern applies:
 ```python
 # Simple
-denote.transcribe("song.wav")                        # auto-selects best backend
+denote.transcribe("song.wav")  # auto-selects best backend
 denote.get_chords("song.wav")
 
 # Intermediate
@@ -118,10 +118,10 @@ backends may serve different tasks:
 
 So the facade should be task-first:
 ```python
-denote.transcribe()      # MIDI from audio
-denote.get_chords()      # chords from audio
-denote.get_pitch()       # F0 from audio
-denote.get_beats()       # beats from audio
+denote.transcribe()  # MIDI from audio
+denote.get_chords()  # chords from audio
+denote.get_pitch()  # F0 from audio
+denote.get_beats()  # beats from audio
 ```
 
 Each task has a default backend, and the user can override via `backend=`.

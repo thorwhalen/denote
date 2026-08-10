@@ -21,30 +21,30 @@ import denote
 
 # Audio to MIDI (requires basic-pitch)
 result = denote.transcribe("song.wav")
-result.midi        # pretty_midi.PrettyMIDI object
-result.notes       # list of NoteEvent(start_time, end_time, pitch, velocity)
+result.midi  # pretty_midi.PrettyMIDI object
+result.notes  # list of NoteEvent(start_time, end_time, pitch, velocity)
 
 # Pitch estimation (requires torchcrepe, or falls back to librosa pYIN)
 pitch = denote.get_pitch("vocal.wav")
-pitch.times        # timestamps in seconds
+pitch.times  # timestamps in seconds
 pitch.frequencies  # Hz (NaN for unvoiced)
-pitch.confidence   # voicing confidence
+pitch.confidence  # voicing confidence
 
 # Beat tracking (uses librosa, no extra install needed)
 beats = denote.get_beats("song.wav")
-beats.beats        # beat times in seconds
-beats.tempo        # BPM estimate
+beats.beats  # beat times in seconds
+beats.tempo  # BPM estimate
 ```
 
 ## Choose Your Backend
 
 ```python
 # See what's available
-denote.list_backends()            # all registered backends
-denote.list_backends('pitch')     # ['librosa_pyin', 'torchcrepe']
+denote.list_backends()  # all registered backends
+denote.list_backends("pitch")  # ['librosa_pyin', 'torchcrepe']
 
 # Specify a backend explicitly
-pitch = denote.get_pitch("vocal.wav", backend='librosa_pyin')
+pitch = denote.get_pitch("vocal.wav", backend="librosa_pyin")
 ```
 
 ## Service-Level Access
@@ -54,7 +54,7 @@ For more control, access backends via the service layer:
 ```python
 # Per-backend service handle
 denote.services.basic_pitch.transcribe("song.wav", onset_threshold=0.3)
-denote.services.torchcrepe.get_pitch("vocal.wav", model='tiny', device='cuda')
+denote.services.torchcrepe.get_pitch("vocal.wav", model="tiny", device="cuda")
 
 # Native adapter (full backend API)
 denote.services.basic_pitch.adapter
@@ -78,9 +78,13 @@ Register your own backends:
 ```python
 import denote
 
-denote.register_backend('my_tool', config={
-    'name': 'my_tool',
-    'tasks': ['transcribe'],
-    'pip_install': 'my-tool',
-}, adapter=MyAdapter(config))
+denote.register_backend(
+    "my_tool",
+    config={
+        "name": "my_tool",
+        "tasks": ["transcribe"],
+        "pip_install": "my-tool",
+    },
+    adapter=MyAdapter(config),
+)
 ```

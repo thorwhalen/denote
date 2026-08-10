@@ -302,8 +302,7 @@ Following torchaudio's Bundle pattern and madmom's Processor pattern:
 from myfacade import transcribe, analyze
 
 # High-level unified API
-result = analyze("song.wav",
-    tasks=["midi", "chords", "beats", "key", "structure"])
+result = analyze("song.wav", tasks=["midi", "chords", "beats", "key", "structure"])
 
 # result.midi         → pretty_midi.PrettyMIDI object
 # result.chords       → List[Interval(start, end, label)]
@@ -315,15 +314,18 @@ result = analyze("song.wav",
 
 # Task-specific with backend selection
 from myfacade.pitch import PitchTracker
+
 tracker = PitchTracker(backend="pesto")  # or "crepe", "penn", "pyin"
 f0, confidence = tracker.predict("vocal.wav")
 
 from myfacade.chords import ChordRecognizer
+
 recognizer = ChordRecognizer(backend="btc", vocabulary="large")
 chords = recognizer.predict("song.wav")
 
 # Evaluation integration
 from myfacade.evaluate import evaluate_beats
+
 scores = evaluate_beats(predicted=result.beats, reference="ref.beats")
 ```
 
