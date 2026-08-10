@@ -8,6 +8,7 @@ build-backend = "hatchling.build"
 name = "denote"
 version = "0.0.2"
 description = "Portal and facade for audio-to-symbol tools (MIDI, chords, pitch from audio)"
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = []
@@ -18,9 +19,6 @@ dependencies = [
     "numpy",
     "librosa>=0.10",
 ]
-
-[project.license]
-text = "mit"
 
 [project.urls]
 Homepage = "https://github.com/thorwhalen/denote"

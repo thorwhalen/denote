@@ -4,7 +4,7 @@ Portal and facade for audio-to-symbol tools (MIDI, chords, pitch from audio).
 
 ## Project Overview
 
-Denote wraps 10+ audio analysis backends (Basic Pitch, torchcrepe, madmom, etc.)
+Denote wraps audio analysis backends (4 shipped today: Basic Pitch, torchcrepe, librosa pyin/beats; more planned - see the roadmap in misc/docs)
 behind a unified Python facade. Each backend is an optional dependency; only
 `numpy` and `librosa` are required. The architecture follows arioso's pattern:
 registry → services → adapters, with task-first organization.
