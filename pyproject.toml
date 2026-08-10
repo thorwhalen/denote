@@ -8,6 +8,7 @@ build-backend = "hatchling.build"
 name = "denote"
 version = "0.0.2"
 description = "Portal and facade for audio-to-symbol tools (MIDI, chords, pitch from audio)"
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = []
@@ -17,10 +18,14 @@ authors = [
 dependencies = [
     "numpy",
     "librosa>=0.10",
+    # librosa hard-requires numba. Without this floor, a resolver that picks the
+    # newest numpy (which no released numba supports yet) backtracks to ANCIENT
+    # numba 0.53/llvmlite 0.36 — whose metadata declares no numpy cap — and the
+    # llvmlite source build then fails on any modern Python (broke CI 2026-08).
+    # The floor forces a numba wheel that actually installs, letting the resolver
+    # pick a compatible (slightly older) numpy instead.
+    "numba>=0.59",
 ]
-
-[project.license]
-text = "mit"
 
 [project.urls]
 Homepage = "https://github.com/thorwhalen/denote"
