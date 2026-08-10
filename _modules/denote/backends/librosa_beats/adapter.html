@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>denote.backends.librosa_beats.adapter &mdash; denote 0.0.1 documentation</title>
+  <title>denote.backends.librosa_beats.adapter &mdash; denote 0.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -14,9 +14,9 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=d45e8c67"></script>
-      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/documentation_options.js?v=e3a6060d"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=f281be69"></script>
@@ -105,7 +105,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span> <span class="o">=</span> <span class="n">make_kwargs_translator</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;param_map&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span> <span class="o">=</span> <span class="n">make_kwargs_translator</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;param_map&quot;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="Adapter.get_beats">
 <a class="viewcode-back" href="../../../../module_docs/denote/backends/librosa_beats/adapter.html#denote.backends.librosa_beats.adapter.Adapter.get_beats">[docs]</a>
@@ -125,13 +125,13 @@
         <span class="n">y</span><span class="p">,</span> <span class="n">actual_sr</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">native_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="n">sr</span><span class="o">=</span><span class="n">actual_sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">native_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">native_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="n">tempo</span><span class="p">,</span> <span class="n">beat_frames</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">beat</span><span class="o">.</span><span class="n">beat_track</span><span class="p">(</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;frames&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;frames&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span>
         <span class="p">)</span>
 
-        <span class="n">hop</span> <span class="o">=</span> <span class="n">native_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hop_length&#39;</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+        <span class="n">hop</span> <span class="o">=</span> <span class="n">native_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hop_length&quot;</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
         <span class="n">beat_times</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">frames_to_time</span><span class="p">(</span><span class="n">beat_frames</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">actual_sr</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="n">hop</span><span class="p">)</span>
 
         <span class="c1"># Handle scalar vs array tempo</span>
@@ -141,8 +141,8 @@
             <span class="n">beats</span><span class="o">=</span><span class="n">beat_times</span><span class="p">,</span>
             <span class="n">downbeats</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span>  <span class="c1"># librosa doesn&#39;t track downbeats</span>
             <span class="n">tempo</span><span class="o">=</span><span class="n">tempo_val</span><span class="p">,</span>
-            <span class="n">raw</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;tempo&#39;</span><span class="p">:</span> <span class="n">tempo</span><span class="p">,</span> <span class="s1">&#39;beat_frames&#39;</span><span class="p">:</span> <span class="n">beat_frames</span><span class="p">},</span>
-            <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;librosa_beats&#39;</span><span class="p">,</span>
+            <span class="n">raw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tempo&quot;</span><span class="p">:</span> <span class="n">tempo</span><span class="p">,</span> <span class="s2">&quot;beat_frames&quot;</span><span class="p">:</span> <span class="n">beat_frames</span><span class="p">},</span>
+            <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;librosa_beats&quot;</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -155,7 +155,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

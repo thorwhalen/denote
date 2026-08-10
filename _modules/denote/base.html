@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>denote.base &mdash; denote 0.0.1 documentation</title>
+  <title>denote.base &mdash; denote 0.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,9 +14,9 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=e3a6060d"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -124,7 +124,7 @@
     <span class="n">midi</span><span class="p">:</span> <span class="n">Any</span>  <span class="c1"># pretty_midi.PrettyMIDI (typed as Any to avoid hard dependency)</span>
     <span class="n">notes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">NoteEvent</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># backend-specific raw output</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
 
 
 
@@ -138,7 +138,7 @@
     <span class="n">frequencies</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># Hz (NaN for unvoiced frames)</span>
     <span class="n">confidence</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># confidence/voicing probability [0, 1]</span>
     <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
 
 
 
@@ -151,7 +151,7 @@
     <span class="n">intervals</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># (N, 2) array of [start_time, end_time]</span>
     <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># chord symbol strings</span>
     <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
 
 
 
@@ -165,17 +165,17 @@
     <span class="n">downbeats</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
     <span class="n">tempo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># BPM estimate</span>
     <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
 
 
 
 <span class="c1"># Supported task identifiers</span>
 <span class="n">TASKS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;transcribe&#39;</span><span class="p">:</span> <span class="s1">&#39;Audio to MIDI transcription&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pitch&#39;</span><span class="p">:</span> <span class="s1">&#39;Pitch / F0 estimation&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;chords&#39;</span><span class="p">:</span> <span class="s1">&#39;Chord recognition&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;beats&#39;</span><span class="p">:</span> <span class="s1">&#39;Beat and downbeat tracking&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;separate&#39;</span><span class="p">:</span> <span class="s1">&#39;Source separation&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;transcribe&quot;</span><span class="p">:</span> <span class="s2">&quot;Audio to MIDI transcription&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pitch&quot;</span><span class="p">:</span> <span class="s2">&quot;Pitch / F0 estimation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;chords&quot;</span><span class="p">:</span> <span class="s2">&quot;Chord recognition&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;beats&quot;</span><span class="p">:</span> <span class="s2">&quot;Beat and downbeat tracking&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;separate&quot;</span><span class="p">:</span> <span class="s2">&quot;Source separation&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -186,7 +186,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

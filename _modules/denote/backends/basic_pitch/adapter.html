@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>denote.backends.basic_pitch.adapter &mdash; denote 0.0.1 documentation</title>
+  <title>denote.backends.basic_pitch.adapter &mdash; denote 0.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -14,9 +14,9 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=d45e8c67"></script>
-      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/documentation_options.js?v=e3a6060d"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=f281be69"></script>
@@ -103,7 +103,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span> <span class="o">=</span> <span class="n">make_kwargs_translator</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;param_map&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span> <span class="o">=</span> <span class="n">make_kwargs_translator</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;param_map&quot;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="Adapter.transcribe">
 <a class="viewcode-back" href="../../../../module_docs/denote/backends/basic_pitch/adapter.html#denote.backends.basic_pitch.adapter.Adapter.transcribe">[docs]</a>
@@ -124,14 +124,14 @@
         <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 
         <span class="c1"># Prefer ONNX model (more compatible across TF versions)</span>
-        <span class="n">onnx_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ICASSP_2022_MODEL_PATH</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.onnx&#39;</span><span class="p">)</span>
+        <span class="n">onnx_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ICASSP_2022_MODEL_PATH</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.onnx&quot;</span><span class="p">)</span>
         <span class="n">model_path</span> <span class="o">=</span> <span class="n">onnx_path</span> <span class="k">if</span> <span class="n">onnx_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="n">ICASSP_2022_MODEL_PATH</span>
 
         <span class="n">audio_path</span> <span class="o">=</span> <span class="n">ensure_file_path</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)</span>
         <span class="n">native_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Remove audio_path from native_kwargs if present (it&#39;s positional)</span>
-        <span class="n">native_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;audio_path&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">native_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;audio_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="n">model_output</span><span class="p">,</span> <span class="n">midi_data</span><span class="p">,</span> <span class="n">note_events</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span>
             <span class="n">audio_path</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span>
@@ -151,8 +151,8 @@
         <span class="k">return</span> <span class="n">TranscriptionResult</span><span class="p">(</span>
             <span class="n">midi</span><span class="o">=</span><span class="n">midi_data</span><span class="p">,</span>
             <span class="n">notes</span><span class="o">=</span><span class="n">notes</span><span class="p">,</span>
-            <span class="n">raw</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;model_output&#39;</span><span class="p">:</span> <span class="n">model_output</span><span class="p">,</span> <span class="s1">&#39;note_events&#39;</span><span class="p">:</span> <span class="n">note_events</span><span class="p">},</span>
-            <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;basic_pitch&#39;</span><span class="p">,</span>
+            <span class="n">raw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;model_output&quot;</span><span class="p">:</span> <span class="n">model_output</span><span class="p">,</span> <span class="s2">&quot;note_events&quot;</span><span class="p">:</span> <span class="n">note_events</span><span class="p">},</span>
+            <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;basic_pitch&quot;</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -165,7 +165,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright NO COPYRIGHT.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
