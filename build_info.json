@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-10-03T11:16:32Z",
+  "package": {
+    "name": "denote",
+    "version": "0.0.4",
+    "display_name": "denote",
+    "source": "pyproject.toml"
+  },
+  "git": {
+    "available": true,
+    "commit": "2ed619a1ee4becab1af2afa35abab20e7eaf2311",
+    "short_commit": "2ed619a",
+    "branch": "main",
+    "tags": [
+      "0.0.4"
+    ],
+    "dirty": false,
+    "remote_url": "https://github.com/thorwhalen/denote",
+    "commit_url": "https://github.com/thorwhalen/denote/commit/2ed619a1ee4becab1af2afa35abab20e7eaf2311",
+    "error": null
+  },
+  "ci": {
+    "provider": "github",
+    "repository": "thorwhalen/denote",
+    "sha": "2964969b799d28f7e2cc5477c09f64248b38fba4",
+    "sha_in_history": true,
+    "ref": "refs/heads/main",
+    "ref_name": "main",
+    "run_id": "37119002555",
+    "run_url": "https://github.com/thorwhalen/denote/actions/runs/37119002555",
+    "server_url": "https://github.com"
+  },
+  "tools": {
+    "epythet": "0.2.12",
+    "sphinx": "9.1.0",
+    "docutils": "0.22.4",
+    "python": "3.12.14"
+  },
+  "config": {
+    "theme": "auto",
+    "html_theme": "sphinxawesome_theme",
+    "accent": "#8c3f00",
+    "mode": "auto",
+    "api_generator": "autosummary",
+    "ignore": [
+      "tests/",
+      "scrap/",
+      "examples/"
+    ],
+    "agent_outputs": true,
+    "aggregates": [
+      "md"
+    ],
+    "ai_artifacts": true,
+    "provenance": true,
+    "docs_dir": "docsrc"
+  },
+  "site": {
+    "modules_documented": 20,
+    "objects_documented": 43
+  },
+  "pypi": {
+    "checked": true,
+    "latest": "0.0.4",
+    "relation": "same",
+    "error": null
+  },
+  "reproduce": "git clone https://github.com/thorwhalen/denote && cd denote\ngit checkout 2ed619a1ee4becab1af2afa35abab20e7eaf2311\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "warnings": [],
+  "alignment": {
+    "aligned": true,
+    "notes": []
+  }
+}

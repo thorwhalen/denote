@@ -1,0 +1,28 @@
+﻿denote
+======
+
+.. automodule:: denote
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_beats
+      get_chords
+      get_pitch
+      transcribe
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   align
+   backends
+   base
+   registry
+   services
+   translation
+   util

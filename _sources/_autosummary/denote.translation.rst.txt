@@ -1,0 +1,13 @@
+denote.translation
+==================
+
+.. automodule:: denote.translation
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_kwargs_translator
+      validate_param
+   

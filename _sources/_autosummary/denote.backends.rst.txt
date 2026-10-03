@@ -1,0 +1,16 @@
+denote.backends
+===============
+
+.. automodule:: denote.backends
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   basic_pitch
+   librosa_beats
+   librosa_pyin
+   torchcrepe

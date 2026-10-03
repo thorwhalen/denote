@@ -1,0 +1,12 @@
+denote.backends.librosa\_beats.adapter
+======================================
+
+.. automodule:: denote.backends.librosa_beats.adapter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

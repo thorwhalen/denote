@@ -1,4 +1,0 @@
-denote.base
-===========
-.. automodule:: denote.base
-   :members:

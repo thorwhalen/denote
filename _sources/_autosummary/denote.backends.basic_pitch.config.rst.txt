@@ -1,0 +1,6 @@
+denote.backends.basic\_pitch.config
+===================================
+
+.. automodule:: denote.backends.basic_pitch.config
+
+   

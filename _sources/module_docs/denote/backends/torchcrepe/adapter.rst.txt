@@ -1,4 +1,0 @@
-denote.backends.torchcrepe.adapter
-==================================
-.. automodule:: denote.backends.torchcrepe.adapter
-   :members:

@@ -1,0 +1,17 @@
+denote.registry
+===============
+
+.. automodule:: denote.registry
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      clear_registry
+      get_backend
+      get_config
+      get_default_backend
+      list_backends
+      register_backend
+   

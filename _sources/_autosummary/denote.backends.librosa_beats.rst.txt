@@ -1,0 +1,14 @@
+denote.backends.librosa\_beats
+==============================
+
+.. automodule:: denote.backends.librosa_beats
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapter
+   config

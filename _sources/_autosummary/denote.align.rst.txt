@@ -1,0 +1,28 @@
+denote.align
+============
+
+.. automodule:: denote.align
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DFLT_FRAME_RATE
+      DFLT_AUDIO_SR
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      align_audio
+      align_score
+      audio_chroma
+      score_chroma
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ScoreAlignment
+   

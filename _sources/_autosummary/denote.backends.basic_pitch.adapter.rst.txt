@@ -1,0 +1,12 @@
+denote.backends.basic\_pitch.adapter
+====================================
+
+.. automodule:: denote.backends.basic_pitch.adapter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

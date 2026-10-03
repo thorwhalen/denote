@@ -1,0 +1,12 @@
+denote.backends.librosa\_pyin.adapter
+=====================================
+
+.. automodule:: denote.backends.librosa_pyin.adapter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

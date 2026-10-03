@@ -1,0 +1,6 @@
+denote.backends.librosa\_beats.config
+=====================================
+
+.. automodule:: denote.backends.librosa_beats.config
+
+   

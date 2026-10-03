@@ -1,0 +1,12 @@
+denote.backends.torchcrepe.adapter
+==================================
+
+.. automodule:: denote.backends.torchcrepe.adapter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

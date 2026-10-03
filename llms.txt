@@ -1,0 +1,39 @@
+# denote
+
+> Portal and facade for audio-to-symbol tools (MIDI, chords, pitch from audio)
+
+
+## Pages
+
+- [denote](index.html.md): Portal and facade for audio-to-symbol tools (MIDI, chords, pitch from audio).
+- [API reference](api.html.md): | &#96;denote&#96;   | Denote — Portal and facade for audio-to-symbol tools.   |
+- [denote](_autosummary/denote.html.md): Denote — Portal and facade for audio-to-symbol tools.
+- [denote.align](_autosummary/denote.align.html.md): Align a symbolic score to a recording of the same music (audio-to-score sync).
+- [denote.backends](_autosummary/denote.backends.html.md): Backend packages for denote. Each subpackage provides a config.py and adapter.py.
+- [denote.backends.basic_pitch](_autosummary/denote.backends.basic_pitch.html.md): | &#96;adapter&#96;   | Adapter for Basic Pitch (Spotify) — audio to MIDI transcription.   |
+- [denote.backends.basic_pitch.adapter](_autosummary/denote.backends.basic_pitch.adapter.html.md): Adapter for Basic Pitch (Spotify) — audio to MIDI transcription.
+- [denote.backends.basic_pitch.config](_autosummary/denote.backends.basic_pitch.config.html.md): Configuration for the Basic Pitch (Spotify) backend.
+- [denote.backends.librosa_beats](_autosummary/denote.backends.librosa_beats.html.md): | &#96;adapter&#96;   | Adapter for librosa beat tracking.                   |
+- [denote.backends.librosa_beats.adapter](_autosummary/denote.backends.librosa_beats.adapter.html.md): Adapter for librosa beat tracking.
+- [denote.backends.librosa_beats.config](_autosummary/denote.backends.librosa_beats.config.html.md): Configuration for the librosa beat tracking backend.
+- [denote.backends.librosa_pyin](_autosummary/denote.backends.librosa_pyin.html.md): | &#96;adapter&#96;   | Adapter for librosa pYIN — probabilistic pitch estimation.   |
+- [denote.backends.librosa_pyin.adapter](_autosummary/denote.backends.librosa_pyin.adapter.html.md): Adapter for librosa pYIN — probabilistic pitch estimation.
+- [denote.backends.librosa_pyin.config](_autosummary/denote.backends.librosa_pyin.config.html.md): Configuration for the librosa pYIN backend.
+- [denote.backends.torchcrepe](_autosummary/denote.backends.torchcrepe.html.md): | &#96;adapter&#96;   | Adapter for torchcrepe — GPU-accelerated pitch estimation.   |
+- [denote.backends.torchcrepe.adapter](_autosummary/denote.backends.torchcrepe.adapter.html.md): Adapter for torchcrepe — GPU-accelerated pitch estimation.
+- [denote.backends.torchcrepe.config](_autosummary/denote.backends.torchcrepe.config.html.md): Configuration for the torchcrepe backend.
+- [denote.base](_autosummary/denote.base.html.md): Core types and result dataclasses for denote.
+- [denote.registry](_autosummary/denote.registry.html.md): Backend discovery, registration, and lazy loading.
+- [denote.services](_autosummary/denote.services.html.md): Lazy mapping of backend names → ServiceHandle instances.
+- [denote.translation](_autosummary/denote.translation.html.md): Parameter translation between normalized and native backend interfaces.
+- [denote.util](_autosummary/denote.util.html.md): Audio loading and utility functions for denote.
+- [For AI agents](ai-agents.html.md): &#96;denote&#96; ships artifacts for coding agents alongside its code. This page lists
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-03 11:16 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+
+## Optional
+
+- [denote.md](denote.md): Complete documentation in a single file.
+
+## Build
+
+- [build_info.json](build_info.json): build provenance (commit, version, tool versions, whether the docs match the package)

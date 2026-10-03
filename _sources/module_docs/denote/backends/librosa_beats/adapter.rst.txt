@@ -1,4 +1,0 @@
-denote.backends.librosa_beats.adapter
-=====================================
-.. automodule:: denote.backends.librosa_beats.adapter
-   :members:

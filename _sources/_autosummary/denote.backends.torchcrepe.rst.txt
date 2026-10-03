@@ -1,0 +1,14 @@
+denote.backends.torchcrepe
+==========================
+
+.. automodule:: denote.backends.torchcrepe
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapter
+   config

@@ -1,0 +1,14 @@
+denote.backends.basic\_pitch
+============================
+
+.. automodule:: denote.backends.basic_pitch
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapter
+   config

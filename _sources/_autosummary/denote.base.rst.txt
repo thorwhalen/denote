@@ -1,0 +1,16 @@
+denote.base
+===========
+
+.. automodule:: denote.base
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BeatResult
+      ChordResult
+      NoteEvent
+      PitchResult
+      TranscriptionResult
+   

@@ -1,4 +1,0 @@
-denote.registry
-===============
-.. automodule:: denote.registry
-   :members:

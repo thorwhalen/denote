@@ -1,4 +1,0 @@
-denote
-======
-.. automodule:: denote
-   :members:

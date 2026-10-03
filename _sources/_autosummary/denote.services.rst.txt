@@ -1,0 +1,6 @@
+denote.services
+===============
+
+.. currentmodule:: denote
+
+.. autodata:: services

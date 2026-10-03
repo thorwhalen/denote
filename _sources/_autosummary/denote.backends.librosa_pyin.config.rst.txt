@@ -1,0 +1,6 @@
+denote.backends.librosa\_pyin.config
+====================================
+
+.. automodule:: denote.backends.librosa_pyin.config
+
+   

@@ -1,0 +1,6 @@
+denote.backends.torchcrepe.config
+=================================
+
+.. automodule:: denote.backends.torchcrepe.config
+
+   

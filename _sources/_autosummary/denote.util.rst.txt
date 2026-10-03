@@ -1,0 +1,13 @@
+denote.util
+===========
+
+.. automodule:: denote.util
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ensure_file_path
+      load_audio
+   
