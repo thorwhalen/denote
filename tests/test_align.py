@@ -70,3 +70,23 @@ def test_silence_does_not_break_alignment():
     score = _score(0.5, offset=2.0)  # 2 s of silence first
     a = denote.align_score(score, _audio(_score(0.5)), sr=SR)
     assert np.isfinite(a.cost)
+
+
+def test_stereo_frames_by_channels_array():
+    score = _score(0.5)
+    mono = _audio(_score(0.55))
+    stereo = np.stack([mono, mono], axis=1)  # (N, 2), soundfile's layout
+    a = denote.align_score(score, stereo, sr=SR, subsequence=False)
+    assert a.cost < 0.2
+
+
+def test_impossible_tempo_ratio_raises_a_clear_error():
+    ref = _audio(_score(0.5))
+    much_longer = _audio(_score(1.5))  # 3x slower, outside [1/2, 2]
+    with pytest.raises(ValueError, match="allowed tempo range"):
+        denote.align_audio(much_longer, ref, sr=SR, reference_sr=SR)
+
+
+def test_too_short_raises():
+    with pytest.raises(ValueError, match="too short"):
+        denote.align_score(_score(0.5), np.zeros(1000, dtype="float32"), sr=SR)

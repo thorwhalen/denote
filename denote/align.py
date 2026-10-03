@@ -37,7 +37,8 @@ DFLT_FRAME_RATE = 10.0
 DFLT_AUDIO_SR = 22050
 #: DTW steps (audio frames, score frames). Without (1, 0)/(0, 1) steps the path
 #: slope is bounded to [1/2, 2]: the performance may run at half to double the
-#: score's tempo, but cannot sit on one score frame for a whole clip, which is
+#: score's tempo (strictly inside that range at the end points), but cannot sit
+#: on one score frame for a whole clip, which is
 #: the degenerate answer unconstrained subsequence DTW gives.
 _STEPS = np.array([[1, 1], [1, 2], [2, 1]])
 _STEP_WEIGHTS = np.array([1.0, 1.0, 1.0])
@@ -214,20 +215,35 @@ def _align_chroma(A, S, *, subsequence, transpose, frame_rate) -> ScoreAlignment
 
     if S.shape[1] == 0 or A.shape[1] == 0:
         raise ValueError("score or audio is empty")
+    n, m = A.shape[1], S.shape[1]
+    if min(n, m) < 2:
+        raise ValueError(
+            f"too short to align: {n} and {m} frames at {frame_rate} frames/s"
+        )
     shifts = range(12) if transpose == "auto" else [int(transpose) % 12]
 
     best = None
     for k in shifts:
         Sk = np.roll(S, k, axis=0)
         # librosa matches X as a subsequence of Y when subseq=True.
-        _, wp = librosa.sequence.dtw(
-            X=A,
-            Y=Sk,
-            metric="cosine",
-            subseq=subsequence,
-            step_sizes_sigma=_STEPS,
-            weights_mul=_STEP_WEIGHTS,
-        )
+        try:
+            _, wp = librosa.sequence.dtw(
+                X=A,
+                Y=Sk,
+                metric="cosine",
+                subseq=subsequence,
+                step_sizes_sigma=_STEPS,
+                weights_mul=_STEP_WEIGHTS,
+            )
+        except librosa.util.exceptions.ParameterError as exc:
+            raise ValueError(
+                f"No alignment within the allowed tempo range (the recording at "
+                f"strictly between half and double the reference's speed): "
+                f"{n / frame_rate:.1f}s of query against {m / frame_rate:.1f}s of "
+                f"reference, subsequence={subsequence}. Crop the longer one to "
+                f"the shared passage, or pass subsequence=True to find a clip "
+                f"inside a longer reference."
+            ) from exc
         wp = wp[::-1]  # path runs end -> start
         # Mean cosine distance along the path (columns are unit-norm). Not
         # read off the accumulated matrix: librosa may transpose it when the

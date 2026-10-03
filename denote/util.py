@@ -45,7 +45,10 @@ def load_audio(
             )
         y = audio
         if mono and y.ndim > 1:
-            y = librosa.to_mono(y)
+            # librosa wants (channels, frames); soundfile gives (frames, channels).
+            if y.ndim == 2 and y.shape[0] > y.shape[1]:
+                y = y.T
+            y = librosa.to_mono(np.ascontiguousarray(y))
         if target_sr is not None and target_sr != sr:
             y = librosa.resample(y, orig_sr=sr, target_sr=target_sr)
             return y, target_sr
