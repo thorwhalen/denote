@@ -79,7 +79,10 @@ class ScoreAlignment:
 def _to_pretty_midi(score):
     if type(score).__name__ == "PrettyMIDI":
         return score
-    if isinstance(score, (str, Path)) and Path(score).suffix.lower() in (".mid", ".midi"):
+    if isinstance(score, (str, Path)) and Path(score).suffix.lower() in (
+        ".mid",
+        ".midi",
+    ):
         import pretty_midi
 
         return pretty_midi.PrettyMIDI(str(score))
@@ -202,7 +205,9 @@ def align_audio(
     Returns:
         A :class:`ScoreAlignment` (``score_*`` refers to ``reference``).
     """
-    R = audio_chroma(reference, sr=reference_sr, frame_rate=frame_rate, audio_sr=audio_sr)
+    R = audio_chroma(
+        reference, sr=reference_sr, frame_rate=frame_rate, audio_sr=audio_sr
+    )
     A = audio_chroma(audio, sr=sr, frame_rate=frame_rate, audio_sr=audio_sr)
     return _align_chroma(
         A, R, subsequence=subsequence, transpose=transpose, frame_rate=frame_rate
