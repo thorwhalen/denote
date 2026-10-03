@@ -7,6 +7,7 @@ Simple usage::
     chords = denote.get_chords("song.wav")         # audio -> chord labels
     pitch = denote.get_pitch("vocal.wav")           # audio -> F0
     beats = denote.get_beats("song.wav")            # audio -> beat times
+    sync = denote.align_score("song.mid", "song.wav")  # score <-> recording time map
 
     denote.list_backends()                          # see what's available
     denote.list_backends('pitch')                   # backends for a task
@@ -37,6 +38,7 @@ from denote.registry import (
     get_config,
 )
 from denote.services import ServiceCollection
+from denote.align import align_score, align_audio, ScoreAlignment
 
 # Lazy singleton for service-level access
 services = ServiceCollection()
