@@ -51,6 +51,15 @@ def test_broken_tensorflow_is_hidden(tmp_path, monkeypatch, forget_modules):
     assert not compat.hide_broken_tensorflow()  # idempotent
 
 
+@pytest.mark.parametrize(
+    "stand_in", [types.ModuleType("tensorflow"), types.SimpleNamespace()]
+)
+def test_tensorflow_stand_ins_are_not_evicted(stand_in, monkeypatch):
+    monkeypatch.setitem(sys.modules, "tensorflow", stand_in)
+    assert not compat.hide_broken_tensorflow()
+    assert sys.modules["tensorflow"] is stand_in
+
+
 def test_already_imported_leftover_is_evicted(tmp_path, monkeypatch, forget_modules):
     spec = importlib.util.find_spec("tensorflow")
     if spec is not None and spec.origin not in (None, "namespace"):
@@ -70,15 +79,19 @@ def test_already_imported_leftover_is_evicted(tmp_path, monkeypatch, forget_modu
 
 
 def test_resampy_imports_without_pkg_resources(tmp_path, monkeypatch, forget_modules):
+    # Shaped like resampy 0.4.2: a submodule binds pkg_resources at import and
+    # resolves its data relative to its own (module, not package) __name__ later.
     fake = tmp_path / "resampy"
     fake.mkdir()
     (fake / "data.npy").write_bytes(b"")
-    (fake / "__init__.py").write_text(
+    (fake / "__init__.py").write_text("from . import filters\n")
+    (fake / "filters.py").write_text(
         "import pkg_resources\n"
-        "DATA = pkg_resources.resource_filename(__name__, 'data.npy')\n"
+        "def data_path():\n"
+        "    return pkg_resources.resource_filename(__name__, 'data.npy')\n"
     )
     monkeypatch.syspath_prepend(str(tmp_path))
-    forget_modules("resampy", "pkg_resources")
+    forget_modules("resampy", "resampy.filters", "pkg_resources")
     real_find_spec = importlib.util.find_spec
     monkeypatch.setattr(
         importlib.util,
@@ -87,7 +100,7 @@ def test_resampy_imports_without_pkg_resources(tmp_path, monkeypatch, forget_mod
     )
 
     assert compat.preload_resampy()
-    assert sys.modules["resampy"].DATA == str(fake / "data.npy")
+    assert sys.modules["resampy"].filters.data_path() == str(fake / "data.npy")
     assert "pkg_resources" not in sys.modules  # the stub did not outlive the import
     assert not compat.preload_resampy()  # already imported
 

@@ -1,9 +1,9 @@
 """Make basic-pitch importable and runnable against today's dependencies.
 
-basic-pitch pins old dependencies, and on Python >= 3.11 off macOS every release
-also requires a TensorFlow with no cp312 wheel. So the version you can actually
-get is often 0.3.0, run against current scipy, setuptools and stray TensorFlow
-leftovers. Three things then break (issue #2):
+basic-pitch pins old dependencies. On Python 3.12, pip resolves only 0.3.0 on
+macOS, and no release at all on Linux (each pins a TensorFlow with no cp312
+wheel), so it gets installed with ``--no-deps``. Either way it runs against current
+scipy, setuptools and stray TensorFlow leftovers. Three things then break (issue #2):
 
 1. ``import tensorflow`` succeeds on an empty ``tensorflow/`` namespace folder (left
    by an uninstall), so basic-pitch sets ``TF_PRESENT`` and later fails on
@@ -61,10 +61,14 @@ def is_namespace_leftover(name: str) -> bool:
     return spec is not None and spec.origin in (None, "namespace")
 
 
-def _is_namespace_module(module: types.ModuleType) -> bool:
+def _is_namespace_module(module) -> bool:
     spec = getattr(module, "__spec__", None)
-    return getattr(module, "__file__", None) is None and (
-        spec is None or spec.origin in (None, "namespace")
+    return (
+        isinstance(module, types.ModuleType)
+        and getattr(module, "__file__", None) is None
+        and spec is not None
+        and spec.submodule_search_locations is not None
+        and spec.origin in (None, "namespace")
     )
 
 
@@ -90,8 +94,12 @@ def hide_broken_tensorflow() -> bool:
     return True
 
 
-def _resource_filename(package: str, resource: str) -> str:
-    return str(importlib.resources.files(package) / resource)
+def _resource_filename(module_name: str, resource: str) -> str:
+    # resampy passes a module's __name__ ('resampy.filters'); importlib.resources
+    # accepts a module anchor only from Python 3.12, so anchor on its package.
+    module = sys.modules.get(module_name)
+    package = getattr(module, "__package__", None) or module_name.rpartition(".")[0]
+    return str(importlib.resources.files(package or module_name) / resource)
 
 
 def preload_resampy() -> bool:
@@ -104,7 +112,9 @@ def preload_resampy() -> bool:
     """
     if "resampy" in sys.modules or importlib.util.find_spec("resampy") is None:
         return False
-    if importlib.util.find_spec("pkg_resources") is not None:
+    if importlib.util.find_spec("pkg_resources") is not None and not (
+        is_namespace_leftover("pkg_resources")
+    ):
         return False
     stub = types.ModuleType("pkg_resources")
     stub.resource_filename = _resource_filename

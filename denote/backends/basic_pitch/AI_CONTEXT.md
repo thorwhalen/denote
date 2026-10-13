@@ -29,7 +29,7 @@ model_output, midi_data, note_events = predict(
 - The `model_or_model_path` param defaults to whichever runtime basic-pitch detects; the adapter passes the ONNX model whenever onnxruntime is importable
 - Needs a model runtime: onnxruntime (portable, in the `basic_pitch` extra), tflite-runtime, tensorflow or coremltools
 - Import it through `compat.import_basic_pitch()`, never directly: on current dependencies basic-pitch breaks on a leftover `tensorflow/` folder, on resampy's `pkg_resources` import (setuptools >= 81) and on `scipy.signal.gaussian` (scipy >= 1.13). See `compat.py` and issue #2.
-- Every basic-pitch release requires a TensorFlow with no cp312 wheel off macOS on Python >= 3.11, so pip may only resolve 0.3.0 there; that is why the floor stays 0.3
+- On Python 3.12 pip resolves basic-pitch only on macOS, and only 0.3.0 (0.3.1+ pin `tensorflow-macos<2.15.1`, which has no cp312 wheel). On Linux no release resolves (each pins a TensorFlow with no cp312 wheel): install `basic-pitch --no-deps` plus librosa, mir_eval, pretty_midi, `resampy<0.4.3`, scikit-learn, scipy and onnxruntime. That is why the floor stays 0.3, and why requiring >=0.4 would not help (0.4.0 fixes only the scipy call).
 
 ## Install
 ```bash
