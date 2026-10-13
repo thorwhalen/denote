@@ -1,0 +1,24 @@
+denote.backends.basic\_pitch.compat
+===================================
+
+.. automodule:: denote.backends.basic_pitch.compat
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      MODEL_RUNTIMES
+      ONNX_MODEL_RELPATH
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      hide_broken_tensorflow
+      import_basic_pitch
+      is_namespace_leftover
+      model_path
+      preload_resampy
+      restore_scipy_gaussian
+   

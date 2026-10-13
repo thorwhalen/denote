@@ -8,8 +8,9 @@
 - [denote](denote.html.md): Denote — Portal and facade for audio-to-symbol tools.
 - [denote.align](denote.align.html.md): Align a symbolic score to a recording of the same music (audio-to-score sync).
 - [denote.backends](denote.backends.html.md): Backend packages for denote. Each subpackage provides a config.py and adapter.py.
-- [denote.backends.basic_pitch](denote.backends.basic_pitch.html.md): | &#96;adapter&#96;   | Adapter for Basic Pitch (Spotify) — audio to MIDI transcription.   |
+- [denote.backends.basic_pitch](denote.backends.basic_pitch.html.md): | &#96;adapter&#96;   | Adapter for Basic Pitch (Spotify) — audio to MIDI transcription.       |
 - [denote.backends.basic_pitch.adapter](denote.backends.basic_pitch.adapter.html.md): Adapter for Basic Pitch (Spotify) — audio to MIDI transcription.
+- [denote.backends.basic_pitch.compat](denote.backends.basic_pitch.compat.html.md): Make basic-pitch importable and runnable against today’s dependencies.
 - [denote.backends.basic_pitch.config](denote.backends.basic_pitch.config.html.md): Configuration for the Basic Pitch (Spotify) backend.
 - [denote.backends.librosa_beats](denote.backends.librosa_beats.html.md): | &#96;adapter&#96;   | Adapter for librosa beat tracking.                   |
 - [denote.backends.librosa_beats.adapter](denote.backends.librosa_beats.adapter.html.md): Adapter for librosa beat tracking.

@@ -1,4 +1,4 @@
-> built 2026-10-03 11:16 UTC from 2ed619a (main) · denote 0.0.4. Details: build_info.json
+> built 2026-10-13 19:58 UTC from 0fb1c0b (main) · denote 0.0.5. Details: build_info.json
 
 # index.html.md
 
@@ -286,6 +286,124 @@ Transcribe audio to MIDI using Basic Pitch.
   TranscriptionResult with .midi, .notes, and .raw fields.
 
 
+# _autosummary/denote.backends.basic_pitch.compat.html.md
+
+# denote.backends.basic_pitch.compat
+
+Make basic-pitch importable and runnable against today’s dependencies.
+
+basic-pitch pins old dependencies. On Python 3.12, pip resolves only 0.3.0 on
+macOS, and no release at all on Linux (each pins a TensorFlow with no cp312
+wheel), so it gets installed with `--no-deps`. Either way it runs against current
+scipy, setuptools and stray TensorFlow leftovers. Three things then break (issue #2):
+
+1. `import tensorflow` succeeds on an empty `tensorflow/` namespace folder (left
+   by an uninstall), so basic-pitch sets `TF_PRESENT` and later fails on
+   `import tensorflow.lite`.
+2. resampy < 0.4.3, which basic-pitch pins, imports `pkg_resources`, removed
+   from setuptools >= 81.
+3. basic-pitch < 0.4 calls `scipy.signal.gaussian`, removed in scipy >= 1.13
+   (now `scipy.signal.windows.gaussian`).
+
+Each fix below is applied only when its failure condition holds, and each is scoped
+as narrowly as the failure allows. Nothing is patched globally that a working
+install would see: a real TensorFlow is left alone, `pkg_resources` is stubbed
+only while resampy is imported, and the scipy alias is visible to basic-pitch’s
+`note_creation` module only.
+
+Use [`import_basic_pitch()`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.import_basic_pitch) rather than importing `basic_pitch` directly.
+
+### Module Attributes
+
+| [`MODEL_RUNTIMES`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.MODEL_RUNTIMES)     | Model runtimes basic-pitch can use, by import name, and the pip name to suggest.      |
+|---------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`ONNX_MODEL_RELPATH`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.ONNX_MODEL_RELPATH) | The ONNX serialization of the ICASSP 2022 model, relative to the basic_pitch package. |
+
+### Functions
+
+| [`hide_broken_tensorflow`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.hide_broken_tensorflow)()              | Make `import tensorflow` fail if TensorFlow is only an empty folder.                 |
+|----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| [`import_basic_pitch`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.import_basic_pitch)()                  | Import basic-pitch with the fixes above; return `(predict, model_path)`.             |
+| [`is_namespace_leftover`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.is_namespace_leftover)(name)           | True if `name` is importable only as an empty namespace package.                     |
+| [`model_path`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.model_path)(basic_pitch)               | The model file to load: ONNX when onnxruntime is usable, else basic-pitch's default. |
+| [`preload_resampy`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.preload_resampy)()                     | Import resampy even when `pkg_resources` is gone (setuptools >= 81).                 |
+| [`restore_scipy_gaussian`](_autosummary/denote.backends.basic_pitch.compat.html.md#denote.backends.basic_pitch.compat.restore_scipy_gaussian)(note_creation) | Give `note_creation` a `scipy.signal.gaussian` if scipy no longer has one.           |
+
+### denote.backends.basic_pitch.compat.MODEL_RUNTIMES *= {'coremltools': 'coremltools', 'onnxruntime': 'onnxruntime', 'tensorflow': 'tensorflow', 'tflite_runtime': 'tflite-runtime'}*
+
+Model runtimes basic-pitch can use, by import name, and the pip name to suggest.
+
+### denote.backends.basic_pitch.compat.ONNX_MODEL_RELPATH *= PosixPath('saved_models/icassp_2022/nmp.onnx')*
+
+The ONNX serialization of the ICASSP 2022 model, relative to the basic_pitch package.
+
+### denote.backends.basic_pitch.compat.hide_broken_tensorflow()
+
+Make `import tensorflow` fail if TensorFlow is only an empty folder.
+
+basic-pitch decides at import time whether TensorFlow is present from a bare
+`import tensorflow`. If the leftover was already imported (say, by an earlier
+`import basic_pitch`), it is evicted and basic-pitch’s `TF_PRESENT` reset,
+which still takes effect as long as `basic_pitch.inference` is not yet
+imported. Returns True if it hid a leftover.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+### denote.backends.basic_pitch.compat.import_basic_pitch()
+
+Import basic-pitch with the fixes above; return `(predict, model_path)`.
+
+### denote.backends.basic_pitch.compat.is_namespace_leftover(name)
+
+True if `name` is importable only as an empty namespace package.
+
+That is what an uninstall leaves behind when stray files kept the folder: the
+import succeeds, but nothing in it works.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+```pycon
+>>> is_namespace_leftover('json')
+False
+>>> is_namespace_leftover('surely_not_an_installed_module_xyz')
+False
+```
+
+### denote.backends.basic_pitch.compat.model_path(basic_pitch)
+
+The model file to load: ONNX when onnxruntime is usable, else basic-pitch’s default.
+
+ONNX loads the same everywhere, unlike the TensorFlow SavedModel, whose loader
+breaks across TensorFlow versions.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### denote.backends.basic_pitch.compat.preload_resampy()
+
+Import resampy even when `pkg_resources` is gone (setuptools >= 81).
+
+resampy < 0.4.3 uses only `pkg_resources.resource_filename`. A stub providing
+it is put in `sys.modules` for the duration of resampy’s import and removed
+after, so no other library ever sees a partial `pkg_resources`. Returns True
+if the stub was needed.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+### denote.backends.basic_pitch.compat.restore_scipy_gaussian(note_creation)
+
+Give `note_creation` a `scipy.signal.gaussian` if scipy no longer has one.
+
+Only that module’s `scipy` name is replaced, by a proxy of the real scipy, so
+scipy itself is not modified. Returns True if the alias was needed.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+
 # _autosummary/denote.backends.basic_pitch.config.html.md
 
 # denote.backends.basic_pitch.config
@@ -299,9 +417,10 @@ Configuration for the Basic Pitch (Spotify) backend.
 
 ### Modules
 
-| [`adapter`](_autosummary/denote.backends.basic_pitch.adapter.html.md#module-denote.backends.basic_pitch.adapter)   | Adapter for Basic Pitch (Spotify) — audio to MIDI transcription.   |
-|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
-| [`config`](_autosummary/denote.backends.basic_pitch.config.html.md#module-denote.backends.basic_pitch.config)     | Configuration for the Basic Pitch (Spotify) backend.               |
+| [`adapter`](_autosummary/denote.backends.basic_pitch.adapter.html.md#module-denote.backends.basic_pitch.adapter)   | Adapter for Basic Pitch (Spotify) — audio to MIDI transcription.       |
+|-------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`compat`](_autosummary/denote.backends.basic_pitch.compat.html.md#module-denote.backends.basic_pitch.compat)     | Make basic-pitch importable and runnable against today's dependencies. |
+| [`config`](_autosummary/denote.backends.basic_pitch.config.html.md#module-denote.backends.basic_pitch.config)     | Configuration for the Basic Pitch (Spotify) backend.                   |
 
 
 # _autosummary/denote.backends.html.md
@@ -785,7 +904,7 @@ Load audio from a file path or validate an existing array.
 
 # About this build
 
-This documentation was built on **2026-10-03 11:16 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/2ed619a1ee4becab1af2afa35abab20e7eaf2311"><code>2ed619a</code></a> on branch <code>main</code>, for **denote 0.0.4** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 19:58 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/0fb1c0b98d16abbd1a7a569dc08000ea1242b95c"><code>0fb1c0b</code></a> on branch <code>main</code>, for **denote 0.0.5** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -794,9 +913,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/2ed619a1ee4becab1af2afa35abab20e7eaf2311"><code>2ed619a1ee4becab1af2afa35abab20e7eaf2311</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/0fb1c0b98d16abbd1a7a569dc08000ea1242b95c"><code>0fb1c0b98d16abbd1a7a569dc08000ea1242b95c</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.4</code>                                                                                                                                       |
+| Tags at this commit | <code>0.0.5</code>                                                                                                                                       |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -805,18 +924,18 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/37119002555">37119002555</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/38458642605">38458642605</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>2964969b799d28f7e2cc5477c09f64248b38fba4</code> (in the history of the built commit) |
+| Event commit | <code>60dca056776c63e3b9bf5f16f6fb2d828fef9a97</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.12  |
+| epythet  | 0.2.17  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
-| Python   | 3.12.14 |
+| Python   | 3.12.15 |
 
 ## Configuration as resolved
 
@@ -832,14 +951,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.4/">0.0.4</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.5/">0.0.5</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 2ed619a1ee4becab1af2afa35abab20e7eaf2311
-pip install "epythet==0.2.12"
+git checkout 0fb1c0b98d16abbd1a7a569dc08000ea1242b95c
+pip install "epythet==0.2.17"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

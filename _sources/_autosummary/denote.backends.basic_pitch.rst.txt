@@ -11,4 +11,5 @@ denote.backends.basic\_pitch
    :recursive:
 
    adapter
+   compat
    config

@@ -199,42 +199,38 @@
 </span><span id="line-23"><span class="sd">        Returns:</span>
 </span><span id="line-24"><span class="sd">            TranscriptionResult with .midi, .notes, and .raw fields.</span>
 </span><span id="line-25"><span class="sd">        """</span>
-</span><span id="line-26">        <span class="kn">from</span><span class="w"> </span><span class="nn">basic_pitch.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">predict</span>
-</span><span id="line-27">        <span class="kn">from</span><span class="w"> </span><span class="nn">basic_pitch</span><span class="w"> </span><span class="kn">import</span> <span class="n">ICASSP_2022_MODEL_PATH</span>
-</span><span id="line-28">
-</span><span id="line-29">        <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+</span><span id="line-26">        <span class="kn">from</span><span class="w"> </span><span class="nn">denote.backends.basic_pitch.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_basic_pitch</span>
+</span><span id="line-27">
+</span><span id="line-28">        <span class="c1"># Works around basic-pitch's stale pins and prefers the ONNX model (issue #2)</span>
+</span><span id="line-29">        <span class="n">predict</span><span class="p">,</span> <span class="n">model_path</span> <span class="o">=</span> <span class="n">import_basic_pitch</span><span class="p">()</span>
 </span><span id="line-30">
-</span><span id="line-31">        <span class="c1"># Prefer ONNX model (more compatible across TF versions)</span>
-</span><span id="line-32">        <span class="n">onnx_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ICASSP_2022_MODEL_PATH</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".onnx"</span><span class="p">)</span>
-</span><span id="line-33">        <span class="n">model_path</span> <span class="o">=</span> <span class="n">onnx_path</span> <span class="k">if</span> <span class="n">onnx_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="n">ICASSP_2022_MODEL_PATH</span>
-</span><span id="line-34">
-</span><span id="line-35">        <span class="n">audio_path</span> <span class="o">=</span> <span class="n">ensure_file_path</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)</span>
-</span><span id="line-36">        <span class="n">native_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="line-37">
-</span><span id="line-38">        <span class="c1"># Remove audio_path from native_kwargs if present (it's positional)</span>
-</span><span id="line-39">        <span class="n">native_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"audio_path"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="line-31">        <span class="n">audio_path</span> <span class="o">=</span> <span class="n">ensure_file_path</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)</span>
+</span><span id="line-32">        <span class="n">native_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="line-33">
+</span><span id="line-34">        <span class="c1"># Remove audio_path from native_kwargs if present (it's positional)</span>
+</span><span id="line-35">        <span class="n">native_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"audio_path"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="line-36">
+</span><span id="line-37">        <span class="n">model_output</span><span class="p">,</span> <span class="n">midi_data</span><span class="p">,</span> <span class="n">note_events</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span>
+</span><span id="line-38">            <span class="n">audio_path</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span>
+</span><span id="line-39">        <span class="p">)</span>
 </span><span id="line-40">
-</span><span id="line-41">        <span class="n">model_output</span><span class="p">,</span> <span class="n">midi_data</span><span class="p">,</span> <span class="n">note_events</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span>
-</span><span id="line-42">            <span class="n">audio_path</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span>
-</span><span id="line-43">        <span class="p">)</span>
-</span><span id="line-44">
-</span><span id="line-45">        <span class="n">notes</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="line-46">            <span class="n">NoteEvent</span><span class="p">(</span>
-</span><span id="line-47">                <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-</span><span id="line-48">                <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
-</span><span id="line-49">                <span class="n">pitch</span><span class="o">=</span><span class="n">pitch</span><span class="p">,</span>
-</span><span id="line-50">                <span class="n">velocity</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
-</span><span id="line-51">                <span class="n">pitch_bends</span><span class="o">=</span><span class="n">bends</span><span class="p">,</span>
-</span><span id="line-52">            <span class="p">)</span>
-</span><span id="line-53">            <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="n">bends</span> <span class="ow">in</span> <span class="n">note_events</span>
-</span><span id="line-54">        <span class="p">]</span>
-</span><span id="line-55">
-</span><span id="line-56">        <span class="k">return</span> <span class="n">TranscriptionResult</span><span class="p">(</span>
-</span><span id="line-57">            <span class="n">midi</span><span class="o">=</span><span class="n">midi_data</span><span class="p">,</span>
-</span><span id="line-58">            <span class="n">notes</span><span class="o">=</span><span class="n">notes</span><span class="p">,</span>
-</span><span id="line-59">            <span class="n">raw</span><span class="o">=</span><span class="p">{</span><span class="s2">"model_output"</span><span class="p">:</span> <span class="n">model_output</span><span class="p">,</span> <span class="s2">"note_events"</span><span class="p">:</span> <span class="n">note_events</span><span class="p">},</span>
-</span><span id="line-60">            <span class="n">backend</span><span class="o">=</span><span class="s2">"basic_pitch"</span><span class="p">,</span>
-</span><span id="line-61">        <span class="p">)</span></div>
+</span><span id="line-41">        <span class="n">notes</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="line-42">            <span class="n">NoteEvent</span><span class="p">(</span>
+</span><span id="line-43">                <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+</span><span id="line-44">                <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+</span><span id="line-45">                <span class="n">pitch</span><span class="o">=</span><span class="n">pitch</span><span class="p">,</span>
+</span><span id="line-46">                <span class="n">velocity</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
+</span><span id="line-47">                <span class="n">pitch_bends</span><span class="o">=</span><span class="n">bends</span><span class="p">,</span>
+</span><span id="line-48">            <span class="p">)</span>
+</span><span id="line-49">            <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="n">bends</span> <span class="ow">in</span> <span class="n">note_events</span>
+</span><span id="line-50">        <span class="p">]</span>
+</span><span id="line-51">
+</span><span id="line-52">        <span class="k">return</span> <span class="n">TranscriptionResult</span><span class="p">(</span>
+</span><span id="line-53">            <span class="n">midi</span><span class="o">=</span><span class="n">midi_data</span><span class="p">,</span>
+</span><span id="line-54">            <span class="n">notes</span><span class="o">=</span><span class="n">notes</span><span class="p">,</span>
+</span><span id="line-55">            <span class="n">raw</span><span class="o">=</span><span class="p">{</span><span class="s2">"model_output"</span><span class="p">:</span> <span class="n">model_output</span><span class="p">,</span> <span class="s2">"note_events"</span><span class="p">:</span> <span class="n">note_events</span><span class="p">},</span>
+</span><span id="line-56">            <span class="n">backend</span><span class="o">=</span><span class="s2">"basic_pitch"</span><span class="p">,</span>
+</span><span id="line-57">        <span class="p">)</span></div>
 </div>
 
 </span></code></pre></div>
@@ -250,7 +246,7 @@
 </footer>
     </div>
     
-    <script src="../../../../_static/documentation_options.js?v=8c5712d9"></script>
+    <script src="../../../../_static/documentation_options.js?v=282f96c0"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
