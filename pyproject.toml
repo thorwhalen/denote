@@ -47,7 +47,7 @@ docs = [
     "sphinx>=6.0",
     "sphinx-rtd-theme>=1.0",
 ]
-basic_pitch = ["basic-pitch>=0.3"]
+basic_pitch = ["basic-pitch>=0.3", "onnxruntime"]
 torchcrepe = ["torchcrepe>=0.0.20"]
 pesto = ["pesto-pitch"]
 madmom = ["madmom"]
@@ -57,6 +57,7 @@ demucs = ["demucs>=4.0"]
 pretty_midi = ["pretty-midi>=0.2.10"]
 all = [
     "basic-pitch>=0.3",
+    "onnxruntime",
     "torchcrepe>=0.0.20",
     "pesto-pitch",
     "pretty-midi>=0.2.10",

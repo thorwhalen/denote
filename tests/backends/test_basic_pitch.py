@@ -4,10 +4,15 @@ These tests require basic-pitch to be installed and functional.
 They are skipped if the dependency is missing or broken.
 """
 
+import importlib.util
+
 import pytest
 import numpy as np
 
-bp = pytest.importorskip('basic_pitch', reason='basic-pitch not installed')
+# Check availability without importing: basic-pitch must first be imported through
+# denote.backends.basic_pitch.compat, which repairs it for current dependencies.
+if importlib.util.find_spec('basic_pitch') is None:
+    pytest.skip('basic-pitch not installed', allow_module_level=True)
 
 
 @pytest.fixture
