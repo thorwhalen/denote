@@ -23,14 +23,10 @@ class Adapter:
         Returns:
             TranscriptionResult with .midi, .notes, and .raw fields.
         """
-        from basic_pitch.inference import predict
-        from basic_pitch import ICASSP_2022_MODEL_PATH
+        from denote.backends.basic_pitch.compat import import_basic_pitch
 
-        import pathlib
-
-        # Prefer ONNX model (more compatible across TF versions)
-        onnx_path = pathlib.Path(str(ICASSP_2022_MODEL_PATH) + ".onnx")
-        model_path = onnx_path if onnx_path.exists() else ICASSP_2022_MODEL_PATH
+        # Works around basic-pitch's stale pins and prefers the ONNX model (issue #2)
+        predict, model_path = import_basic_pitch()
 
         audio_path = ensure_file_path(audio, sr=sr)
         native_kwargs = self._translate(**kwargs)

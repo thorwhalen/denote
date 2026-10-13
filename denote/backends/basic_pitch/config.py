@@ -3,7 +3,7 @@
 BACKEND_CONFIG = {
     "name": "basic_pitch",
     "display_name": "Basic Pitch (Spotify)",
-    "pip_install": "basic-pitch>=0.3",
+    "pip_install": "basic-pitch>=0.3 onnxruntime",
     "import_name": "basic_pitch",
     "license": "Apache-2.0",
     "tasks": ["transcribe"],
