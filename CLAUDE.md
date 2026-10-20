@@ -25,6 +25,8 @@ See `misc/docs/docs_guide.md` for the full docs index. Key docs:
 ## Module Map
 
 - `denote/__init__.py` — Top-level facade: `transcribe()`, `get_chords()`, `get_pitch()`, `get_beats()`
+- `denote/align.py` — `align_score()` / `align_audio()`: chroma DTW time maps
+- `denote/compare.py` — `compare_audio()`: chroma + timbre distances on one alignment, metrics as a registry
 - `denote/base.py` — Result dataclasses, AudioInput type, NoteEvent
 - `denote/registry.py` — Backend discovery, registration, lazy loading
 - `denote/services.py` — ServiceCollection, ServiceHandle (3-tier access)
