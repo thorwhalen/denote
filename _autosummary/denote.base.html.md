@@ -17,7 +17,7 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of beat/downbeat tracking.
 
-### *class* denote.base.ChordResult(intervals, labels=<factory>, raw=None, backend='')
+### *class* denote.base.ChordResult(intervals, labels=list(), raw=None, backend='')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -35,7 +35,7 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of pitch/F0 estimation.
 
-### *class* denote.base.TranscriptionResult(midi, notes=<factory>, raw=None, backend='')
+### *class* denote.base.TranscriptionResult(midi, notes=list(), raw=None, backend='')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 

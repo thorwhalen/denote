@@ -89,11 +89,12 @@ Transcribe audio to MIDI.
 
 ### Modules
 
-| [`align`](denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).   |
-|----------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| [`backends`](denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                     |
-| [`base`](denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                    |
-| [`registry`](denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                               |
-| [`services`](denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                         |
-| [`translation`](denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.          |
-| [`util`](denote.util.html.md#module-denote.util)               | Audio loading and utility functions for denote.                                  |
+| [`align`](denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).                    |
+|----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| [`backends`](denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                      |
+| [`base`](denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                     |
+| [`compare`](denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3). |
+| [`registry`](denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                |
+| [`services`](denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                          |
+| [`translation`](denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                           |
+| [`util`](denote.util.html.md#module-denote.util)               | Audio loading and utility functions for denote.                                                   |

@@ -71,15 +71,15 @@ True if `name` is importable only as an empty namespace package.
 That is what an uninstall leaves behind when stray files kept the folder: the
 import succeeds, but nothing in it works.
 
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
-
 ```pycon
 >>> is_namespace_leftover('json')
 False
 >>> is_namespace_leftover('surely_not_an_installed_module_xyz')
 False
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### denote.backends.basic_pitch.compat.model_path(basic_pitch)
 

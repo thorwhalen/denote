@@ -30,6 +30,7 @@
 <meta content="denote.backends.basic_pitch.compat | denote" name="twitter:title"/>
 <link href="../_static/pygments.css?v=d75fae25" rel="stylesheet" type="text/css"/>
 <link href="../_static/theme.css?v=d6d7c91b" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx_autodoc_typehints.css?v=057ac668" rel="stylesheet" type="text/css"/>
 <link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
 <link href="../_static/epythet.css?v=885e65be" rel="stylesheet" type="text/css"/>
 <link href="../search.html" rel="search" title="Search"/>
@@ -86,6 +87,7 @@
 <li class="toctree-l3"><a class="reference internal" href="denote.align.html">denote.align</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.base.html">denote.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.translation.html">denote.translation</a></li>
@@ -213,17 +215,17 @@ imported. Returns True if it hid a leftover.</p>
 <dd><p>True if <code class="docutils literal notranslate"><span class="pre">name</span></code> is importable only as an empty namespace package.</p>
 <p>That is what an uninstall leaves behind when stray files kept the folder: the
 import succeeds, but nothing in it works.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gp">&gt;&gt;&gt; </span><span class="n">is_namespace_leftover</span><span class="p">(</span><span class="s1">'json'</span><span class="p">)</span>
 </span><span id="line-2"><span class="go">False</span>
 </span><span id="line-3"><span class="gp">&gt;&gt;&gt; </span><span class="n">is_namespace_leftover</span><span class="p">(</span><span class="s1">'surely_not_an_installed_module_xyz'</span><span class="p">)</span>
 </span><span id="line-4"><span class="go">False</span>
 </span></code></pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="denote.backends.basic_pitch.compat.model_path">
@@ -288,7 +290,7 @@ scipy itself is not modified. Returns True if the alias was needed.</p>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=282f96c0"></script>
+<script src="../_static/documentation_options.js?v=1fd71caa"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

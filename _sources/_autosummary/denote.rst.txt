@@ -22,6 +22,7 @@
    align
    backends
    base
+   compare
    registry
    services
    translation

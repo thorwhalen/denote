@@ -1,4 +1,4 @@
-> built 2026-10-13 19:58 UTC from 0fb1c0b (main) · denote 0.0.5. Details: build_info.json
+> built 2026-10-20 11:17 UTC from 0fbabd6 (main) · denote 0.0.6. Details: build_info.json
 
 # index.html.md
 
@@ -160,21 +160,36 @@ A monotone time map between a score’s timeline and a recording’s.
 
 Score times in seconds, increasing (one per path step).
 
+* **Type:**
+  `ndarray`
+
 #### audio_times
 
 The matching recording times in seconds.
+
+* **Type:**
+  `ndarray`
 
 #### cost
 
 Mean cosine distance along the path (lower is a closer match).
 
+* **Type:**
+  [`float`](https://docs.python.org/3/builtins/functions.html#float)
+
 #### transpose
 
 Semitones the score was shifted to match the recording.
 
+* **Type:**
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
+
 #### raw
 
 Backend detail (the warping path in frames, the frame rate).
+
+* **Type:**
+  [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)
 
 #### audio_to_score(t)
 
@@ -199,13 +214,13 @@ melody, tolerant of tempo differences and blind to timbre, which makes it
 a fidelity score for generated versions of a piece.
 
 * **Parameters:**
-  * **audio** (`Union`[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The recording to place on the reference’s timeline.
-  * **reference** (`Union`[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The reference recording.
+  * **audio** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The recording to place on the reference’s timeline.
+  * **reference** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The reference recording.
   * **sr** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`int`](https://docs.python.org/3/builtins/functions.html#int)]) – Sample rate when `audio` is an array.
   * **reference_sr** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`int`](https://docs.python.org/3/builtins/functions.html#int)]) – Sample rate when `reference` is an array.
   * **subsequence** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Match `audio` anywhere inside `reference` (default
     `False`: both start and end together).
-  * **transpose** (`Union`[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones, or `"auto"` to try all twelve.
+  * **transpose** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones, or `"auto"` to try all twelve.
   * **frame_rate** ([`float`](https://docs.python.org/3/builtins/functions.html#float)) – Analysis frames per second.
   * **audio_sr** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Rate both are resampled to before analysis.
 * **Return type:**
@@ -220,12 +235,12 @@ Align a score to a recording of (part of) the same music.
 * **Parameters:**
   * **score** – A `pretty_midi.PrettyMIDI` or a `.mid` path (other score
     formats when `audiate` is installed).
-  * **audio** (`Union`[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – A recording: a path, or an array with `sr`.
+  * **audio** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – A recording: a path, or an array with `sr`.
   * **sr** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`int`](https://docs.python.org/3/builtins/functions.html#int)]) – Sample rate when `audio` is an array.
   * **subsequence** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Match the recording anywhere inside the score (default),
     e.g. a one-minute clip against a full score. `False` forces the
     two to start and end together.
-  * **transpose** (`Union`[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones to shift the score’s pitch classes, or `"auto"`
+  * **transpose** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones to shift the score’s pitch classes, or `"auto"`
     to try all twelve and keep the lowest-cost one.
   * **frame_rate** ([`float`](https://docs.python.org/3/builtins/functions.html#float)) – Analysis frames per second for both sides.
   * **audio_sr** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Rate the audio is resampled to before analysis.
@@ -361,15 +376,15 @@ True if `name` is importable only as an empty namespace package.
 That is what an uninstall leaves behind when stray files kept the folder: the
 import succeeds, but nothing in it works.
 
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
-
 ```pycon
 >>> is_namespace_leftover('json')
 False
 >>> is_namespace_leftover('surely_not_an_installed_module_xyz')
 False
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### denote.backends.basic_pitch.compat.model_path(basic_pitch)
 
@@ -602,7 +617,7 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of beat/downbeat tracking.
 
-### *class* denote.base.ChordResult(intervals, labels=<factory>, raw=None, backend='')
+### *class* denote.base.ChordResult(intervals, labels=list(), raw=None, backend='')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -620,11 +635,145 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of pitch/F0 estimation.
 
-### *class* denote.base.TranscriptionResult(midi, notes=<factory>, raw=None, backend='')
+### *class* denote.base.TranscriptionResult(midi, notes=list(), raw=None, backend='')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of audio-to-MIDI transcription.
+
+
+# _autosummary/denote.compare.html.md
+
+# denote.compare
+
+Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).
+
+[`align_audio()`](_autosummary/denote.align.html.md#denote.align.align_audio) measures how closely a version follows the
+reference’s harmony and melody (chroma DTW), and is blind to timbre on purpose.
+[`compare_audio()`](_autosummary/denote.compare.html.md#denote.compare.compare_audio) adds the other half, how close the *sound* is, and keeps
+both on one footing: the two recordings are aligned once, and every metric reads
+the same warping path, so each compares the same musical moments.
+
+Metrics are a registry ([`METRICS`](_autosummary/denote.compare.html.md#denote.compare.METRICS), a `name -> metric` mapping you can
+extend or replace through `metrics=`): a metric is a callable taking an
+[`AlignedPair`](_autosummary/denote.compare.html.md#denote.compare.AlignedPair) and returning a distance (lower is closer). An embedding
+metric (CLAP, MERT, a Fréchet-style distance) is one more entry, with no change
+to callers.
+
+Built in:
+
+- `"chroma"`: the alignment’s own cost, mean cosine distance between chroma
+  frames along the path (0 identical pitch content, 1 unrelated). Measured on an
+  orchestral minute, an unrelated piece in the same key and style scored about
+  0.16-0.21 against the reference, so it discriminates mainly below about 0.15.
+- `"timbre"`: MFCCs `c1..c19` (`c0`, loudness, left out) of both
+  recordings, each coefficient z-scored with statistics pooled over both (so a
+  global difference in spectral shape is kept, not normalised away), then the
+  root-mean-square difference per coefficient, averaged along the path. 0 is the
+  same sound; two unrelated timbres are typically around 1. The starter it
+  replaces (z-scored per recording) separated a General MIDI render
+  (0.46-0.79) from a light audio-to-audio pass of the original (0.41); it is a
+  coarse spectral-envelope measure, not a perceptual one.
+
+### Module Attributes
+
+| [`Metric`](_autosummary/denote.compare.html.md#denote.compare.Metric)       | an aligned pair -> a distance (lower is closer).                                                            |
+|---------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| [`METRICS`](_autosummary/denote.compare.html.md#denote.compare.METRICS)      | The built-in metrics, by name.                                                                              |
+| [`DFLT_METRICS`](_autosummary/denote.compare.html.md#denote.compare.DFLT_METRICS) | What [`compare_audio()`](_autosummary/denote.compare.html.md#denote.compare.compare_audio) computes when `metrics` is not given. |
+
+### Functions
+
+| [`compare_audio`](_autosummary/denote.compare.html.md#denote.compare.compare_audio)(audio, reference, \*[, ...])   | How close `audio` is to `reference`, metric by metric, on the same musical moments.   |
+|-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`chroma_metric`](_autosummary/denote.compare.html.md#denote.compare.chroma_metric)(pair)                          | The alignment's chroma cost: mean cosine distance along the path.                     |
+| [`timbre_metric`](_autosummary/denote.compare.html.md#denote.compare.timbre_metric)(pair, \*[, n_mfcc])            | Mean RMS difference of pooled-z-scored MFCCs `c1..` along the path; see the module.   |
+
+### Classes
+
+| [`AlignedPair`](_autosummary/denote.compare.html.md#denote.compare.AlignedPair)(audio, reference, sr, ...)   | Two recordings at one rate, and the alignment between them, as metrics see them.    |
+|-------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [`AudioComparison`](_autosummary/denote.compare.html.md#denote.compare.AudioComparison)(scores, alignment)       | Distances between a version and a reference (lower is closer), and their alignment. |
+
+### *class* denote.compare.AlignedPair(audio, reference, sr, frame_rate, alignment)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Two recordings at one rate, and the alignment between them, as metrics see them.
+
+`audio` and `reference` are mono samples at `sr`; `alignment.raw["path"]`
+holds the warping path as `(audio frame, reference frame)` rows at
+`frame_rate` frames per second (hop `hop_length` samples).
+
+### *class* denote.compare.AudioComparison(scores, alignment)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Distances between a version and a reference (lower is closer), and their alignment.
+
+`scores` maps each metric name to its distance; `comparison["timbre"]`
+reads one.
+
+### denote.compare.DFLT_METRICS *= ('chroma', 'timbre')*
+
+What [`compare_audio()`](_autosummary/denote.compare.html.md#denote.compare.compare_audio) computes when `metrics` is not given.
+
+### denote.compare.METRICS *: [Mapping](https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Callable](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[AlignedPair](_autosummary/denote.compare.html.md#denote.compare.AlignedPair)], [float](https://docs.python.org/3/builtins/functions.html#float)]]* *= mappingproxy({'chroma': <function chroma_metric>, 'timbre': <function timbre_metric>})*
+
+The built-in metrics, by name.
+
+### denote.compare.Metric
+
+an aligned pair -> a distance (lower is closer).
+
+* **Type:**
+  A metric
+
+alias of [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`AlignedPair`](_autosummary/denote.compare.html.md#denote.compare.AlignedPair)], [`float`](https://docs.python.org/3/builtins/functions.html#float)]
+
+### denote.compare.chroma_metric(pair)
+
+The alignment’s chroma cost: mean cosine distance along the path.
+
+* **Return type:**
+  [`float`](https://docs.python.org/3/builtins/functions.html#float)
+
+### denote.compare.compare_audio(audio, reference, \*, metrics=('chroma', 'timbre'), registry=mappingproxy({'chroma': <function chroma_metric>, 'timbre': <function timbre_metric>}), sr=None, reference_sr=None, subsequence=False, transpose=0, frame_rate=10.0, audio_sr=22050)
+
+How close `audio` is to `reference`, metric by metric, on the same musical moments.
+
+* **Parameters:**
+  * **audio** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The version to judge: a path, or an array with `sr`.
+  * **reference** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The reference: a path, or an array with `reference_sr`.
+  * **metrics** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`Mapping`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`AlignedPair`](_autosummary/denote.compare.html.md#denote.compare.AlignedPair)], [`float`](https://docs.python.org/3/builtins/functions.html#float)]]]) – Metric names looked up in `registry`, or a `{name: metric}`
+    mapping used as is (to add one without registering it).
+  * **registry** ([`Mapping`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[[`AlignedPair`](_autosummary/denote.compare.html.md#denote.compare.AlignedPair)], [`float`](https://docs.python.org/3/builtins/functions.html#float)]]) – Where names are looked up (default [`METRICS`](_autosummary/denote.compare.html.md#denote.compare.METRICS)).
+  * **subsequence** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – As for
+    [`align_audio()`](_autosummary/denote.align.html.md#denote.align.align_audio), which is run once and shared.
+  * **transpose** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – As for
+    [`align_audio()`](_autosummary/denote.align.html.md#denote.align.align_audio), which is run once and shared.
+  * **frame_rate** ([`float`](https://docs.python.org/3/builtins/functions.html#float)) – As for
+    [`align_audio()`](_autosummary/denote.align.html.md#denote.align.align_audio), which is run once and shared.
+  * **audio_sr** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – As for
+    [`align_audio()`](_autosummary/denote.align.html.md#denote.align.align_audio), which is run once and shared.
+* **Return type:**
+  [`AudioComparison`](_autosummary/denote.compare.html.md#denote.compare.AudioComparison)
+* **Returns:**
+  An [`AudioComparison`](_autosummary/denote.compare.html.md#denote.compare.AudioComparison).
+
+Example:
+
+```default
+c = denote.compare_audio("render.wav", "original.wav")
+c["chroma"], c["timbre"]
+```
+
+### denote.compare.timbre_metric(pair, , n_mfcc=20)
+
+Mean RMS difference of pooled-z-scored MFCCs `c1..` along the path; see the module.
+
+* **Return type:**
+  [`float`](https://docs.python.org/3/builtins/functions.html#float)
 
 
 # _autosummary/denote.html.md
@@ -720,14 +869,15 @@ Transcribe audio to MIDI.
 
 ### Modules
 
-| [`align`](_autosummary/denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).   |
-|----------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                     |
-| [`base`](_autosummary/denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                    |
-| [`registry`](_autosummary/denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                               |
-| [`services`](_autosummary/denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                         |
-| [`translation`](_autosummary/denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.          |
-| [`util`](_autosummary/denote.util.html.md#module-denote.util)               | Audio loading and utility functions for denote.                                  |
+| [`align`](_autosummary/denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).                    |
+|----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                      |
+| [`base`](_autosummary/denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                     |
+| [`compare`](_autosummary/denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3). |
+| [`registry`](_autosummary/denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                |
+| [`services`](_autosummary/denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                          |
+| [`translation`](_autosummary/denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                           |
+| [`util`](_autosummary/denote.util.html.md#module-denote.util)               | Audio loading and utility functions for denote.                                                   |
 
 
 # _autosummary/denote.registry.html.md
@@ -884,7 +1034,7 @@ If it’s an array, write to a temporary WAV file and return the path.
 Load audio from a file path or validate an existing array.
 
 * **Parameters:**
-  * **audio** (`Union`[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – File path (str/Path) or numpy array of audio samples.
+  * **audio** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – File path (str/Path) or numpy array of audio samples.
   * **sr** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`int`](https://docs.python.org/3/builtins/functions.html#int)]) – Sample rate. Required when audio is an array. Ignored for file paths
     (detected automatically).
   * **mono** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – If True, convert to mono.
@@ -904,7 +1054,7 @@ Load audio from a file path or validate an existing array.
 
 # About this build
 
-This documentation was built on **2026-10-13 19:58 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/0fb1c0b98d16abbd1a7a569dc08000ea1242b95c"><code>0fb1c0b</code></a> on branch <code>main</code>, for **denote 0.0.5** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-20 11:17 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/0fbabd6a1e8611f41a3684fa9235ae55692c38f9"><code>0fbabd6</code></a> on branch <code>main</code>, for **denote 0.0.6** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -913,9 +1063,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/0fb1c0b98d16abbd1a7a569dc08000ea1242b95c"><code>0fb1c0b98d16abbd1a7a569dc08000ea1242b95c</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/0fbabd6a1e8611f41a3684fa9235ae55692c38f9"><code>0fbabd6a1e8611f41a3684fa9235ae55692c38f9</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.5</code>                                                                                                                                       |
+| Tags at this commit | <code>0.0.6</code>                                                                                                                                       |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -924,16 +1074,16 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/38458642605">38458642605</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/39413546016">39413546016</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>60dca056776c63e3b9bf5f16f6fb2d828fef9a97</code> (in the history of the built commit) |
+| Event commit | <code>a6dad78aa45ce3bd5a4f75fac1eb60792baaa2d5</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.17  |
-| Sphinx   | 9.1.0   |
+| epythet  | 0.2.19  |
+| Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.15 |
 
@@ -951,14 +1101,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.5/">0.0.5</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.6/">0.0.6</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 0fb1c0b98d16abbd1a7a569dc08000ea1242b95c
-pip install "epythet==0.2.17"
+git checkout 0fbabd6a1e8611f41a3684fa9235ae55692c38f9
+pip install "epythet==0.2.19"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

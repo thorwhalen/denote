@@ -30,6 +30,7 @@
 <meta content="denote" name="twitter:title"/>
 <link href="../_static/pygments.css?v=d75fae25" rel="stylesheet" type="text/css"/>
 <link href="../_static/theme.css?v=d6d7c91b" rel="stylesheet" type="text/css"/>
+<link href="../_static/sphinx_autodoc_typehints.css?v=057ac668" rel="stylesheet" type="text/css"/>
 <link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
 <link href="../_static/epythet.css?v=885e65be" rel="stylesheet" type="text/css"/>
 <link href="../search.html" rel="search" title="Search"/>
@@ -86,6 +87,7 @@
 <li class="toctree-l3"><a class="reference internal" href="denote.align.html">denote.align</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.base.html">denote.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.translation.html">denote.translation</a></li>
@@ -245,16 +247,19 @@ model, device, hop_length).</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="denote.base.html#module-denote.base" title="denote.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
 <td><p>Core types and result dataclasses for denote.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="denote.registry.html#module-denote.registry" title="denote.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.compare.html#module-denote.compare" title="denote.compare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare</span></code></a></p></td>
+<td><p>Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.registry.html#module-denote.registry" title="denote.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
 <td><p>Backend discovery, registration, and lazy loading.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.services.html#denote.services" title="denote.services"><code class="xref py py-obj docutils literal notranslate"><span class="pre">services</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.services.html#denote.services" title="denote.services"><code class="xref py py-obj docutils literal notranslate"><span class="pre">services</span></code></a></p></td>
 <td><p>Lazy mapping of backend names → ServiceHandle instances.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="denote.translation.html#module-denote.translation" title="denote.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.translation.html#module-denote.translation" title="denote.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
 <td><p>Parameter translation between normalized and native backend interfaces.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.util.html#module-denote.util" title="denote.util"><code class="xref py py-obj docutils literal notranslate"><span class="pre">util</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.util.html#module-denote.util" title="denote.util"><code class="xref py py-obj docutils literal notranslate"><span class="pre">util</span></code></a></p></td>
 <td><p>Audio loading and utility functions for denote.</p></td>
 </tr>
 </tbody>
@@ -280,7 +285,7 @@ model, device, hop_length).</p></li>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=282f96c0"></script>
+<script src="../_static/documentation_options.js?v=1fd71caa"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

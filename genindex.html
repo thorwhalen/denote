@@ -30,6 +30,7 @@
   <meta name="twitter:title" content="Index | denote" />
   <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d75fae25" />
   <link rel="stylesheet" type="text/css" href="_static/theme.css?v=d6d7c91b" />
+  <link rel="stylesheet" type="text/css" href="_static/sphinx_autodoc_typehints.css?v=057ac668" />
   <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
   <link rel="stylesheet" type="text/css" href="_static/epythet.css?v=885e65be" />
   <link rel="search" title="Search" href="search.html" />
@@ -116,6 +117,7 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.align.html">denote.align</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.base.html">denote.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.translation.html">denote.translation</a></li>
@@ -178,17 +180,21 @@
         <li><a href="_autosummary/denote.backends.torchcrepe.adapter.html#denote.backends.torchcrepe.adapter.Adapter">(class in denote.backends.torchcrepe.adapter)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.align.html#denote.align.align_audio">align_audio() (in module denote.align)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.align.html#denote.align.align_score">align_score() (in module denote.align)</a>
+</li>
+      <li><a href="_autosummary/denote.compare.html#denote.compare.AlignedPair">AlignedPair (class in denote.compare)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.audio_chroma">audio_chroma() (in module denote.align)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.audio_times">audio_times (denote.align.ScoreAlignment attribute)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.audio_to_score">audio_to_score() (denote.align.ScoreAlignment method)</a>
+</li>
+      <li><a href="_autosummary/denote.compare.html#denote.compare.AudioComparison">AudioComparison (class in denote.compare)</a>
 </li>
   </ul></td>
   </tr>
@@ -208,9 +214,13 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.base.html#denote.base.ChordResult">ChordResult (class in denote.base)</a>
 </li>
+      <li><a href="_autosummary/denote.compare.html#denote.compare.chroma_metric">chroma_metric() (in module denote.compare)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.registry.html#denote.registry.clear_registry">clear_registry() (in module denote.registry)</a>
+</li>
+      <li><a href="_autosummary/denote.compare.html#denote.compare.compare_audio">compare_audio() (in module denote.compare)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.cost">cost (denote.align.ScoreAlignment attribute)</a>
 </li>
@@ -343,6 +353,13 @@
 </li>
       </ul></li>
       <li>
+    denote.compare
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.compare.html#module-denote.compare">module</a>
+</li>
+      </ul></li>
+      <li>
     denote.registry
 
       <ul style="list-style-type:none">
@@ -366,6 +383,8 @@
       <li><a href="_autosummary/denote.align.html#denote.align.DFLT_AUDIO_SR">DFLT_AUDIO_SR (in module denote.align)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.DFLT_FRAME_RATE">DFLT_FRAME_RATE (in module denote.align)</a>
+</li>
+      <li><a href="_autosummary/denote.compare.html#denote.compare.DFLT_METRICS">DFLT_METRICS (in module denote.compare)</a>
 </li>
   </ul></td>
   </tr>
@@ -451,6 +470,10 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.translation.html#denote.translation.make_kwargs_translator">make_kwargs_translator() (in module denote.translation)</a>
 </li>
+      <li><a href="_autosummary/denote.compare.html#denote.compare.Metric">Metric (in module denote.compare)</a>
+</li>
+      <li><a href="_autosummary/denote.compare.html#denote.compare.METRICS">METRICS (in module denote.compare)</a>
+</li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.model_path">model_path() (in module denote.backends.basic_pitch.compat)</a>
 </li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.MODEL_RUNTIMES">MODEL_RUNTIMES (in module denote.backends.basic_pitch.compat)</a>
@@ -492,6 +515,8 @@
         <li><a href="_autosummary/denote.backends.torchcrepe.config.html#module-denote.backends.torchcrepe.config">denote.backends.torchcrepe.config</a>
 </li>
         <li><a href="_autosummary/denote.base.html#module-denote.base">denote.base</a>
+</li>
+        <li><a href="_autosummary/denote.compare.html#module-denote.compare">denote.compare</a>
 </li>
         <li><a href="_autosummary/denote.registry.html#module-denote.registry">denote.registry</a>
 </li>
@@ -574,6 +599,8 @@
   <h2 id="T">T</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.compare.html#denote.compare.timbre_metric">timbre_metric() (in module denote.compare)</a>
+</li>
       <li><a href="_autosummary/denote.backends.basic_pitch.adapter.html#denote.backends.basic_pitch.adapter.Adapter.transcribe">transcribe() (denote.backends.basic_pitch.adapter.Adapter method)</a>
 
       <ul style="list-style-type:none">
@@ -617,7 +644,7 @@
 </footer>
     </div>
     
-    <script src="_static/documentation_options.js?v=282f96c0"></script>
+    <script src="_static/documentation_options.js?v=1fd71caa"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>

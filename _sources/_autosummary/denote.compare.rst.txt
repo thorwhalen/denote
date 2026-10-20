@@ -1,0 +1,29 @@
+denote.compare
+==============
+
+.. automodule:: denote.compare
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      Metric
+      METRICS
+      DFLT_METRICS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      compare_audio
+      chroma_metric
+      timbre_metric
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AlignedPair
+      AudioComparison
+   

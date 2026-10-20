@@ -58,21 +58,36 @@ A monotone time map between a score’s timeline and a recording’s.
 
 Score times in seconds, increasing (one per path step).
 
+* **Type:**
+  `ndarray`
+
 #### audio_times
 
 The matching recording times in seconds.
+
+* **Type:**
+  `ndarray`
 
 #### cost
 
 Mean cosine distance along the path (lower is a closer match).
 
+* **Type:**
+  [`float`](https://docs.python.org/3/builtins/functions.html#float)
+
 #### transpose
 
 Semitones the score was shifted to match the recording.
 
+* **Type:**
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
+
 #### raw
 
 Backend detail (the warping path in frames, the frame rate).
+
+* **Type:**
+  [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)
 
 #### audio_to_score(t)
 
@@ -97,13 +112,13 @@ melody, tolerant of tempo differences and blind to timbre, which makes it
 a fidelity score for generated versions of a piece.
 
 * **Parameters:**
-  * **audio** (`Union`[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The recording to place on the reference’s timeline.
-  * **reference** (`Union`[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The reference recording.
+  * **audio** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The recording to place on the reference’s timeline.
+  * **reference** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – The reference recording.
   * **sr** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`int`](https://docs.python.org/3/builtins/functions.html#int)]) – Sample rate when `audio` is an array.
   * **reference_sr** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`int`](https://docs.python.org/3/builtins/functions.html#int)]) – Sample rate when `reference` is an array.
   * **subsequence** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Match `audio` anywhere inside `reference` (default
     `False`: both start and end together).
-  * **transpose** (`Union`[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones, or `"auto"` to try all twelve.
+  * **transpose** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones, or `"auto"` to try all twelve.
   * **frame_rate** ([`float`](https://docs.python.org/3/builtins/functions.html#float)) – Analysis frames per second.
   * **audio_sr** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Rate both are resampled to before analysis.
 * **Return type:**
@@ -118,12 +133,12 @@ Align a score to a recording of (part of) the same music.
 * **Parameters:**
   * **score** – A `pretty_midi.PrettyMIDI` or a `.mid` path (other score
     formats when `audiate` is installed).
-  * **audio** (`Union`[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – A recording: a path, or an array with `sr`.
+  * **audio** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), `ndarray`]) – A recording: a path, or an array with `sr`.
   * **sr** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`int`](https://docs.python.org/3/builtins/functions.html#int)]) – Sample rate when `audio` is an array.
   * **subsequence** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Match the recording anywhere inside the score (default),
     e.g. a one-minute clip against a full score. `False` forces the
     two to start and end together.
-  * **transpose** (`Union`[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones to shift the score’s pitch classes, or `"auto"`
+  * **transpose** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones to shift the score’s pitch classes, or `"auto"`
     to try all twelve and keep the lowest-cost one.
   * **frame_rate** ([`float`](https://docs.python.org/3/builtins/functions.html#float)) – Analysis frames per second for both sides.
   * **audio_sr** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Rate the audio is resampled to before analysis.
