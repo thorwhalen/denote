@@ -74,3 +74,9 @@ def test_a_custom_metric_reads_the_same_path():
 def test_unknown_metric_names_are_refused():
     with pytest.raises(ValueError, match="unknown metric"):
         _compare(REF, metrics=("chroma", "loudness"))
+
+
+def test_one_metric_name_and_integer_pcm():
+    c = denote.compare_audio((REF * 30000).astype(np.int16), REF, sr=SR, reference_sr=SR, metrics="timbre")
+    assert set(c.scores) == {"timbre"}
+    assert c["timbre"] == pytest.approx(0.0, abs=1e-3)

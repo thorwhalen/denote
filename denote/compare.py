@@ -166,6 +166,8 @@ def compare_audio(
         c = denote.compare_audio("render.wav", "original.wav")
         c["chroma"], c["timbre"]
     """
+    if isinstance(metrics, str):
+        metrics = (metrics,)
     if isinstance(metrics, Mapping):
         chosen = dict(metrics)
     else:

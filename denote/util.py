@@ -44,6 +44,11 @@ def load_audio(
                 "Sample rate (sr) is required when audio is a numpy array."
             )
         y = audio
+        if np.issubdtype(y.dtype, np.integer):
+            # PCM integers (e.g. int16 from soundfile/scipy): scale to [-1, 1] floats.
+            y = y.astype(np.float32) / np.iinfo(y.dtype).max
+        elif not np.issubdtype(y.dtype, np.floating):
+            y = y.astype(np.float32)
         if mono and y.ndim > 1:
             # librosa wants (channels, frames); soundfile gives (frames, channels).
             if y.ndim == 2 and y.shape[0] > y.shape[1]:
