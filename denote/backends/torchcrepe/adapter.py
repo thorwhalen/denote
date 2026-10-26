@@ -19,8 +19,6 @@ def frame_period(hop_length: int, sr: int) -> float:
     ``hop / sr``: at 22050 Hz a 220-sample hop is really 219.12 samples, and
     times built from ``hop / sr`` drift 0.4 % (1.2 s at 5 minutes).
     """
-    if sr == CREPE_SR:
-        return hop_length / sr
     return int(hop_length * CREPE_SR / sr) / CREPE_SR
 
 
