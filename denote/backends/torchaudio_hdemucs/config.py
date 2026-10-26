@@ -11,8 +11,10 @@ BACKEND_CONFIG = {
     "supports_realtime": False,
     "description": (
         "Four-stem separation (drums, bass, other, vocals) with torchaudio's "
-        "HDEMUCS_HIGH_MUSDB_PLUS bundle, run in overlapping chunks so memory "
-        "stays flat on long recordings."
+        "Hybrid Demucs bundles, run in overlapping chunks so the model's memory "
+        "is bounded by the chunk length. The output itself grows with the "
+        "recording: 8 bytes per frame per stem kept (2 channels of float32), "
+        "about 1.3 GB per stem-hour at 44.1 kHz; pass sources= to keep fewer."
     ),
     "param_map": {
         "audio": {"native_name": "audio"},
@@ -20,5 +22,9 @@ BACKEND_CONFIG = {
         "segment_s": {"native_name": "segment_s", "default": 10.0},
         "overlap_s": {"native_name": "overlap_s", "default": 1.0},
         "device": {"native_name": "device", "default": "cpu"},
+        # a torchaudio.pipelines name; HDEMUCS_HIGH_MUSDB is the MUSDB-only variant
+        "bundle": {"native_name": "bundle", "default": "HDEMUCS_HIGH_MUSDB_PLUS"},
+        # stem names to compute and keep, e.g. ("vocals",); None keeps all
+        "sources": {"native_name": "sources", "default": None},
     },
 }
