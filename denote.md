@@ -1,4 +1,4 @@
-> built 2026-10-26 11:37 UTC from 2c6ea01 (main) · denote 0.0.7. Details: build_info.json
+> built 2026-10-26 12:02 UTC from 10beafa (main) · denote 0.0.8. Details: build_info.json
 
 # index.html.md
 
@@ -610,6 +610,16 @@ Configuration for the librosa pYIN backend.
 
 Adapter for torchcrepe — GPU-accelerated pitch estimation.
 
+### Module Attributes
+
+| [`CREPE_SR`](_autosummary/denote.backends.torchcrepe.adapter.html.md#denote.backends.torchcrepe.adapter.CREPE_SR)   | it resamples every input to it.   |
+|-------------------------------------------------------------|-----------------------------------|
+
+### Functions
+
+| [`frame_period`](_autosummary/denote.backends.torchcrepe.adapter.html.md#denote.backends.torchcrepe.adapter.frame_period)(hop_length, sr)   | Seconds between torchcrepe's frames for `hop_length` samples at `sr`.   |
+|---------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+
 ### Classes
 
 | [`Adapter`](_autosummary/denote.backends.torchcrepe.adapter.html.md#denote.backends.torchcrepe.adapter.Adapter)(config)   | torchcrepe adapter for pitch/F0 estimation.   |
@@ -632,6 +642,25 @@ Estimate pitch from audio using CREPE.
     model, device, hop_length).
 * **Returns:**
   PitchResult with .times, .frequencies, .confidence fields.
+
+### denote.backends.torchcrepe.adapter.CREPE_SR *= 16000*
+
+it resamples every input to it.
+
+* **Type:**
+  torchcrepe’s model rate
+
+### denote.backends.torchcrepe.adapter.frame_period(hop_length, sr)
+
+Seconds between torchcrepe’s frames for `hop_length` samples at `sr`.
+
+torchcrepe resamples to 16 kHz and truncates the hop there
+(`int(hop * 16000 / sr)`), so the frame period is that over 16000, not
+`hop / sr`: at 22050 Hz a 220-sample hop is really 219.12 samples, and
+times built from `hop / sr` drift 0.4 % (1.2 s at 5 minutes).
+
+* **Return type:**
+  [`float`](https://docs.python.org/3/builtins/functions.html#float)
 
 
 # _autosummary/denote.backends.torchcrepe.config.html.md
@@ -1110,7 +1139,7 @@ Load audio from a file path or validate an existing array.
 
 # About this build
 
-This documentation was built on **2026-10-26 11:37 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/2c6ea017bc413b10bc09ae922c464ed2884fb698"><code>2c6ea01</code></a> on branch <code>main</code>, for **denote 0.0.7** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-26 12:02 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/10beafa1fe2103af2cb7cbbf03da1eaf967e1f69"><code>10beafa</code></a> on branch <code>main</code>, for **denote 0.0.8** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -1119,9 +1148,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/2c6ea017bc413b10bc09ae922c464ed2884fb698"><code>2c6ea017bc413b10bc09ae922c464ed2884fb698</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/10beafa1fe2103af2cb7cbbf03da1eaf967e1f69"><code>10beafa1fe2103af2cb7cbbf03da1eaf967e1f69</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.7</code>                                                                                                                                       |
+| Tags at this commit | <code>0.0.8</code>                                                                                                                                       |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -1130,9 +1159,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/40316137469">40316137469</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/40319065049">40319065049</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>9aaa269e2b9224da721d8d386ae33d0a52350cbd</code> (in the history of the built commit) |
+| Event commit | <code>538d836a32b6f24538553b025278b71dde3b8529</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1157,13 +1186,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.7/">0.0.7</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.8/">0.0.8</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 2c6ea017bc413b10bc09ae922c464ed2884fb698
+git checkout 10beafa1fe2103af2cb7cbbf03da1eaf967e1f69
 pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

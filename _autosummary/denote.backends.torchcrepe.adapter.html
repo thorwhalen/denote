@@ -126,6 +126,22 @@
 <section id="module-denote.backends.torchcrepe.adapter">
 <span id="denote-backends-torchcrepe-adapter"></span><h1>denote.backends.torchcrepe.adapter<a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#module-denote.backends.torchcrepe.adapter">¶</a></h1>
 <p>Adapter for torchcrepe — GPU-accelerated pitch estimation.</p>
+<p class="rubric">Module Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.backends.torchcrepe.adapter.CREPE_SR" title="denote.backends.torchcrepe.adapter.CREPE_SR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CREPE_SR</span></code></a></p></td>
+<td><p>it resamples every input to it.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.backends.torchcrepe.adapter.frame_period" title="denote.backends.torchcrepe.adapter.frame_period"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_period</span></code></a>(hop_length, sr)</p></td>
+<td><p>Seconds between torchcrepe's frames for <code class="docutils literal notranslate"><span class="pre">hop_length</span></code> samples at <code class="docutils literal notranslate"><span class="pre">sr</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -160,6 +176,30 @@ model, device, hop_length).</p></li>
 </dl>
 </dd></dl>
 </dd></dl>
+<dl class="py data">
+<dt class="sig sig-object py" id="denote.backends.torchcrepe.adapter.CREPE_SR">
+<span class="sig-prename descclassname"><span class="pre">denote.backends.torchcrepe.adapter.</span></span><span class="sig-name descname"><span class="pre">CREPE_SR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16000</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.backends.torchcrepe.adapter.CREPE_SR" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.backends.torchcrepe.adapter.CREPE_SR'">¶</a></dt>
+<dd><p>it resamples every input to it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torchcrepe’s model rate</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="denote.backends.torchcrepe.adapter.frame_period">
+<span class="sig-prename descclassname"><span class="pre">denote.backends.torchcrepe.adapter.</span></span><span class="sig-name descname"><span class="pre">frame_period</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hop_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/backends/torchcrepe/adapter.html#frame_period"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.backends.torchcrepe.adapter.frame_period" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.backends.torchcrepe.adapter.frame_period'">¶</a></dt>
+<dd><p>Seconds between torchcrepe’s frames for <code class="docutils literal notranslate"><span class="pre">hop_length</span></code> samples at <code class="docutils literal notranslate"><span class="pre">sr</span></code>.</p>
+<p>torchcrepe resamples to 16 kHz and truncates the hop there
+(<code class="docutils literal notranslate"><span class="pre">int(hop</span> <span class="pre">*</span> <span class="pre">16000</span> <span class="pre">/</span> <span class="pre">sr)</span></code>), so the frame period is that over 16000, not
+<code class="docutils literal notranslate"><span class="pre">hop</span> <span class="pre">/</span> <span class="pre">sr</span></code>: at 22050 Hz a 220-sample hop is really 219.12 samples, and
+times built from <code class="docutils literal notranslate"><span class="pre">hop</span> <span class="pre">/</span> <span class="pre">sr</span></code> drift 0.4 % (1.2 s at 5 minutes).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span></p>
+</dd>
+</dl>
+</dd></dl>
 </section>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
@@ -168,6 +208,8 @@ model, device, hop_length).</p></li>
 <li><a :data-current="activeSection === '#denote.backends.torchcrepe.adapter.Adapter.get_pitch'" class="reference internal" href="#denote.backends.torchcrepe.adapter.Adapter.get_pitch"><code class="docutils literal notranslate"><span class="pre">Adapter.get_pitch()</span></code></a></li>
 </ul>
 </li>
+<li><a :data-current="activeSection === '#denote.backends.torchcrepe.adapter.CREPE_SR'" class="reference internal" href="#denote.backends.torchcrepe.adapter.CREPE_SR"><code class="docutils literal notranslate"><span class="pre">CREPE_SR</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.backends.torchcrepe.adapter.frame_period'" class="reference internal" href="#denote.backends.torchcrepe.adapter.frame_period"><code class="docutils literal notranslate"><span class="pre">frame_period()</span></code></a></li>
 </ul>
 </div>
 </aside>
@@ -181,7 +223,7 @@ model, device, hop_length).</p></li>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=bbaf98b3"></script>
+<script src="../_static/documentation_options.js?v=53b53b71"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

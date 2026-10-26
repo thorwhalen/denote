@@ -4,6 +4,18 @@ denote.backends.torchcrepe.adapter
 .. automodule:: denote.backends.torchcrepe.adapter
 
    
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      CREPE_SR
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      frame_period
+   
    .. rubric:: Classes
 
    .. autosummary::
