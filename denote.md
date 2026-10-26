@@ -1,4 +1,4 @@
-> built 2026-10-20 11:17 UTC from 0fbabd6 (main) · denote 0.0.6. Details: build_info.json
+> built 2026-10-26 11:37 UTC from 2c6ea01 (main) · denote 0.0.7. Details: build_info.json
 
 # index.html.md
 
@@ -128,11 +128,14 @@ recording, which makes it a ranking of how faithful each score is.
 | [`DFLT_FRAME_RATE`](_autosummary/denote.align.html.md#denote.align.DFLT_FRAME_RATE)   | Default analysis rate (frames per second) for both score and audio.     |
 |--------------------------------------------------------------------|-------------------------------------------------------------------------|
 | [`DFLT_AUDIO_SR`](_autosummary/denote.align.html.md#denote.align.DFLT_AUDIO_SR)     | Default sample rate the audio is resampled to before chroma extraction. |
+| [`N_PITCH_CLASSES`](_autosummary/denote.align.html.md#denote.align.N_PITCH_CLASSES)   | Pitch classes per chroma column.                                        |
+| [`SILENT_NORM`](_autosummary/denote.align.html.md#denote.align.SILENT_NORM)       | A column with a smaller norm than this is a silent frame.               |
 
 ### Functions
 
 | [`align_audio`](_autosummary/denote.align.html.md#denote.align.align_audio)(audio, reference, \*[, sr, ...])   | Align two recordings of the same music (a cover, a render, a remix).   |
 |-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`align_chroma`](_autosummary/denote.align.html.md#denote.align.align_chroma)(query, reference, \*[, ...])      | Align two precomputed pitch-class feature sequences (rows x frames).   |
 | [`align_score`](_autosummary/denote.align.html.md#denote.align.align_score)(score, audio, \*[, sr, ...])       | Align a score to a recording of (part of) the same music.              |
 | [`audio_chroma`](_autosummary/denote.align.html.md#denote.align.audio_chroma)(audio, \*[, sr, frame_rate, ...]) | L2-normalized 12 x frames constant-Q chroma of a recording.            |
 | [`score_chroma`](_autosummary/denote.align.html.md#denote.align.score_chroma)(score, \*[, frame_rate])          | L2-normalized 12 x frames chroma of a score (drums excluded).          |
@@ -149,6 +152,14 @@ Default sample rate the audio is resampled to before chroma extraction.
 ### denote.align.DFLT_FRAME_RATE *= 10.0*
 
 Default analysis rate (frames per second) for both score and audio.
+
+### denote.align.N_PITCH_CLASSES *= 12*
+
+Pitch classes per chroma column.
+
+### denote.align.SILENT_NORM *= 1e-09*
+
+A column with a smaller norm than this is a silent frame.
 
 ### *class* denote.align.ScoreAlignment(score_times, audio_times, cost, transpose=0, raw=None)
 
@@ -195,6 +206,14 @@ Backend detail (the warping path in frames, the frame rate).
 
 Score time(s) sounding at recording time(s) `t`.
 
+#### *property* query_times *: ndarray*
+
+`audio_times`, under [`align_chroma()`](_autosummary/denote.align.html.md#denote.align.align_chroma)’s name.
+
+#### *property* reference_times *: ndarray*
+
+`score_times`, under [`align_chroma()`](_autosummary/denote.align.html.md#denote.align.align_chroma)’s name.
+
 #### *property* score_span *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)*
 
 `(first, last)` score times covered by the recording.
@@ -227,6 +246,43 @@ a fidelity score for generated versions of a piece.
   [`ScoreAlignment`](_autosummary/denote.align.html.md#denote.align.ScoreAlignment)
 * **Returns:**
   A [`ScoreAlignment`](_autosummary/denote.align.html.md#denote.align.ScoreAlignment) (`score_*` refers to `reference`).
+
+### denote.align.align_chroma(query, reference, , subsequence=True, transpose=0, frame_rate=10.0, steps=array([[1, 1], [1, 2], [2, 1]]), silent='uniform')
+
+Align two precomputed pitch-class feature sequences (rows x frames).
+
+The DTW behind [`align_score()`](_autosummary/denote.align.html.md#denote.align.align_score) and [`align_audio()`](_autosummary/denote.align.html.md#denote.align.align_audio), for callers
+with their own features: a band-limited chroma, a chroma with a drone’s
+steady background removed, a symbolic chroma at another resolution. Both
+must have the same rows and be at `frame_rate` frames per second.
+
+* **Parameters:**
+  * **query** (`ndarray`) – The sequence to place (`query_times` / `audio_times`).
+  * **reference** (`ndarray`) – The sequence it is placed on (`reference_times` /
+    `score_times`).
+  * **subsequence** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Match the shorter of the two anywhere inside the longer
+    (default), else both start and end together.
+  * **transpose** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Semitones to roll the reference’s pitch classes, or
+    `"auto"` to try all twelve and keep the lowest-cost one (12-row
+    chroma only).
+  * **frame_rate** ([`float`](https://docs.python.org/3/builtins/functions.html#float)) – Frames per second of both, to turn frames into seconds.
+  * **steps** (`ndarray`) – DTW step sizes as (query frames, reference frames) rows. The
+    default bounds the tempo ratio to half or double.
+  * **silent** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – How a silent (zero) column counts: `"uniform"` (the flat
+    chroma, the default) or `"zero"` (similar to nothing).
+* **Return type:**
+  [`ScoreAlignment`](_autosummary/denote.align.html.md#denote.align.ScoreAlignment)
+* **Returns:**
+  A [`ScoreAlignment`](_autosummary/denote.align.html.md#denote.align.ScoreAlignment); its `cost` is the mean cosine distance
+  along the path (0 = same pitch content), its `raw["path"]` the
+  (query, reference) frame pairs.
+
+Example:
+
+```default
+a = denote.align_chroma(take_chroma, seed_chroma, frame_rate=10)
+1 - a.cost  # mean cosine similarity along the alignment
+```
 
 ### denote.align.align_score(score, audio, , sr=None, subsequence=True, transpose=0, frame_rate=10.0, audio_sr=22050)
 
@@ -1054,7 +1110,7 @@ Load audio from a file path or validate an existing array.
 
 # About this build
 
-This documentation was built on **2026-10-20 11:17 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/0fbabd6a1e8611f41a3684fa9235ae55692c38f9"><code>0fbabd6</code></a> on branch <code>main</code>, for **denote 0.0.6** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-26 11:37 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/2c6ea017bc413b10bc09ae922c464ed2884fb698"><code>2c6ea01</code></a> on branch <code>main</code>, for **denote 0.0.7** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -1063,9 +1119,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/0fbabd6a1e8611f41a3684fa9235ae55692c38f9"><code>0fbabd6a1e8611f41a3684fa9235ae55692c38f9</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/2c6ea017bc413b10bc09ae922c464ed2884fb698"><code>2c6ea017bc413b10bc09ae922c464ed2884fb698</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.6</code>                                                                                                                                       |
+| Tags at this commit | <code>0.0.7</code>                                                                                                                                       |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -1074,15 +1130,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/39413546016">39413546016</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/40316137469">40316137469</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>a6dad78aa45ce3bd5a4f75fac1eb60792baaa2d5</code> (in the history of the built commit) |
+| Event commit | <code>9aaa269e2b9224da721d8d386ae33d0a52350cbd</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.19  |
+| epythet  | 0.2.22  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.15 |
@@ -1101,14 +1157,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.6/">0.0.6</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.7/">0.0.7</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 0fbabd6a1e8611f41a3684fa9235ae55692c38f9
-pip install "epythet==0.2.19"
+git checkout 2c6ea017bc413b10bc09ae922c464ed2884fb698
+pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

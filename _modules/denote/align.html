@@ -29,7 +29,7 @@
   <meta property="og:title" content="denote.align | denote" />
   <meta name="twitter:title" content="denote.align | denote" />
   <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
-  <link rel="stylesheet" type="text/css" href="../../_static/theme.css?v=d6d7c91b" />
+  <link rel="stylesheet" type="text/css" href="../../_static/theme.css?v=009055c6" />
   <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
   <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
   <link rel="stylesheet" type="text/css" href="../../_static/epythet.css?v=885e65be" />
@@ -215,256 +215,367 @@
 </span><span id="line-41"><span class="c1">#: on one score frame for a whole clip, which is</span>
 </span><span id="line-42"><span class="c1">#: the degenerate answer unconstrained subsequence DTW gives.</span>
 </span><span id="line-43"><span class="n">_STEPS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-</span><span id="line-44"><span class="n">_STEP_WEIGHTS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+</span><span id="line-44">
 </span><span id="line-45">
-</span><span id="line-46">
 <div class="viewcode-block" id="ScoreAlignment">
 <a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.ScoreAlignment">[docs]</a>
-</span><span id="line-47"><span class="nd">@dataclass</span>
-</span><span id="line-48"><span class="k">class</span><span class="w"> </span><span class="nc">ScoreAlignment</span><span class="p">:</span>
-</span><span id="line-49"><span class="w">    </span><span class="sd">"""A monotone time map between a score's timeline and a recording's.</span>
-</span><span id="line-50">
-</span><span id="line-51"><span class="sd">    Attributes:</span>
-</span><span id="line-52"><span class="sd">        score_times: Score times in seconds, increasing (one per path step).</span>
-</span><span id="line-53"><span class="sd">        audio_times: The matching recording times in seconds.</span>
-</span><span id="line-54"><span class="sd">        cost: Mean cosine distance along the path (lower is a closer match).</span>
-</span><span id="line-55"><span class="sd">        transpose: Semitones the score was shifted to match the recording.</span>
-</span><span id="line-56"><span class="sd">        raw: Backend detail (the warping path in frames, the frame rate).</span>
-</span><span id="line-57"><span class="sd">    """</span>
-</span><span id="line-58">
-</span><span id="line-59">    <span class="n">score_times</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-</span><span id="line-60">    <span class="n">audio_times</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-</span><span id="line-61">    <span class="n">cost</span><span class="p">:</span> <span class="nb">float</span>
-</span><span id="line-62">    <span class="n">transpose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="line-63">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="line-64">
+</span><span id="line-46"><span class="nd">@dataclass</span>
+</span><span id="line-47"><span class="k">class</span><span class="w"> </span><span class="nc">ScoreAlignment</span><span class="p">:</span>
+</span><span id="line-48"><span class="w">    </span><span class="sd">"""A monotone time map between a score's timeline and a recording's.</span>
+</span><span id="line-49">
+</span><span id="line-50"><span class="sd">    Attributes:</span>
+</span><span id="line-51"><span class="sd">        score_times: Score times in seconds, increasing (one per path step).</span>
+</span><span id="line-52"><span class="sd">        audio_times: The matching recording times in seconds.</span>
+</span><span id="line-53"><span class="sd">        cost: Mean cosine distance along the path (lower is a closer match).</span>
+</span><span id="line-54"><span class="sd">        transpose: Semitones the score was shifted to match the recording.</span>
+</span><span id="line-55"><span class="sd">        raw: Backend detail (the warping path in frames, the frame rate).</span>
+</span><span id="line-56"><span class="sd">    """</span>
+</span><span id="line-57">
+</span><span id="line-58">    <span class="n">score_times</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+</span><span id="line-59">    <span class="n">audio_times</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+</span><span id="line-60">    <span class="n">cost</span><span class="p">:</span> <span class="nb">float</span>
+</span><span id="line-61">    <span class="n">transpose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="line-62">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="line-63">
+</span><span id="line-64">    <span class="nd">@property</span>
+</span><span id="line-65">    <span class="k">def</span><span class="w"> </span><span class="nf">query_times</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-66"><span class="w">        </span><span class="sd">"""``audio_times``, under :func:`align_chroma`'s name."""</span>
+</span><span id="line-67">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">audio_times</span>
+</span><span id="line-68">
+</span><span id="line-69">    <span class="nd">@property</span>
+</span><span id="line-70">    <span class="k">def</span><span class="w"> </span><span class="nf">reference_times</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-71"><span class="w">        </span><span class="sd">"""``score_times``, under :func:`align_chroma`'s name."""</span>
+</span><span id="line-72">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_times</span>
+</span><span id="line-73">
 <div class="viewcode-block" id="ScoreAlignment.score_to_audio">
 <a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.ScoreAlignment.score_to_audio">[docs]</a>
-</span><span id="line-65">    <span class="k">def</span><span class="w"> </span><span class="nf">score_to_audio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-</span><span id="line-66"><span class="w">        </span><span class="sd">"""Recording time(s) at which score time(s) ``t`` sound."""</span>
-</span><span id="line-67">        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_times</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">audio_times</span><span class="p">)</span></div>
-
-</span><span id="line-68">
-<div class="viewcode-block" id="ScoreAlignment.audio_to_score">
-<a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.ScoreAlignment.audio_to_score">[docs]</a>
-</span><span id="line-69">    <span class="k">def</span><span class="w"> </span><span class="nf">audio_to_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-</span><span id="line-70"><span class="w">        </span><span class="sd">"""Score time(s) sounding at recording time(s) ``t``."""</span>
-</span><span id="line-71">        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">audio_times</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_times</span><span class="p">)</span></div>
-
-</span><span id="line-72">
-</span><span id="line-73">    <span class="nd">@property</span>
-</span><span id="line-74">    <span class="k">def</span><span class="w"> </span><span class="nf">score_span</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="line-75"><span class="w">        </span><span class="sd">"""``(first, last)`` score times covered by the recording."""</span>
-</span><span id="line-76">        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score_times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+</span><span id="line-74">    <span class="k">def</span><span class="w"> </span><span class="nf">score_to_audio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="line-75"><span class="w">        </span><span class="sd">"""Recording time(s) at which score time(s) ``t`` sound."""</span>
+</span><span id="line-76">        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_times</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">audio_times</span><span class="p">)</span></div>
 
 </span><span id="line-77">
-</span><span id="line-78">
-</span><span id="line-79"><span class="k">def</span><span class="w"> </span><span class="nf">_to_pretty_midi</span><span class="p">(</span><span class="n">score</span><span class="p">):</span>
-</span><span id="line-80">    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">score</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"PrettyMIDI"</span><span class="p">:</span>
-</span><span id="line-81">        <span class="k">return</span> <span class="n">score</span>
-</span><span id="line-82">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">))</span> <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">score</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span>
-</span><span id="line-83">        <span class="s2">".mid"</span><span class="p">,</span>
-</span><span id="line-84">        <span class="s2">".midi"</span><span class="p">,</span>
-</span><span id="line-85">    <span class="p">):</span>
-</span><span id="line-86">        <span class="kn">import</span><span class="w"> </span><span class="nn">pretty_midi</span>
+<div class="viewcode-block" id="ScoreAlignment.audio_to_score">
+<a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.ScoreAlignment.audio_to_score">[docs]</a>
+</span><span id="line-78">    <span class="k">def</span><span class="w"> </span><span class="nf">audio_to_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="line-79"><span class="w">        </span><span class="sd">"""Score time(s) sounding at recording time(s) ``t``."""</span>
+</span><span id="line-80">        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">audio_times</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_times</span><span class="p">)</span></div>
+
+</span><span id="line-81">
+</span><span id="line-82">    <span class="nd">@property</span>
+</span><span id="line-83">    <span class="k">def</span><span class="w"> </span><span class="nf">score_span</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="line-84"><span class="w">        </span><span class="sd">"""``(first, last)`` score times covered by the recording."""</span>
+</span><span id="line-85">        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score_times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+
+</span><span id="line-86">
 </span><span id="line-87">
-</span><span id="line-88">        <span class="k">return</span> <span class="n">pretty_midi</span><span class="o">.</span><span class="n">PrettyMIDI</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">score</span><span class="p">))</span>
-</span><span id="line-89">    <span class="k">try</span><span class="p">:</span>
-</span><span id="line-90">        <span class="kn">from</span><span class="w"> </span><span class="nn">audiate</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_pretty_midi</span>  <span class="c1"># MusicXML, ABC, kern, music21, ...</span>
-</span><span id="line-91">    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span id="line-92">        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="line-93">            <span class="s2">"align_score takes a pretty_midi.PrettyMIDI or a .mid path; for "</span>
-</span><span id="line-94">            <span class="s2">"MusicXML/ABC/... install audiate (pip install 'audiate[symbolic]')."</span>
-</span><span id="line-95">        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span id="line-96">    <span class="k">return</span> <span class="n">to_pretty_midi</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-</span><span id="line-97">
-</span><span id="line-98">
-</span><span id="line-99"><span class="k">def</span><span class="w"> </span><span class="nf">_normalize</span><span class="p">(</span><span class="n">chroma</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="line-100"><span class="w">    </span><span class="sd">"""Unit-norm columns; a silent frame becomes the flat (uniform) chroma.</span>
-</span><span id="line-101">
-</span><span id="line-102"><span class="sd">    A zero column would make the cosine distance undefined (NaN) and break the</span>
-</span><span id="line-103"><span class="sd">    DTW, and silence genuinely carries no pitch-class preference.</span>
-</span><span id="line-104"><span class="sd">    """</span>
-</span><span id="line-105">    <span class="n">chroma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">chroma</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="line-106">    <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">chroma</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="line-107">    <span class="n">silent</span> <span class="o">=</span> <span class="n">norms</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
-</span><span id="line-108">    <span class="n">chroma</span><span class="p">[:,</span> <span class="n">silent</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-</span><span id="line-109">    <span class="n">norms</span><span class="p">[</span><span class="n">silent</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">chroma</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="line-110">    <span class="k">return</span> <span class="n">chroma</span> <span class="o">/</span> <span class="n">norms</span>
-</span><span id="line-111">
+</span><span id="line-88"><span class="k">def</span><span class="w"> </span><span class="nf">_to_pretty_midi</span><span class="p">(</span><span class="n">score</span><span class="p">):</span>
+</span><span id="line-89">    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">score</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"PrettyMIDI"</span><span class="p">:</span>
+</span><span id="line-90">        <span class="k">return</span> <span class="n">score</span>
+</span><span id="line-91">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">))</span> <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">score</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span>
+</span><span id="line-92">        <span class="s2">".mid"</span><span class="p">,</span>
+</span><span id="line-93">        <span class="s2">".midi"</span><span class="p">,</span>
+</span><span id="line-94">    <span class="p">):</span>
+</span><span id="line-95">        <span class="kn">import</span><span class="w"> </span><span class="nn">pretty_midi</span>
+</span><span id="line-96">
+</span><span id="line-97">        <span class="k">return</span> <span class="n">pretty_midi</span><span class="o">.</span><span class="n">PrettyMIDI</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">score</span><span class="p">))</span>
+</span><span id="line-98">    <span class="k">try</span><span class="p">:</span>
+</span><span id="line-99">        <span class="kn">from</span><span class="w"> </span><span class="nn">audiate</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_pretty_midi</span>  <span class="c1"># MusicXML, ABC, kern, music21, ...</span>
+</span><span id="line-100">    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span id="line-101">        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="line-102">            <span class="s2">"align_score takes a pretty_midi.PrettyMIDI or a .mid path; for "</span>
+</span><span id="line-103">            <span class="s2">"MusicXML/ABC/... install audiate (pip install 'audiate[symbolic]')."</span>
+</span><span id="line-104">        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span id="line-105">    <span class="k">return</span> <span class="n">to_pretty_midi</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+</span><span id="line-106">
+</span><span id="line-107">
+</span><span id="line-108"><span class="c1">#: Pitch classes per chroma column.</span>
+</span><span id="line-109"><span class="n">N_PITCH_CLASSES</span> <span class="o">=</span> <span class="mi">12</span>
+</span><span id="line-110"><span class="c1">#: A column with a smaller norm than this is a silent frame.</span>
+</span><span id="line-111"><span class="n">SILENT_NORM</span> <span class="o">=</span> <span class="mf">1e-9</span>
 </span><span id="line-112">
+</span><span id="line-113">
+</span><span id="line-114"><span class="k">def</span><span class="w"> </span><span class="nf">_normalize</span><span class="p">(</span><span class="n">chroma</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">silent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"uniform"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-115"><span class="w">    </span><span class="sd">"""Unit-norm columns. A silent frame becomes the flat (uniform) chroma, or</span>
+</span><span id="line-116"><span class="sd">    stays zero with ``silent="zero"``.</span>
+</span><span id="line-117">
+</span><span id="line-118"><span class="sd">    Uniform: silence genuinely carries no pitch-class preference, and it is</span>
+</span><span id="line-119"><span class="sd">    equally far from every chord. Zero: silence matches nothing (cosine</span>
+</span><span id="line-120"><span class="sd">    similarity 0), for features where an empty frame means "no melody here".</span>
+</span><span id="line-121"><span class="sd">    """</span>
+</span><span id="line-122">    <span class="k">if</span> <span class="n">silent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"uniform"</span><span class="p">,</span> <span class="s2">"zero"</span><span class="p">):</span>
+</span><span id="line-123">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"silent must be 'uniform' or 'zero', not </span><span class="si">{</span><span class="n">silent</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-124">    <span class="n">chroma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">chroma</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="line-125">    <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">chroma</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="line-126">    <span class="n">quiet</span> <span class="o">=</span> <span class="n">norms</span> <span class="o">&lt;</span> <span class="n">SILENT_NORM</span>
+</span><span id="line-127">    <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="s2">"uniform"</span><span class="p">:</span>
+</span><span id="line-128">        <span class="n">chroma</span><span class="p">[:,</span> <span class="n">quiet</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span><span id="line-129">        <span class="n">norms</span><span class="p">[</span><span class="n">quiet</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">chroma</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="line-130">    <span class="k">else</span><span class="p">:</span>
+</span><span id="line-131">        <span class="n">norms</span><span class="p">[</span><span class="n">quiet</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span><span id="line-132">    <span class="k">return</span> <span class="n">chroma</span> <span class="o">/</span> <span class="n">norms</span>
+</span><span id="line-133">
+</span><span id="line-134">
 <div class="viewcode-block" id="score_chroma">
 <a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.score_chroma">[docs]</a>
-</span><span id="line-113"><span class="k">def</span><span class="w"> </span><span class="nf">score_chroma</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="line-114"><span class="w">    </span><span class="sd">"""L2-normalized 12 x frames chroma of a score (drums excluded)."""</span>
-</span><span id="line-115">    <span class="n">pm</span> <span class="o">=</span> <span class="n">_to_pretty_midi</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-</span><span id="line-116">    <span class="k">return</span> <span class="n">_normalize</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">get_chroma</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">))</span></div>
+</span><span id="line-135"><span class="k">def</span><span class="w"> </span><span class="nf">score_chroma</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-136"><span class="w">    </span><span class="sd">"""L2-normalized 12 x frames chroma of a score (drums excluded)."""</span>
+</span><span id="line-137">    <span class="n">pm</span> <span class="o">=</span> <span class="n">_to_pretty_midi</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+</span><span id="line-138">    <span class="k">return</span> <span class="n">_normalize</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">get_chroma</span><span class="p">(</span><span class="n">fs</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">))</span></div>
 
-</span><span id="line-117">
-</span><span id="line-118">
+</span><span id="line-139">
+</span><span id="line-140">
 <div class="viewcode-block" id="audio_chroma">
 <a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.audio_chroma">[docs]</a>
-</span><span id="line-119"><span class="k">def</span><span class="w"> </span><span class="nf">audio_chroma</span><span class="p">(</span>
-</span><span id="line-120">    <span class="n">audio</span><span class="p">:</span> <span class="n">AudioInput</span><span class="p">,</span>
-</span><span id="line-121">    <span class="o">*</span><span class="p">,</span>
-</span><span id="line-122">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-123">    <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">,</span>
-</span><span id="line-124">    <span class="n">audio_sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_AUDIO_SR</span><span class="p">,</span>
-</span><span id="line-125"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="line-126"><span class="w">    </span><span class="sd">"""L2-normalized 12 x frames constant-Q chroma of a recording."""</span>
-</span><span id="line-127">    <span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
-</span><span id="line-128">
-</span><span id="line-129">    <span class="n">y</span><span class="p">,</span> <span class="n">rate</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">audio_sr</span><span class="p">)</span>
-</span><span id="line-130">    <span class="n">hop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">rate</span> <span class="o">/</span> <span class="n">frame_rate</span><span class="p">))</span>
-</span><span id="line-131">    <span class="k">return</span> <span class="n">_normalize</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">chroma_cqt</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">rate</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="n">hop</span><span class="p">))</span></div>
+</span><span id="line-141"><span class="k">def</span><span class="w"> </span><span class="nf">audio_chroma</span><span class="p">(</span>
+</span><span id="line-142">    <span class="n">audio</span><span class="p">:</span> <span class="n">AudioInput</span><span class="p">,</span>
+</span><span id="line-143">    <span class="o">*</span><span class="p">,</span>
+</span><span id="line-144">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-145">    <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">,</span>
+</span><span id="line-146">    <span class="n">audio_sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_AUDIO_SR</span><span class="p">,</span>
+</span><span id="line-147"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-148"><span class="w">    </span><span class="sd">"""L2-normalized 12 x frames constant-Q chroma of a recording."""</span>
+</span><span id="line-149">    <span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
+</span><span id="line-150">
+</span><span id="line-151">    <span class="n">y</span><span class="p">,</span> <span class="n">rate</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">audio_sr</span><span class="p">)</span>
+</span><span id="line-152">    <span class="n">hop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">rate</span> <span class="o">/</span> <span class="n">frame_rate</span><span class="p">))</span>
+</span><span id="line-153">    <span class="k">return</span> <span class="n">_normalize</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">chroma_cqt</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">rate</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="n">hop</span><span class="p">))</span></div>
 
-</span><span id="line-132">
-</span><span id="line-133">
+</span><span id="line-154">
+</span><span id="line-155">
 <div class="viewcode-block" id="align_score">
 <a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.align_score">[docs]</a>
-</span><span id="line-134"><span class="k">def</span><span class="w"> </span><span class="nf">align_score</span><span class="p">(</span>
-</span><span id="line-135">    <span class="n">score</span><span class="p">,</span>
-</span><span id="line-136">    <span class="n">audio</span><span class="p">:</span> <span class="n">AudioInput</span><span class="p">,</span>
-</span><span id="line-137">    <span class="o">*</span><span class="p">,</span>
-</span><span id="line-138">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-139">    <span class="n">subsequence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="line-140">    <span class="n">transpose</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="line-141">    <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">,</span>
-</span><span id="line-142">    <span class="n">audio_sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_AUDIO_SR</span><span class="p">,</span>
-</span><span id="line-143"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScoreAlignment</span><span class="p">:</span>
-</span><span id="line-144"><span class="w">    </span><span class="sd">"""Align a score to a recording of (part of) the same music.</span>
-</span><span id="line-145">
-</span><span id="line-146"><span class="sd">    Args:</span>
-</span><span id="line-147"><span class="sd">        score: A ``pretty_midi.PrettyMIDI`` or a ``.mid`` path (other score</span>
-</span><span id="line-148"><span class="sd">            formats when ``audiate`` is installed).</span>
-</span><span id="line-149"><span class="sd">        audio: A recording: a path, or an array with ``sr``.</span>
-</span><span id="line-150"><span class="sd">        sr: Sample rate when ``audio`` is an array.</span>
-</span><span id="line-151"><span class="sd">        subsequence: Match the recording anywhere inside the score (default),</span>
-</span><span id="line-152"><span class="sd">            e.g. a one-minute clip against a full score. ``False`` forces the</span>
-</span><span id="line-153"><span class="sd">            two to start and end together.</span>
-</span><span id="line-154"><span class="sd">        transpose: Semitones to shift the score's pitch classes, or ``"auto"``</span>
-</span><span id="line-155"><span class="sd">            to try all twelve and keep the lowest-cost one.</span>
-</span><span id="line-156"><span class="sd">        frame_rate: Analysis frames per second for both sides.</span>
-</span><span id="line-157"><span class="sd">        audio_sr: Rate the audio is resampled to before analysis.</span>
-</span><span id="line-158">
-</span><span id="line-159"><span class="sd">    Returns:</span>
-</span><span id="line-160"><span class="sd">        A :class:`ScoreAlignment`.</span>
-</span><span id="line-161">
-</span><span id="line-162"><span class="sd">    Example::</span>
-</span><span id="line-163">
-</span><span id="line-164"><span class="sd">        a = denote.align_score("theme.mid", "recording_first_minute.wav")</span>
-</span><span id="line-165"><span class="sd">        a.audio_to_score(60.0)      # where the score is when the clip ends</span>
-</span><span id="line-166"><span class="sd">        a.cost                      # compare scores of the same piece</span>
-</span><span id="line-167"><span class="sd">    """</span>
-</span><span id="line-168">    <span class="n">S</span> <span class="o">=</span> <span class="n">score_chroma</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">)</span>
-</span><span id="line-169">    <span class="n">A</span> <span class="o">=</span> <span class="n">audio_chroma</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">,</span> <span class="n">audio_sr</span><span class="o">=</span><span class="n">audio_sr</span><span class="p">)</span>
-</span><span id="line-170">    <span class="k">return</span> <span class="n">_align_chroma</span><span class="p">(</span>
-</span><span id="line-171">        <span class="n">A</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">subsequence</span><span class="o">=</span><span class="n">subsequence</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="n">transpose</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span>
-</span><span id="line-172">    <span class="p">)</span></div>
+</span><span id="line-156"><span class="k">def</span><span class="w"> </span><span class="nf">align_score</span><span class="p">(</span>
+</span><span id="line-157">    <span class="n">score</span><span class="p">,</span>
+</span><span id="line-158">    <span class="n">audio</span><span class="p">:</span> <span class="n">AudioInput</span><span class="p">,</span>
+</span><span id="line-159">    <span class="o">*</span><span class="p">,</span>
+</span><span id="line-160">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-161">    <span class="n">subsequence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="line-162">    <span class="n">transpose</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="line-163">    <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">,</span>
+</span><span id="line-164">    <span class="n">audio_sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_AUDIO_SR</span><span class="p">,</span>
+</span><span id="line-165"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScoreAlignment</span><span class="p">:</span>
+</span><span id="line-166"><span class="w">    </span><span class="sd">"""Align a score to a recording of (part of) the same music.</span>
+</span><span id="line-167">
+</span><span id="line-168"><span class="sd">    Args:</span>
+</span><span id="line-169"><span class="sd">        score: A ``pretty_midi.PrettyMIDI`` or a ``.mid`` path (other score</span>
+</span><span id="line-170"><span class="sd">            formats when ``audiate`` is installed).</span>
+</span><span id="line-171"><span class="sd">        audio: A recording: a path, or an array with ``sr``.</span>
+</span><span id="line-172"><span class="sd">        sr: Sample rate when ``audio`` is an array.</span>
+</span><span id="line-173"><span class="sd">        subsequence: Match the recording anywhere inside the score (default),</span>
+</span><span id="line-174"><span class="sd">            e.g. a one-minute clip against a full score. ``False`` forces the</span>
+</span><span id="line-175"><span class="sd">            two to start and end together.</span>
+</span><span id="line-176"><span class="sd">        transpose: Semitones to shift the score's pitch classes, or ``"auto"``</span>
+</span><span id="line-177"><span class="sd">            to try all twelve and keep the lowest-cost one.</span>
+</span><span id="line-178"><span class="sd">        frame_rate: Analysis frames per second for both sides.</span>
+</span><span id="line-179"><span class="sd">        audio_sr: Rate the audio is resampled to before analysis.</span>
+</span><span id="line-180">
+</span><span id="line-181"><span class="sd">    Returns:</span>
+</span><span id="line-182"><span class="sd">        A :class:`ScoreAlignment`.</span>
+</span><span id="line-183">
+</span><span id="line-184"><span class="sd">    Example::</span>
+</span><span id="line-185">
+</span><span id="line-186"><span class="sd">        a = denote.align_score("theme.mid", "recording_first_minute.wav")</span>
+</span><span id="line-187"><span class="sd">        a.audio_to_score(60.0)      # where the score is when the clip ends</span>
+</span><span id="line-188"><span class="sd">        a.cost                      # compare scores of the same piece</span>
+</span><span id="line-189"><span class="sd">    """</span>
+</span><span id="line-190">    <span class="n">S</span> <span class="o">=</span> <span class="n">score_chroma</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">)</span>
+</span><span id="line-191">    <span class="n">A</span> <span class="o">=</span> <span class="n">audio_chroma</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">,</span> <span class="n">audio_sr</span><span class="o">=</span><span class="n">audio_sr</span><span class="p">)</span>
+</span><span id="line-192">    <span class="k">return</span> <span class="n">align_chroma</span><span class="p">(</span>
+</span><span id="line-193">        <span class="n">A</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">subsequence</span><span class="o">=</span><span class="n">subsequence</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="n">transpose</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span>
+</span><span id="line-194">    <span class="p">)</span></div>
 
-</span><span id="line-173">
-</span><span id="line-174">
+</span><span id="line-195">
+</span><span id="line-196">
 <div class="viewcode-block" id="align_audio">
 <a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.align_audio">[docs]</a>
-</span><span id="line-175"><span class="k">def</span><span class="w"> </span><span class="nf">align_audio</span><span class="p">(</span>
-</span><span id="line-176">    <span class="n">audio</span><span class="p">:</span> <span class="n">AudioInput</span><span class="p">,</span>
-</span><span id="line-177">    <span class="n">reference</span><span class="p">:</span> <span class="n">AudioInput</span><span class="p">,</span>
-</span><span id="line-178">    <span class="o">*</span><span class="p">,</span>
-</span><span id="line-179">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-180">    <span class="n">reference_sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-181">    <span class="n">subsequence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="line-182">    <span class="n">transpose</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="line-183">    <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">,</span>
-</span><span id="line-184">    <span class="n">audio_sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_AUDIO_SR</span><span class="p">,</span>
-</span><span id="line-185"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScoreAlignment</span><span class="p">:</span>
-</span><span id="line-186"><span class="w">    </span><span class="sd">"""Align two recordings of the same music (a cover, a render, a remix).</span>
-</span><span id="line-187">
-</span><span id="line-188"><span class="sd">    The same chroma DTW as :func:`align_score`, with a recording in the</span>
-</span><span id="line-189"><span class="sd">    score's place: ``score_times`` are times in ``reference``. The ``cost`` is</span>
-</span><span id="line-190"><span class="sd">    a measure of how closely ``audio`` follows ``reference``'s harmony and</span>
-</span><span id="line-191"><span class="sd">    melody, tolerant of tempo differences and blind to timbre, which makes it</span>
-</span><span id="line-192"><span class="sd">    a fidelity score for generated versions of a piece.</span>
-</span><span id="line-193">
-</span><span id="line-194"><span class="sd">    Args:</span>
-</span><span id="line-195"><span class="sd">        audio: The recording to place on the reference's timeline.</span>
-</span><span id="line-196"><span class="sd">        reference: The reference recording.</span>
-</span><span id="line-197"><span class="sd">        sr: Sample rate when ``audio`` is an array.</span>
-</span><span id="line-198"><span class="sd">        reference_sr: Sample rate when ``reference`` is an array.</span>
-</span><span id="line-199"><span class="sd">        subsequence: Match ``audio`` anywhere inside ``reference`` (default</span>
-</span><span id="line-200"><span class="sd">            ``False``: both start and end together).</span>
-</span><span id="line-201"><span class="sd">        transpose: Semitones, or ``"auto"`` to try all twelve.</span>
-</span><span id="line-202"><span class="sd">        frame_rate: Analysis frames per second.</span>
-</span><span id="line-203"><span class="sd">        audio_sr: Rate both are resampled to before analysis.</span>
-</span><span id="line-204">
-</span><span id="line-205"><span class="sd">    Returns:</span>
-</span><span id="line-206"><span class="sd">        A :class:`ScoreAlignment` (``score_*`` refers to ``reference``).</span>
-</span><span id="line-207"><span class="sd">    """</span>
-</span><span id="line-208">    <span class="n">R</span> <span class="o">=</span> <span class="n">audio_chroma</span><span class="p">(</span>
-</span><span id="line-209">        <span class="n">reference</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">reference_sr</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">,</span> <span class="n">audio_sr</span><span class="o">=</span><span class="n">audio_sr</span>
-</span><span id="line-210">    <span class="p">)</span>
-</span><span id="line-211">    <span class="n">A</span> <span class="o">=</span> <span class="n">audio_chroma</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">,</span> <span class="n">audio_sr</span><span class="o">=</span><span class="n">audio_sr</span><span class="p">)</span>
-</span><span id="line-212">    <span class="k">return</span> <span class="n">_align_chroma</span><span class="p">(</span>
-</span><span id="line-213">        <span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">subsequence</span><span class="o">=</span><span class="n">subsequence</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="n">transpose</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span>
-</span><span id="line-214">    <span class="p">)</span></div>
-
+</span><span id="line-197"><span class="k">def</span><span class="w"> </span><span class="nf">align_audio</span><span class="p">(</span>
+</span><span id="line-198">    <span class="n">audio</span><span class="p">:</span> <span class="n">AudioInput</span><span class="p">,</span>
+</span><span id="line-199">    <span class="n">reference</span><span class="p">:</span> <span class="n">AudioInput</span><span class="p">,</span>
+</span><span id="line-200">    <span class="o">*</span><span class="p">,</span>
+</span><span id="line-201">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-202">    <span class="n">reference_sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-203">    <span class="n">subsequence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="line-204">    <span class="n">transpose</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="line-205">    <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">,</span>
+</span><span id="line-206">    <span class="n">audio_sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_AUDIO_SR</span><span class="p">,</span>
+</span><span id="line-207"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScoreAlignment</span><span class="p">:</span>
+</span><span id="line-208"><span class="w">    </span><span class="sd">"""Align two recordings of the same music (a cover, a render, a remix).</span>
+</span><span id="line-209">
+</span><span id="line-210"><span class="sd">    The same chroma DTW as :func:`align_score`, with a recording in the</span>
+</span><span id="line-211"><span class="sd">    score's place: ``score_times`` are times in ``reference``. The ``cost`` is</span>
+</span><span id="line-212"><span class="sd">    a measure of how closely ``audio`` follows ``reference``'s harmony and</span>
+</span><span id="line-213"><span class="sd">    melody, tolerant of tempo differences and blind to timbre, which makes it</span>
+</span><span id="line-214"><span class="sd">    a fidelity score for generated versions of a piece.</span>
 </span><span id="line-215">
-</span><span id="line-216">
-</span><span id="line-217"><span class="k">def</span><span class="w"> </span><span class="nf">_align_chroma</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">subsequence</span><span class="p">,</span> <span class="n">transpose</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScoreAlignment</span><span class="p">:</span>
-</span><span id="line-218"><span class="w">    </span><span class="sd">"""DTW of query chroma ``A`` against reference chroma ``S``."""</span>
-</span><span id="line-219">    <span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
-</span><span id="line-220">
-</span><span id="line-221">    <span class="k">if</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="line-222">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"score or audio is empty"</span><span class="p">)</span>
-</span><span id="line-223">    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="line-224">    <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-</span><span id="line-225">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="line-226">            <span class="sa">f</span><span class="s2">"too short to align: </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2"> frames at </span><span class="si">{</span><span class="n">frame_rate</span><span class="si">}</span><span class="s2"> frames/s"</span>
-</span><span id="line-227">        <span class="p">)</span>
-</span><span id="line-228">    <span class="n">shifts</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span> <span class="k">if</span> <span class="n">transpose</span> <span class="o">==</span> <span class="s2">"auto"</span> <span class="k">else</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">transpose</span><span class="p">)</span> <span class="o">%</span> <span class="mi">12</span><span class="p">]</span>
-</span><span id="line-229">
-</span><span id="line-230">    <span class="n">best</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="line-231">    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">shifts</span><span class="p">:</span>
-</span><span id="line-232">        <span class="n">Sk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="line-233">        <span class="c1"># librosa matches X as a subsequence of Y when subseq=True.</span>
-</span><span id="line-234">        <span class="k">try</span><span class="p">:</span>
-</span><span id="line-235">            <span class="n">_</span><span class="p">,</span> <span class="n">wp</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">dtw</span><span class="p">(</span>
-</span><span id="line-236">                <span class="n">X</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
-</span><span id="line-237">                <span class="n">Y</span><span class="o">=</span><span class="n">Sk</span><span class="p">,</span>
-</span><span id="line-238">                <span class="n">metric</span><span class="o">=</span><span class="s2">"cosine"</span><span class="p">,</span>
-</span><span id="line-239">                <span class="n">subseq</span><span class="o">=</span><span class="n">subsequence</span><span class="p">,</span>
-</span><span id="line-240">                <span class="n">step_sizes_sigma</span><span class="o">=</span><span class="n">_STEPS</span><span class="p">,</span>
-</span><span id="line-241">                <span class="n">weights_mul</span><span class="o">=</span><span class="n">_STEP_WEIGHTS</span><span class="p">,</span>
-</span><span id="line-242">            <span class="p">)</span>
-</span><span id="line-243">        <span class="k">except</span> <span class="n">librosa</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ParameterError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-</span><span id="line-244">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="line-245">                <span class="sa">f</span><span class="s2">"No alignment within the allowed tempo range (the recording at "</span>
-</span><span id="line-246">                <span class="sa">f</span><span class="s2">"strictly between half and double the reference's speed): "</span>
-</span><span id="line-247">                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">frame_rate</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s of query against </span><span class="si">{</span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">frame_rate</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s of "</span>
-</span><span id="line-248">                <span class="sa">f</span><span class="s2">"reference, subsequence=</span><span class="si">{</span><span class="n">subsequence</span><span class="si">}</span><span class="s2">. Crop the longer one to "</span>
-</span><span id="line-249">                <span class="sa">f</span><span class="s2">"the shared passage, or pass subsequence=True to find a clip "</span>
-</span><span id="line-250">                <span class="sa">f</span><span class="s2">"inside a longer reference."</span>
-</span><span id="line-251">            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-</span><span id="line-252">        <span class="n">wp</span> <span class="o">=</span> <span class="n">wp</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># path runs end -&gt; start</span>
-</span><span id="line-253">        <span class="c1"># Mean cosine distance along the path (columns are unit-norm). Not</span>
-</span><span id="line-254">        <span class="c1"># read off the accumulated matrix: librosa may transpose it when the</span>
-</span><span id="line-255">        <span class="c1"># query is longer than the reference.</span>
-</span><span id="line-256">        <span class="n">cost</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">[:,</span> <span class="n">wp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">Sk</span><span class="p">[:,</span> <span class="n">wp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
-</span><span id="line-257">        <span class="k">if</span> <span class="n">best</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cost</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="line-258">            <span class="n">best</span> <span class="o">=</span> <span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span>
-</span><span id="line-259">    <span class="n">cost</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">wp</span> <span class="o">=</span> <span class="n">best</span>
-</span><span id="line-260">
-</span><span id="line-261">    <span class="n">audio_frames</span><span class="p">,</span> <span class="n">score_frames</span> <span class="o">=</span> <span class="n">wp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">wp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-</span><span id="line-262">    <span class="c1"># Keep one score time per audio frame so the map is strictly usable both ways.</span>
-</span><span id="line-263">    <span class="n">_</span><span class="p">,</span> <span class="n">first</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">audio_frames</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="line-264">    <span class="n">audio_t</span> <span class="o">=</span> <span class="n">audio_frames</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">/</span> <span class="n">frame_rate</span>
-</span><span id="line-265">    <span class="n">score_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">score_frames</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">/</span> <span class="n">frame_rate</span><span class="p">)</span>
-</span><span id="line-266">    <span class="k">return</span> <span class="n">ScoreAlignment</span><span class="p">(</span>
-</span><span id="line-267">        <span class="n">score_times</span><span class="o">=</span><span class="n">score_t</span><span class="p">,</span>
-</span><span id="line-268">        <span class="n">audio_times</span><span class="o">=</span><span class="n">audio_t</span><span class="p">,</span>
-</span><span id="line-269">        <span class="n">cost</span><span class="o">=</span><span class="n">cost</span><span class="p">,</span>
-</span><span id="line-270">        <span class="n">transpose</span><span class="o">=</span><span class="n">k</span> <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="mi">6</span> <span class="k">else</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">12</span><span class="p">,</span>
-</span><span id="line-271">        <span class="n">raw</span><span class="o">=</span><span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="n">wp</span><span class="p">,</span> <span class="s2">"frame_rate"</span><span class="p">:</span> <span class="n">frame_rate</span><span class="p">},</span>
-</span><span id="line-272">    <span class="p">)</span>
+</span><span id="line-216"><span class="sd">    Args:</span>
+</span><span id="line-217"><span class="sd">        audio: The recording to place on the reference's timeline.</span>
+</span><span id="line-218"><span class="sd">        reference: The reference recording.</span>
+</span><span id="line-219"><span class="sd">        sr: Sample rate when ``audio`` is an array.</span>
+</span><span id="line-220"><span class="sd">        reference_sr: Sample rate when ``reference`` is an array.</span>
+</span><span id="line-221"><span class="sd">        subsequence: Match ``audio`` anywhere inside ``reference`` (default</span>
+</span><span id="line-222"><span class="sd">            ``False``: both start and end together).</span>
+</span><span id="line-223"><span class="sd">        transpose: Semitones, or ``"auto"`` to try all twelve.</span>
+</span><span id="line-224"><span class="sd">        frame_rate: Analysis frames per second.</span>
+</span><span id="line-225"><span class="sd">        audio_sr: Rate both are resampled to before analysis.</span>
+</span><span id="line-226">
+</span><span id="line-227"><span class="sd">    Returns:</span>
+</span><span id="line-228"><span class="sd">        A :class:`ScoreAlignment` (``score_*`` refers to ``reference``).</span>
+</span><span id="line-229"><span class="sd">    """</span>
+</span><span id="line-230">    <span class="n">R</span> <span class="o">=</span> <span class="n">audio_chroma</span><span class="p">(</span>
+</span><span id="line-231">        <span class="n">reference</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">reference_sr</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">,</span> <span class="n">audio_sr</span><span class="o">=</span><span class="n">audio_sr</span>
+</span><span id="line-232">    <span class="p">)</span>
+</span><span id="line-233">    <span class="n">A</span> <span class="o">=</span> <span class="n">audio_chroma</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">,</span> <span class="n">audio_sr</span><span class="o">=</span><span class="n">audio_sr</span><span class="p">)</span>
+</span><span id="line-234">    <span class="k">return</span> <span class="n">align_chroma</span><span class="p">(</span>
+</span><span id="line-235">        <span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">subsequence</span><span class="o">=</span><span class="n">subsequence</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="n">transpose</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="n">frame_rate</span>
+</span><span id="line-236">    <span class="p">)</span></div>
+
+</span><span id="line-237">
+</span><span id="line-238">
+<div class="viewcode-block" id="align_chroma">
+<a class="viewcode-back" href="../../_autosummary/denote.align.html#denote.align.align_chroma">[docs]</a>
+</span><span id="line-239"><span class="k">def</span><span class="w"> </span><span class="nf">align_chroma</span><span class="p">(</span>
+</span><span id="line-240">    <span class="n">query</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="line-241">    <span class="n">reference</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="line-242">    <span class="o">*</span><span class="p">,</span>
+</span><span id="line-243">    <span class="n">subsequence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="line-244">    <span class="n">transpose</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="line-245">    <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_FRAME_RATE</span><span class="p">,</span>
+</span><span id="line-246">    <span class="n">steps</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">_STEPS</span><span class="p">,</span>
+</span><span id="line-247">    <span class="n">silent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"uniform"</span><span class="p">,</span>
+</span><span id="line-248"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScoreAlignment</span><span class="p">:</span>
+</span><span id="line-249"><span class="w">    </span><span class="sd">"""Align two precomputed pitch-class feature sequences (rows x frames).</span>
+</span><span id="line-250">
+</span><span id="line-251"><span class="sd">    The DTW behind :func:`align_score` and :func:`align_audio`, for callers</span>
+</span><span id="line-252"><span class="sd">    with their own features: a band-limited chroma, a chroma with a drone's</span>
+</span><span id="line-253"><span class="sd">    steady background removed, a symbolic chroma at another resolution. Both</span>
+</span><span id="line-254"><span class="sd">    must have the same rows and be at ``frame_rate`` frames per second.</span>
+</span><span id="line-255">
+</span><span id="line-256"><span class="sd">    Args:</span>
+</span><span id="line-257"><span class="sd">        query: The sequence to place (``query_times`` / ``audio_times``).</span>
+</span><span id="line-258"><span class="sd">        reference: The sequence it is placed on (``reference_times`` /</span>
+</span><span id="line-259"><span class="sd">            ``score_times``).</span>
+</span><span id="line-260"><span class="sd">        subsequence: Match the shorter of the two anywhere inside the longer</span>
+</span><span id="line-261"><span class="sd">            (default), else both start and end together.</span>
+</span><span id="line-262"><span class="sd">        transpose: Semitones to roll the reference's pitch classes, or</span>
+</span><span id="line-263"><span class="sd">            ``"auto"`` to try all twelve and keep the lowest-cost one (12-row</span>
+</span><span id="line-264"><span class="sd">            chroma only).</span>
+</span><span id="line-265"><span class="sd">        frame_rate: Frames per second of both, to turn frames into seconds.</span>
+</span><span id="line-266"><span class="sd">        steps: DTW step sizes as (query frames, reference frames) rows. The</span>
+</span><span id="line-267"><span class="sd">            default bounds the tempo ratio to half or double.</span>
+</span><span id="line-268"><span class="sd">        silent: How a silent (zero) column counts: ``"uniform"`` (the flat</span>
+</span><span id="line-269"><span class="sd">            chroma, the default) or ``"zero"`` (similar to nothing).</span>
+</span><span id="line-270">
+</span><span id="line-271"><span class="sd">    Returns:</span>
+</span><span id="line-272"><span class="sd">        A :class:`ScoreAlignment`; its ``cost`` is the mean cosine distance</span>
+</span><span id="line-273"><span class="sd">        along the path (0 = same pitch content), its ``raw["path"]`` the</span>
+</span><span id="line-274"><span class="sd">        (query, reference) frame pairs.</span>
+</span><span id="line-275">
+</span><span id="line-276"><span class="sd">    Example::</span>
+</span><span id="line-277">
+</span><span id="line-278"><span class="sd">        a = denote.align_chroma(take_chroma, seed_chroma, frame_rate=10)</span>
+</span><span id="line-279"><span class="sd">        1 - a.cost  # mean cosine similarity along the alignment</span>
+</span><span id="line-280"><span class="sd">    """</span>
+</span><span id="line-281">    <span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
+</span><span id="line-282">
+</span><span id="line-283">    <span class="n">A</span><span class="p">,</span> <span class="n">S</span> <span class="o">=</span> <span class="n">_check_chroma</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="n">transpose</span><span class="p">)</span>
+</span><span id="line-284">    <span class="n">steps</span> <span class="o">=</span> <span class="n">_check_steps</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span>
+</span><span id="line-285">    <span class="k">if</span> <span class="ow">not</span> <span class="n">frame_rate</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="line-286">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"frame_rate must be positive, got </span><span class="si">{</span><span class="n">frame_rate</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-287">    <span class="n">A</span><span class="p">,</span> <span class="n">S</span> <span class="o">=</span> <span class="n">_normalize</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="n">silent</span><span class="p">),</span> <span class="n">_normalize</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="n">silent</span><span class="p">)</span>
+</span><span id="line-288">    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="line-289">    <span class="c1"># librosa matches the first axis inside the second; with the query longer,</span>
+</span><span id="line-290">    <span class="c1"># match the transposed problem and read the path back.</span>
+</span><span id="line-291">    <span class="n">swap</span> <span class="o">=</span> <span class="n">subsequence</span> <span class="ow">and</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">m</span>
+</span><span id="line-292">    <span class="n">shifts</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="line-293">        <span class="nb">range</span><span class="p">(</span><span class="n">N_PITCH_CLASSES</span><span class="p">)</span>
+</span><span id="line-294">        <span class="k">if</span> <span class="n">transpose</span> <span class="o">==</span> <span class="s2">"auto"</span>
+</span><span id="line-295">        <span class="k">else</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">transpose</span><span class="p">)</span> <span class="o">%</span> <span class="n">N_PITCH_CLASSES</span><span class="p">]</span>
+</span><span id="line-296">    <span class="p">)</span>
+</span><span id="line-297">
+</span><span id="line-298">    <span class="n">best</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-299">    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">shifts</span><span class="p">:</span>
+</span><span id="line-300">        <span class="n">Sk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="line-301">        <span class="n">similarity</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">Sk</span>  <span class="c1"># cosine: columns are unit-norm (or zero)</span>
+</span><span id="line-302">        <span class="n">cost_matrix</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">similarity</span>
+</span><span id="line-303">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-304">            <span class="n">_</span><span class="p">,</span> <span class="n">wp</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">sequence</span><span class="o">.</span><span class="n">dtw</span><span class="p">(</span>
+</span><span id="line-305">                <span class="n">C</span><span class="o">=</span><span class="n">cost_matrix</span><span class="o">.</span><span class="n">T</span> <span class="k">if</span> <span class="n">swap</span> <span class="k">else</span> <span class="n">cost_matrix</span><span class="p">,</span>
+</span><span id="line-306">                <span class="n">subseq</span><span class="o">=</span><span class="n">subsequence</span><span class="p">,</span>
+</span><span id="line-307">                <span class="n">step_sizes_sigma</span><span class="o">=</span><span class="n">steps</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">swap</span> <span class="k">else</span> <span class="n">steps</span><span class="p">,</span>
+</span><span id="line-308">                <span class="n">weights_mul</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)),</span>
+</span><span id="line-309">            <span class="p">)</span>
+</span><span id="line-310">        <span class="k">except</span> <span class="n">librosa</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ParameterError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span id="line-311">            <span class="n">span</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="line-312">                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">frame_rate</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s of query against </span><span class="si">{</span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">frame_rate</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s of "</span>
+</span><span id="line-313">                <span class="sa">f</span><span class="s2">"reference, subsequence=</span><span class="si">{</span><span class="n">subsequence</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="line-314">            <span class="p">)</span>
+</span><span id="line-315">            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">_STEPS</span><span class="p">):</span>
+</span><span id="line-316">                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-317">                    <span class="sa">f</span><span class="s2">"No alignment path with these steps: </span><span class="si">{</span><span class="n">span</span><span class="si">}</span><span class="s2">."</span>
+</span><span id="line-318">                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span id="line-319">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-320">                <span class="sa">f</span><span class="s2">"No alignment within the allowed tempo range (the recording at "</span>
+</span><span id="line-321">                <span class="sa">f</span><span class="s2">"strictly between half and double the reference's speed): </span><span class="si">{</span><span class="n">span</span><span class="si">}</span><span class="s2">. "</span>
+</span><span id="line-322">                <span class="sa">f</span><span class="s2">"Crop the longer one to the shared passage, or pass "</span>
+</span><span id="line-323">                <span class="sa">f</span><span class="s2">"subsequence=True to find a clip inside a longer reference."</span>
+</span><span id="line-324">            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+</span><span id="line-325">        <span class="n">wp</span> <span class="o">=</span> <span class="n">wp</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># path runs end -&gt; start</span>
+</span><span id="line-326">        <span class="k">if</span> <span class="n">swap</span><span class="p">:</span>
+</span><span id="line-327">            <span class="n">wp</span> <span class="o">=</span> <span class="n">wp</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="line-328">        <span class="n">cost</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cost_matrix</span><span class="p">[</span><span class="n">wp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">wp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]))</span>
+</span><span id="line-329">        <span class="k">if</span> <span class="n">best</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cost</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span id="line-330">            <span class="n">best</span> <span class="o">=</span> <span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">wp</span><span class="p">)</span>
+</span><span id="line-331">    <span class="n">cost</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">wp</span> <span class="o">=</span> <span class="n">best</span>
+</span><span id="line-332">
+</span><span id="line-333">    <span class="n">audio_frames</span><span class="p">,</span> <span class="n">score_frames</span> <span class="o">=</span> <span class="n">wp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">wp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+</span><span id="line-334">    <span class="c1"># Keep one score time per audio frame so the map is strictly usable both ways.</span>
+</span><span id="line-335">    <span class="n">_</span><span class="p">,</span> <span class="n">first</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">audio_frames</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-336">    <span class="n">audio_t</span> <span class="o">=</span> <span class="n">audio_frames</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">/</span> <span class="n">frame_rate</span>
+</span><span id="line-337">    <span class="n">score_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">score_frames</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">/</span> <span class="n">frame_rate</span><span class="p">)</span>
+</span><span id="line-338">    <span class="k">return</span> <span class="n">ScoreAlignment</span><span class="p">(</span>
+</span><span id="line-339">        <span class="n">score_times</span><span class="o">=</span><span class="n">score_t</span><span class="p">,</span>
+</span><span id="line-340">        <span class="n">audio_times</span><span class="o">=</span><span class="n">audio_t</span><span class="p">,</span>
+</span><span id="line-341">        <span class="n">cost</span><span class="o">=</span><span class="n">cost</span><span class="p">,</span>
+</span><span id="line-342">        <span class="n">transpose</span><span class="o">=</span><span class="n">k</span> <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="mi">6</span> <span class="k">else</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">12</span><span class="p">,</span>
+</span><span id="line-343">        <span class="n">raw</span><span class="o">=</span><span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="n">wp</span><span class="p">,</span> <span class="s2">"frame_rate"</span><span class="p">:</span> <span class="n">frame_rate</span><span class="p">},</span>
+</span><span id="line-344">    <span class="p">)</span></div>
+
+</span><span id="line-345">
+</span><span id="line-346">
+</span><span id="line-347"><span class="k">def</span><span class="w"> </span><span class="nf">_check_steps</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-348"><span class="w">    </span><span class="sd">"""``steps`` as a (k, 2) int array of (query, reference) advances, or a ValueError."""</span>
+</span><span id="line-349">    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span>
+</span><span id="line-350">    <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+</span><span id="line-351">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"steps must be (k, 2) integer pairs, got </span><span class="si">{</span><span class="n">steps</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-352">    <span class="k">if</span> <span class="p">(</span><span class="n">arr</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+</span><span id="line-353">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"steps must be non-negative and never (0, 0)"</span><span class="p">)</span>
+</span><span id="line-354">    <span class="k">return</span> <span class="n">arr</span>
+</span><span id="line-355">
+</span><span id="line-356">
+</span><span id="line-357"><span class="k">def</span><span class="w"> </span><span class="nf">_check_chroma</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">transpose</span><span class="p">):</span>
+</span><span id="line-358"><span class="w">    </span><span class="sd">"""Both as float (rows, frames) arrays fit to align, or a ValueError naming the problem."""</span>
+</span><span id="line-359">    <span class="n">A</span><span class="p">,</span> <span class="n">S</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">reference</span><span class="p">))</span>
+</span><span id="line-360">    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">S</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+</span><span id="line-361">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-362">            <span class="sa">f</span><span class="s2">"chroma must be 2-D (rows, frames); got </span><span class="si">{</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="line-363">        <span class="p">)</span>
+</span><span id="line-364">    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span id="line-365">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"query has </span><span class="si">{</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> rows, reference </span><span class="si">{</span><span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-366">    <span class="k">if</span> <span class="n">transpose</span> <span class="o">!=</span> <span class="s2">"auto"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">float</span><span class="p">(</span><span class="n">transpose</span><span class="p">)</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+</span><span id="line-367">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-368">            <span class="sa">f</span><span class="s2">"transpose must be whole semitones or 'auto', got </span><span class="si">{</span><span class="n">transpose</span><span class="si">!r}</span><span class="s2">"</span>
+</span><span id="line-369">        <span class="p">)</span>
+</span><span id="line-370">    <span class="k">if</span> <span class="n">transpose</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">N_PITCH_CLASSES</span><span class="p">:</span>
+</span><span id="line-371">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-372">            <span class="sa">f</span><span class="s2">"transpose needs </span><span class="si">{</span><span class="n">N_PITCH_CLASSES</span><span class="si">}</span><span class="s2">-row chroma, got </span><span class="si">{</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="line-373">        <span class="p">)</span>
+</span><span id="line-374">    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">S</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()):</span>
+</span><span id="line-375">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"chroma has NaN or infinite values"</span><span class="p">)</span>
+</span><span id="line-376">    <span class="k">if</span> <span class="p">(</span><span class="n">A</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="n">S</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="line-377">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"chroma must have rows of non-negative values (energies)"</span><span class="p">)</span>
+</span><span id="line-378">    <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+</span><span id="line-379">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"too short to align: </span><span class="si">{</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> frames"</span><span class="p">)</span>
+</span><span id="line-380">    <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">S</span>
 </span></code></pre></div>
     </div></div>
           </main>
@@ -478,12 +589,12 @@
 </footer>
     </div>
     
-    <script src="../../_static/documentation_options.js?v=1fd71caa"></script>
+    <script src="../../_static/documentation_options.js?v=bbaf98b3"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=fd10adb8"></script>
-    <script defer="defer" src="../../_static/theme.js?v=5db23cf8"></script>
+    <script defer="defer" src="../../_static/theme.js?v=49cc6205"></script>
     <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
 
 

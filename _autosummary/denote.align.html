@@ -29,7 +29,7 @@
 <meta content="denote.align | denote" property="og:title"/>
 <meta content="denote.align | denote" name="twitter:title"/>
 <link href="../_static/pygments.css?v=d75fae25" rel="stylesheet" type="text/css"/>
-<link href="../_static/theme.css?v=d6d7c91b" rel="stylesheet" type="text/css"/>
+<link href="../_static/theme.css?v=009055c6" rel="stylesheet" type="text/css"/>
 <link href="../_static/sphinx_autodoc_typehints.css?v=057ac668" rel="stylesheet" type="text/css"/>
 <link href="../_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
 <link href="../_static/epythet.css?v=885e65be" rel="stylesheet" type="text/css"/>
@@ -149,6 +149,12 @@ recording, which makes it a ranking of how faithful each score is.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#denote.align.DFLT_AUDIO_SR" title="denote.align.DFLT_AUDIO_SR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_AUDIO_SR</span></code></a></p></td>
 <td><p>Default sample rate the audio is resampled to before chroma extraction.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.align.N_PITCH_CLASSES" title="denote.align.N_PITCH_CLASSES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">N_PITCH_CLASSES</span></code></a></p></td>
+<td><p>Pitch classes per chroma column.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.align.SILENT_NORM" title="denote.align.SILENT_NORM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SILENT_NORM</span></code></a></p></td>
+<td><p>A column with a smaller norm than this is a silent frame.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Functions</p>
@@ -157,13 +163,16 @@ recording, which makes it a ranking of how faithful each score is.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#denote.align.align_audio" title="denote.align.align_audio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_audio</span></code></a>(audio, reference, *[, sr, ...])</p></td>
 <td><p>Align two recordings of the same music (a cover, a render, a remix).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.align.align_score" title="denote.align.align_score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_score</span></code></a>(score, audio, *[, sr, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.align.align_chroma" title="denote.align.align_chroma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_chroma</span></code></a>(query, reference, *[, ...])</p></td>
+<td><p>Align two precomputed pitch-class feature sequences (rows x frames).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.align.align_score" title="denote.align.align_score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_score</span></code></a>(score, audio, *[, sr, ...])</p></td>
 <td><p>Align a score to a recording of (part of) the same music.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.align.audio_chroma" title="denote.align.audio_chroma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">audio_chroma</span></code></a>(audio, *[, sr, frame_rate, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.align.audio_chroma" title="denote.align.audio_chroma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">audio_chroma</span></code></a>(audio, *[, sr, frame_rate, ...])</p></td>
 <td><p>L2-normalized 12 x frames constant-Q chroma of a recording.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.align.score_chroma" title="denote.align.score_chroma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_chroma</span></code></a>(score, *[, frame_rate])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.align.score_chroma" title="denote.align.score_chroma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_chroma</span></code></a>(score, *[, frame_rate])</p></td>
 <td><p>L2-normalized 12 x frames chroma of a score (drums excluded).</p></td>
 </tr>
 </tbody>
@@ -185,6 +194,16 @@ recording, which makes it a ranking of how faithful each score is.</p>
 <dt class="sig sig-object py" id="denote.align.DFLT_FRAME_RATE">
 <span class="sig-prename descclassname"><span class="pre">denote.align.</span></span><span class="sig-name descname"><span class="pre">DFLT_FRAME_RATE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10.0</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.align.DFLT_FRAME_RATE" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.align.DFLT_FRAME_RATE'">¶</a></dt>
 <dd><p>Default analysis rate (frames per second) for both score and audio.</p>
+</dd></dl>
+<dl class="py data">
+<dt class="sig sig-object py" id="denote.align.N_PITCH_CLASSES">
+<span class="sig-prename descclassname"><span class="pre">denote.align.</span></span><span class="sig-name descname"><span class="pre">N_PITCH_CLASSES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.align.N_PITCH_CLASSES" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.align.N_PITCH_CLASSES'">¶</a></dt>
+<dd><p>Pitch classes per chroma column.</p>
+</dd></dl>
+<dl class="py data">
+<dt class="sig sig-object py" id="denote.align.SILENT_NORM">
+<span class="sig-prename descclassname"><span class="pre">denote.align.</span></span><span class="sig-name descname"><span class="pre">SILENT_NORM</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-09</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.align.SILENT_NORM" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.align.SILENT_NORM'">¶</a></dt>
+<dd><p>A column with a smaller norm than this is a silent frame.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="denote.align.ScoreAlignment">
@@ -249,6 +268,16 @@ recording, which makes it a ranking of how faithful each score is.</p>
 <dd><p>Score time(s) sounding at recording time(s) <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
 </dd></dl>
 <dl class="py property">
+<dt class="sig sig-object py" id="denote.align.ScoreAlignment.query_times">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">query_times</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.align.ScoreAlignment.query_times" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.align.ScoreAlignment.query_times'">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">audio_times</span></code>, under <a class="reference internal" href="#denote.align.align_chroma" title="denote.align.align_chroma"><code class="xref py py-func docutils literal notranslate"><span class="pre">align_chroma()</span></code></a>’s name.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="denote.align.ScoreAlignment.reference_times">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">reference_times</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.align.ScoreAlignment.reference_times" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.align.ScoreAlignment.reference_times'">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">score_times</span></code>, under <a class="reference internal" href="#denote.align.align_chroma" title="denote.align.align_chroma"><code class="xref py py-func docutils literal notranslate"><span class="pre">align_chroma()</span></code></a>’s name.</p>
+</dd></dl>
+<dl class="py property">
 <dt class="sig sig-object py" id="denote.align.ScoreAlignment.score_span">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">score_span</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" rel="nofollow noopener" title="(in Python v3.15)"><span class="pre">tuple</span><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.align.ScoreAlignment.score_span" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.align.ScoreAlignment.score_span'">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">(first,</span> <span class="pre">last)</span></code> score times covered by the recording.</p>
@@ -289,6 +318,47 @@ a fidelity score for generated versions of a piece.</p>
 <dd class="field-odd"><p>A <a class="reference internal" href="#denote.align.ScoreAlignment" title="denote.align.ScoreAlignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScoreAlignment</span></code></a> (<code class="docutils literal notranslate"><span class="pre">score_*</span></code> refers to <code class="docutils literal notranslate"><span class="pre">reference</span></code>).</p>
 </dd>
 </dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="denote.align.align_chroma">
+<span class="sig-prename descclassname"><span class="pre">denote.align.</span></span><span class="sig-name descname"><span class="pre">align_chroma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([[1,</span> <span class="pre">1],</span> <span class="pre">[1,</span> <span class="pre">2],</span> <span class="pre">[2,</span> <span class="pre">1]])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/align.html#align_chroma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.align.align_chroma" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.align.align_chroma'">¶</a></dt>
+<dd><p>Align two precomputed pitch-class feature sequences (rows x frames).</p>
+<p>The DTW behind <a class="reference internal" href="#denote.align.align_score" title="denote.align.align_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">align_score()</span></code></a> and <a class="reference internal" href="#denote.align.align_audio" title="denote.align.align_audio"><code class="xref py py-func docutils literal notranslate"><span class="pre">align_audio()</span></code></a>, for callers
+with their own features: a band-limited chroma, a chroma with a drone’s
+steady background removed, a symbolic chroma at another resolution. Both
+must have the same rows and be at <code class="docutils literal notranslate"><span class="pre">frame_rate</span></code> frames per second.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The sequence to place (<code class="docutils literal notranslate"><span class="pre">query_times</span></code> / <code class="docutils literal notranslate"><span class="pre">audio_times</span></code>).</p></li>
+<li><p><strong>reference</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – The sequence it is placed on (<code class="docutils literal notranslate"><span class="pre">reference_times</span></code> /
+<code class="docutils literal notranslate"><span class="pre">score_times</span></code>).</p></li>
+<li><p><strong>subsequence</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span>) – Match the shorter of the two anywhere inside the longer
+(default), else both start and end together.</p></li>
+<li><p><strong>transpose</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Union</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a>]</span>) – Semitones to roll the reference’s pitch classes, or
+<code class="docutils literal notranslate"><span class="pre">"auto"</span></code> to try all twelve and keep the lowest-cost one (12-row
+chroma only).</p></li>
+<li><p><strong>frame_rate</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span>) – Frames per second of both, to turn frames into seconds.</p></li>
+<li><p><strong>steps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – DTW step sizes as (query frames, reference frames) rows. The
+default bounds the tempo ratio to half or double.</p></li>
+<li><p><strong>silent</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span>) – How a silent (zero) column counts: <code class="docutils literal notranslate"><span class="pre">"uniform"</span></code> (the flat
+chroma, the default) or <code class="docutils literal notranslate"><span class="pre">"zero"</span></code> (similar to nothing).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#denote.align.ScoreAlignment" title="denote.align.ScoreAlignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScoreAlignment</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A <a class="reference internal" href="#denote.align.ScoreAlignment" title="denote.align.ScoreAlignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScoreAlignment</span></code></a>; its <code class="docutils literal notranslate"><span class="pre">cost</span></code> is the mean cosine distance
+along the path (0 = same pitch content), its <code class="docutils literal notranslate"><span class="pre">raw["path"]</span></code> the
+(query, reference) frame pairs.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">a</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">align_chroma</span><span class="p">(</span><span class="n">take_chroma</span><span class="p">,</span> <span class="n">seed_chroma</span><span class="p">,</span> <span class="n">frame_rate</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="line-2"><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span><span class="o">.</span><span class="n">cost</span>  <span class="c1"># mean cosine similarity along the alignment</span>
+</span></code></pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="denote.align.align_score">
@@ -350,6 +420,8 @@ to try all twelve and keep the lowest-cost one.</p></li>
 <ul>
 <li><a :data-current="activeSection === '#denote.align.DFLT_AUDIO_SR'" class="reference internal" href="#denote.align.DFLT_AUDIO_SR"><code class="docutils literal notranslate"><span class="pre">DFLT_AUDIO_SR</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.DFLT_FRAME_RATE'" class="reference internal" href="#denote.align.DFLT_FRAME_RATE"><code class="docutils literal notranslate"><span class="pre">DFLT_FRAME_RATE</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.align.N_PITCH_CLASSES'" class="reference internal" href="#denote.align.N_PITCH_CLASSES"><code class="docutils literal notranslate"><span class="pre">N_PITCH_CLASSES</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.align.SILENT_NORM'" class="reference internal" href="#denote.align.SILENT_NORM"><code class="docutils literal notranslate"><span class="pre">SILENT_NORM</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.ScoreAlignment'" class="reference internal" href="#denote.align.ScoreAlignment"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment</span></code></a><ul>
 <li><a :data-current="activeSection === '#denote.align.ScoreAlignment.score_times'" class="reference internal" href="#denote.align.ScoreAlignment.score_times"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.score_times</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.ScoreAlignment.audio_times'" class="reference internal" href="#denote.align.ScoreAlignment.audio_times"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.audio_times</span></code></a></li>
@@ -357,11 +429,14 @@ to try all twelve and keep the lowest-cost one.</p></li>
 <li><a :data-current="activeSection === '#denote.align.ScoreAlignment.transpose'" class="reference internal" href="#denote.align.ScoreAlignment.transpose"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.transpose</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.ScoreAlignment.raw'" class="reference internal" href="#denote.align.ScoreAlignment.raw"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.raw</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.ScoreAlignment.audio_to_score'" class="reference internal" href="#denote.align.ScoreAlignment.audio_to_score"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.audio_to_score()</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.align.ScoreAlignment.query_times'" class="reference internal" href="#denote.align.ScoreAlignment.query_times"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.query_times</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.align.ScoreAlignment.reference_times'" class="reference internal" href="#denote.align.ScoreAlignment.reference_times"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.reference_times</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.ScoreAlignment.score_span'" class="reference internal" href="#denote.align.ScoreAlignment.score_span"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.score_span</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.ScoreAlignment.score_to_audio'" class="reference internal" href="#denote.align.ScoreAlignment.score_to_audio"><code class="docutils literal notranslate"><span class="pre">ScoreAlignment.score_to_audio()</span></code></a></li>
 </ul>
 </li>
 <li><a :data-current="activeSection === '#denote.align.align_audio'" class="reference internal" href="#denote.align.align_audio"><code class="docutils literal notranslate"><span class="pre">align_audio()</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.align.align_chroma'" class="reference internal" href="#denote.align.align_chroma"><code class="docutils literal notranslate"><span class="pre">align_chroma()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.align_score'" class="reference internal" href="#denote.align.align_score"><code class="docutils literal notranslate"><span class="pre">align_score()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.audio_chroma'" class="reference internal" href="#denote.align.audio_chroma"><code class="docutils literal notranslate"><span class="pre">audio_chroma()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.align.score_chroma'" class="reference internal" href="#denote.align.score_chroma"><code class="docutils literal notranslate"><span class="pre">score_chroma()</span></code></a></li>
@@ -378,11 +453,11 @@ to try all twelve and keep the lowest-cost one.</p></li>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=1fd71caa"></script>
+<script src="../_static/documentation_options.js?v=bbaf98b3"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
 <script src="../_static/copybutton.js?v=fd10adb8"></script>
-<script defer="defer" src="../_static/theme.js?v=5db23cf8"></script>
+<script defer="defer" src="../_static/theme.js?v=49cc6205"></script>
 </body>
 </html>

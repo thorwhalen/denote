@@ -10,12 +10,15 @@ denote.align
    
       DFLT_FRAME_RATE
       DFLT_AUDIO_SR
+      N_PITCH_CLASSES
+      SILENT_NORM
    
    .. rubric:: Functions
 
    .. autosummary::
    
       align_audio
+      align_chroma
       align_score
       audio_chroma
       score_chroma

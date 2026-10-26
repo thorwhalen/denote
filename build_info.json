@@ -1,38 +1,38 @@
 {
   "schema_version": 1,
-  "built_at": "2026-10-20T11:17:18Z",
+  "built_at": "2026-10-26T11:37:28Z",
   "package": {
     "name": "denote",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "display_name": "denote",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "0fbabd6a1e8611f41a3684fa9235ae55692c38f9",
-    "short_commit": "0fbabd6",
+    "commit": "2c6ea017bc413b10bc09ae922c464ed2884fb698",
+    "short_commit": "2c6ea01",
     "branch": "main",
     "tags": [
-      "0.0.6"
+      "0.0.7"
     ],
     "dirty": false,
     "remote_url": "https://github.com/thorwhalen/denote",
-    "commit_url": "https://github.com/thorwhalen/denote/commit/0fbabd6a1e8611f41a3684fa9235ae55692c38f9",
+    "commit_url": "https://github.com/thorwhalen/denote/commit/2c6ea017bc413b10bc09ae922c464ed2884fb698",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "thorwhalen/denote",
-    "sha": "a6dad78aa45ce3bd5a4f75fac1eb60792baaa2d5",
+    "sha": "9aaa269e2b9224da721d8d386ae33d0a52350cbd",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "39413546016",
-    "run_url": "https://github.com/thorwhalen/denote/actions/runs/39413546016",
+    "run_id": "40316137469",
+    "run_url": "https://github.com/thorwhalen/denote/actions/runs/40316137469",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.19",
+    "epythet": "0.2.22",
     "sphinx": "9.1.1",
     "docutils": "0.22.4",
     "python": "3.12.15"
@@ -58,15 +58,15 @@
   },
   "site": {
     "modules_documented": 22,
-    "objects_documented": 59
+    "objects_documented": 64
   },
   "pypi": {
     "checked": true,
-    "latest": "0.0.6",
+    "latest": "0.0.7",
     "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/thorwhalen/denote && cd denote\ngit checkout 0fbabd6a1e8611f41a3684fa9235ae55692c38f9\npip install \"epythet==0.2.19\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/thorwhalen/denote && cd denote\ngit checkout 2c6ea017bc413b10bc09ae922c464ed2884fb698\npip install \"epythet==0.2.22\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
     "aligned": true,
