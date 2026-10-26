@@ -67,3 +67,27 @@ def test_chunked_apply_rejects_an_fn_that_changes_the_length():
         chunked_apply(
             lambda c: c[..., :-1], np.zeros((1, 1000)), segment=300, overlap=10
         )
+
+
+@pytest.mark.parametrize(
+    "shape, expected",
+    [
+        ((2, 1000), (2, 1000)),
+        ((1000, 2), (2, 1000)),
+        ((2, 1), (2, 1)),  # one frame of stereo stays stereo
+        ((6, 1000), (6, 1000)),
+        ((1000, 6), (6, 1000)),
+        ((1, 2, 1000), (2, 1000)),  # a batch of one
+    ],
+)
+def test_channels_first(shape, expected):
+    from denote.util import channels_first
+
+    assert channels_first(np.zeros(shape)).shape == expected
+
+
+def test_load_audio_orients_stereo_without_mono():
+    from denote.util import load_audio
+
+    y, sr = load_audio(np.zeros((1000, 2), dtype=np.float32), sr=100, mono=False)
+    assert y.shape == (2, 1000)

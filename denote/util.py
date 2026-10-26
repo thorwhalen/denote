@@ -1,4 +1,5 @@
-"""Audio loading and utility functions for denote."""
+"""Audio loading (any layout to ``(channels, frames)``), and chunked overlap-add for models
+that take bounded lengths (``chunked_apply``)."""
 
 from typing import Callable, List, Optional, Tuple, Union
 from pathlib import Path
@@ -49,21 +50,18 @@ def load_audio(
             y = y.astype(np.float32) / np.iinfo(y.dtype).max
         elif not np.issubdtype(y.dtype, np.floating):
             y = y.astype(np.float32)
+        if y.ndim > 1:
+            y = channels_first(y)
         if mono and y.ndim > 1:
-            # librosa wants (channels, frames); soundfile gives (frames, channels).
-            if y.ndim == 2 and y.shape[0] > y.shape[1]:
-                y = y.T
             y = librosa.to_mono(np.ascontiguousarray(y))
         if target_sr is not None and target_sr != sr:
             y = librosa.resample(y, orig_sr=sr, target_sr=target_sr)
             return y, target_sr
         return y, sr
 
-    # Try torch.Tensor
+    # Try torch.Tensor (on any device)
     try:
-        y = audio.numpy()
-        if y.ndim > 1:
-            y = y.squeeze()
+        y = audio.detach().cpu().numpy()
         if sr is None:
             raise ValueError("Sample rate (sr) is required when audio is a tensor.")
         return load_audio(y, sr=sr, mono=mono, target_sr=target_sr)
@@ -74,6 +72,24 @@ def load_audio(
         f"Unsupported audio type: {type(audio)}. "
         "Expected str, Path, np.ndarray, or torch.Tensor."
     )
+
+
+def channels_first(y: np.ndarray) -> np.ndarray:
+    """A multichannel array as ``(channels, frames)``, whichever way it came.
+
+    librosa and torchaudio give ``(channels, frames)``, soundfile
+    ``(frames, channels)``. Leading size-1 axes (a batch of one) are dropped. An
+    axis of size 2 or less beside a longer one is the channels axis, so a
+    one-frame stereo clip stays stereo; otherwise the longer axis is time.
+    """
+    while y.ndim > 2 and y.shape[0] == 1:
+        y = y[0]
+    if y.ndim != 2:
+        raise ValueError(f"expected 1-D or 2-D audio, got shape {y.shape}")
+    rows, cols = y.shape
+    if cols <= 2 < rows or (rows > cols and not rows <= 2):
+        return y.T
+    return y
 
 
 def ensure_file_path(

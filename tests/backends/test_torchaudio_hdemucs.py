@@ -184,3 +184,31 @@ def test_separation_result_mono_names_its_stems():
 
 def test_separate_is_the_default_for_its_task():
     assert denote.get_default_backend("separate") == "torchaudio_hdemucs"
+
+
+def test_a_bundle_that_is_not_hdemucs_is_refused_before_loading(monkeypatch):
+    def no_load(bundle, device):
+        raise AssertionError("must not load")
+
+    monkeypatch.setattr(hd, "_load", no_load)
+    with pytest.raises(ValueError, match="bundle must be one of"):
+        denote.separate(np.zeros(SR), sr=SR, bundle="WAV2VEC2_BASE")
+
+
+def test_real_model_runs_a_short_and_a_one_frame_stereo_input():
+    torchaudio = pytest.importorskip("torchaudio")
+    import os
+
+    # where torchaudio's download_asset caches the bundle's weights
+    weights = os.path.join(
+        torch.hub.get_dir(),
+        "torchaudio",
+        torchaudio.pipelines.HDEMUCS_HIGH_MUSDB_PLUS._model_path,
+    )
+    if not os.path.exists(weights):
+        pytest.skip("HDemucs weights not cached")
+    rng = np.random.default_rng(0)
+    for frames in (1, 1100, 2000):  # under the floor, in the failing window, above it
+        mix = rng.normal(0, 0.1, (2, frames)).astype(np.float32)
+        r = denote.separate(mix, sr=SR)
+        assert r.stems["vocals"].shape == (2, frames)

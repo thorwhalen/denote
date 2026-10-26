@@ -17,6 +17,8 @@ MIN_FRAMES = 1281
 
 #: Added to the mix's std before normalizing, so silence does not divide by zero.
 NORM_EPS = 1e-8
+#: The torchaudio.pipelines bundles this adapter runs (four-stem Hybrid Demucs).
+HDEMUCS_BUNDLES = ("HDEMUCS_HIGH_MUSDB_PLUS", "HDEMUCS_HIGH_MUSDB")
 
 
 @lru_cache(maxsize=2)
@@ -24,20 +26,8 @@ def _load(bundle: str, device: str):
     """``(model, sample_rate)`` of the torchaudio.pipelines bundle named ``bundle``."""
     import torchaudio
 
-    b = getattr(torchaudio.pipelines, bundle, None)
-    if b is None or not hasattr(b, "get_model"):
-        raise ValueError(
-            f"{bundle!r} is not a torchaudio.pipelines bundle; try "
-            "'HDEMUCS_HIGH_MUSDB_PLUS' or 'HDEMUCS_HIGH_MUSDB'"
-        )
+    b = getattr(torchaudio.pipelines, bundle)
     return b.get_model().to(device).eval(), b.sample_rate
-
-
-def _as_numpy(audio):
-    """Torch tensors to numpy (without importing torch); anything else as is."""
-    if hasattr(audio, "detach") and hasattr(audio, "numpy"):
-        return audio.detach().cpu().numpy()
-    return audio
 
 
 class Adapter:
@@ -63,7 +53,8 @@ class Adapter:
 
         Returns:
             SeparationResult with ``(2, frames)`` stems at the bundle's rate (44.1 kHz).
-            All four stems sum to the mix; ``.vocals`` is mono.
+            The model's four stems add up to the mix up to its own error (a few %);
+            ``.vocals`` is mono.
         """
         opts = self._translate(**kwargs)
         segment_s, overlap_s = opts["segment_s"], opts["overlap_s"]
@@ -71,6 +62,10 @@ class Adapter:
             raise ValueError(
                 f"need 0 <= overlap_s < segment_s; got overlap_s={overlap_s}, "
                 f"segment_s={segment_s}"
+            )
+        if opts["bundle"] not in HDEMUCS_BUNDLES:  # before anything downloads
+            raise ValueError(
+                f"bundle must be one of {HDEMUCS_BUNDLES}, got {opts['bundle']!r}"
             )
         import torch
 
@@ -83,12 +78,6 @@ class Adapter:
             )
         idx = [names.index(s) for s in keep]
 
-        audio = _as_numpy(audio)
-        if isinstance(audio, np.ndarray) and audio.ndim == 2:
-            if (
-                audio.shape[0] > audio.shape[1]
-            ):  # (frames, channels): resample along time
-                audio = audio.T
         y, _ = load_audio(audio, sr=sr, mono=False, target_sr=model_sr)
         x = np.atleast_2d(np.asarray(y, dtype=np.float32))
         del y  # x - mean below is the only full-size copy of the input we keep

@@ -106,7 +106,8 @@ def separate(audio, *, sr=None, backend=None, **kwargs):
         audio: File path (str/Path) or numpy array.
         sr: Sample rate (required when audio is an array).
         backend: Backend name. Defaults to 'torchaudio_hdemucs'.
-        **kwargs: Backend-specific parameters (segment_s, overlap_s, device).
+        **kwargs: Backend-specific parameters (segment_s, overlap_s, device,
+            bundle, sources).
 
     Returns:
         SeparationResult with .stems ({name: (channels, frames)}), .sr, and
