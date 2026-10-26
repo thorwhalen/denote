@@ -41,7 +41,6 @@ DFLT_AUDIO_SR = 22050
 #: on one score frame for a whole clip, which is
 #: the degenerate answer unconstrained subsequence DTW gives.
 _STEPS = np.array([[1, 1], [1, 2], [2, 1]])
-_STEP_WEIGHTS = np.array([1.0, 1.0, 1.0])
 
 
 @dataclass
@@ -167,7 +166,7 @@ def align_score(
     """
     S = score_chroma(score, frame_rate=frame_rate)
     A = audio_chroma(audio, sr=sr, frame_rate=frame_rate, audio_sr=audio_sr)
-    return _align_chroma(
+    return align_chroma(
         A, S, subsequence=subsequence, transpose=transpose, frame_rate=frame_rate
     )
 
@@ -209,14 +208,57 @@ def align_audio(
         reference, sr=reference_sr, frame_rate=frame_rate, audio_sr=audio_sr
     )
     A = audio_chroma(audio, sr=sr, frame_rate=frame_rate, audio_sr=audio_sr)
-    return _align_chroma(
+    return align_chroma(
         A, R, subsequence=subsequence, transpose=transpose, frame_rate=frame_rate
     )
 
 
-def _align_chroma(A, S, *, subsequence, transpose, frame_rate) -> ScoreAlignment:
-    """DTW of query chroma ``A`` against reference chroma ``S``."""
+def align_chroma(
+    query: np.ndarray,
+    reference: np.ndarray,
+    *,
+    subsequence: bool = True,
+    transpose: Union[int, str] = 0,
+    frame_rate: float = DFLT_FRAME_RATE,
+    steps: np.ndarray = _STEPS,
+    normalize: bool = True,
+) -> ScoreAlignment:
+    """Align two precomputed pitch-class feature sequences (12 x frames each).
+
+    The DTW behind :func:`align_score` and :func:`align_audio`, for callers
+    with their own features: a band-limited chroma, a chroma with a drone's
+    steady background removed, a symbolic chroma at another resolution. Both
+    must be at ``frame_rate`` frames per second.
+
+    Args:
+        query: The sequence to place (``audio_times`` in the result).
+        reference: The sequence it is placed on (``score_times``).
+        subsequence: Match ``query`` anywhere inside ``reference`` (default),
+            else both start and end together.
+        transpose: Semitones to roll the reference's pitch classes, or
+            ``"auto"`` to try all twelve and keep the lowest-cost one.
+        frame_rate: Frames per second of both, to turn frames into seconds.
+        steps: DTW step sizes (query frames, reference frames). The default
+            bounds the tempo ratio to half or double (see ``_STEPS``).
+        normalize: Scale each column to unit norm first (a silent column
+            becomes uniform), as cosine distance needs; pass ``False`` only
+            for columns already unit-norm.
+
+    Returns:
+        A :class:`ScoreAlignment`; its ``cost`` is the mean cosine distance
+        along the path (0 = same pitch content), its ``raw["path"]`` the
+        frame pairs.
+
+    Example::
+
+        a = denote.align_chroma(my_take_chroma, my_seed_chroma, frame_rate=10)
+        1 - a.cost  # mean cosine similarity along the alignment
+    """
     import librosa
+
+    A, S = (
+        (_normalize(c) for c in (query, reference)) if normalize else (query, reference)
+    )
 
     if S.shape[1] == 0 or A.shape[1] == 0:
         raise ValueError("score or audio is empty")
@@ -237,8 +279,8 @@ def _align_chroma(A, S, *, subsequence, transpose, frame_rate) -> ScoreAlignment
                 Y=Sk,
                 metric="cosine",
                 subseq=subsequence,
-                step_sizes_sigma=_STEPS,
-                weights_mul=_STEP_WEIGHTS,
+                step_sizes_sigma=steps,
+                weights_mul=np.ones(len(steps)),
             )
         except librosa.util.exceptions.ParameterError as exc:
             raise ValueError(

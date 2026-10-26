@@ -38,7 +38,7 @@ from denote.registry import (
     get_config,
 )
 from denote.services import ServiceCollection
-from denote.align import align_score, align_audio, ScoreAlignment
+from denote.align import align_score, align_audio, align_chroma, ScoreAlignment
 from denote.compare import compare_audio, AudioComparison
 
 # Lazy singleton for service-level access

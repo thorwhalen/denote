@@ -52,7 +52,9 @@ def test_transpose_auto_finds_the_key_shift():
     score = _score(0.5)
     up_a_tone = _audio(_score(0.5, pitches=[p + 2 for p in _MELODY]))
     plain = denote.align_score(score, up_a_tone, sr=SR, subsequence=False)
-    auto = denote.align_score(score, up_a_tone, sr=SR, subsequence=False, transpose="auto")
+    auto = denote.align_score(
+        score, up_a_tone, sr=SR, subsequence=False, transpose="auto"
+    )
     assert auto.transpose == 2
     assert auto.cost < plain.cost
 
@@ -90,3 +92,43 @@ def test_impossible_tempo_ratio_raises_a_clear_error():
 def test_too_short_raises():
     with pytest.raises(ValueError, match="too short"):
         denote.align_score(_score(0.5), np.zeros(1000, dtype="float32"), sr=SR)
+
+
+def _chroma_of(pitches, frames_per_note):
+    """A unit chroma sequence holding each pitch class for ``frames_per_note`` frames."""
+    cols = []
+    for p in pitches:
+        col = np.zeros(12)
+        col[p % 12] = 1.0
+        cols += [col] * frames_per_note
+    return np.array(cols).T
+
+
+def test_align_chroma_on_precomputed_features():
+    reference = _chroma_of(_MELODY, 5)  # 10 fps: 0.5 s a note
+    query = _chroma_of(_MELODY[4:12], 6)  # notes 4-11, 20% slower
+    a = denote.align_chroma(query, reference, frame_rate=10)
+    assert a.cost == pytest.approx(0.0, abs=0.05)
+    # note 4 starts at 2.0 s in the reference and at 0 in the query
+    assert a.audio_to_score(0.0) == pytest.approx(2.0, abs=0.2)
+    assert a.audio_to_score(4.8) == pytest.approx(
+        6.0, abs=0.3
+    )  # where note 12 would start
+
+
+def test_align_chroma_options():
+    reference = _chroma_of(_MELODY, 5)
+    shifted = np.roll(reference, 2, axis=0)  # the same tune two semitones up
+    a = denote.align_chroma(shifted, reference, subsequence=False, transpose="auto")
+    assert a.transpose == 2 and a.cost == pytest.approx(0.0, abs=1e-6)
+    # unnormalized input: normalize=True (default) makes scale irrelevant
+    b = denote.align_chroma(3 * reference, reference, subsequence=False)
+    assert b.cost == pytest.approx(0.0, abs=1e-6)
+    # a free (1, 0) / (0, 1) step set is accepted
+    c = denote.align_chroma(
+        reference,
+        reference,
+        subsequence=False,
+        steps=np.array([[1, 1], [1, 0], [0, 1]]),
+    )
+    assert c.cost == pytest.approx(0.0, abs=1e-6)
