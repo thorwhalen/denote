@@ -61,6 +61,16 @@ class ScoreAlignment:
     transpose: int = 0
     raw: Any = field(default=None, repr=False)
 
+    @property
+    def query_times(self) -> np.ndarray:
+        """``audio_times``, under :func:`align_chroma`'s name."""
+        return self.audio_times
+
+    @property
+    def reference_times(self) -> np.ndarray:
+        """``score_times``, under :func:`align_chroma`'s name."""
+        return self.score_times
+
     def score_to_audio(self, t):
         """Recording time(s) at which score time(s) ``t`` sound."""
         return np.interp(t, self.score_times, self.audio_times)
@@ -95,17 +105,30 @@ def _to_pretty_midi(score):
     return to_pretty_midi(score)
 
 
-def _normalize(chroma: np.ndarray) -> np.ndarray:
-    """Unit-norm columns; a silent frame becomes the flat (uniform) chroma.
+#: Pitch classes per chroma column.
+N_PITCH_CLASSES = 12
+#: A column with a smaller norm than this is a silent frame.
+SILENT_NORM = 1e-9
 
-    A zero column would make the cosine distance undefined (NaN) and break the
-    DTW, and silence genuinely carries no pitch-class preference.
+
+def _normalize(chroma: np.ndarray, *, silent: str = "uniform") -> np.ndarray:
+    """Unit-norm columns. A silent frame becomes the flat (uniform) chroma, or
+    stays zero with ``silent="zero"``.
+
+    Uniform: silence genuinely carries no pitch-class preference, and it is
+    equally far from every chord. Zero: silence matches nothing (cosine
+    similarity 0), for features where an empty frame means "no melody here".
     """
+    if silent not in ("uniform", "zero"):
+        raise ValueError(f"silent must be 'uniform' or 'zero', not {silent!r}")
     chroma = np.asarray(chroma, dtype=float).copy()
     norms = np.linalg.norm(chroma, axis=0)
-    silent = norms < 1e-9
-    chroma[:, silent] = 1.0
-    norms[silent] = np.sqrt(chroma.shape[0])
+    quiet = norms < SILENT_NORM
+    if silent == "uniform":
+        chroma[:, quiet] = 1.0
+        norms[quiet] = np.sqrt(chroma.shape[0])
+    else:
+        norms[quiet] = 1.0
     return chroma / norms
 
 
@@ -221,81 +244,82 @@ def align_chroma(
     transpose: Union[int, str] = 0,
     frame_rate: float = DFLT_FRAME_RATE,
     steps: np.ndarray = _STEPS,
-    normalize: bool = True,
+    silent: str = "uniform",
 ) -> ScoreAlignment:
-    """Align two precomputed pitch-class feature sequences (12 x frames each).
+    """Align two precomputed pitch-class feature sequences (rows x frames).
 
     The DTW behind :func:`align_score` and :func:`align_audio`, for callers
     with their own features: a band-limited chroma, a chroma with a drone's
     steady background removed, a symbolic chroma at another resolution. Both
-    must be at ``frame_rate`` frames per second.
+    must have the same rows and be at ``frame_rate`` frames per second.
 
     Args:
-        query: The sequence to place (``audio_times`` in the result).
-        reference: The sequence it is placed on (``score_times``).
-        subsequence: Match ``query`` anywhere inside ``reference`` (default),
-            else both start and end together.
+        query: The sequence to place (``query_times`` / ``audio_times``).
+        reference: The sequence it is placed on (``reference_times`` /
+            ``score_times``).
+        subsequence: Match the shorter of the two anywhere inside the longer
+            (default), else both start and end together.
         transpose: Semitones to roll the reference's pitch classes, or
-            ``"auto"`` to try all twelve and keep the lowest-cost one.
+            ``"auto"`` to try all twelve and keep the lowest-cost one (12-row
+            chroma only).
         frame_rate: Frames per second of both, to turn frames into seconds.
-        steps: DTW step sizes (query frames, reference frames). The default
-            bounds the tempo ratio to half or double (see ``_STEPS``).
-        normalize: Scale each column to unit norm first (a silent column
-            becomes uniform), as cosine distance needs; pass ``False`` only
-            for columns already unit-norm.
+        steps: DTW step sizes as (query frames, reference frames) rows. The
+            default bounds the tempo ratio to half or double.
+        silent: How a silent (zero) column counts: ``"uniform"`` (the flat
+            chroma, the default) or ``"zero"`` (similar to nothing).
 
     Returns:
         A :class:`ScoreAlignment`; its ``cost`` is the mean cosine distance
         along the path (0 = same pitch content), its ``raw["path"]`` the
-        frame pairs.
+        (query, reference) frame pairs.
 
     Example::
 
-        a = denote.align_chroma(my_take_chroma, my_seed_chroma, frame_rate=10)
+        a = denote.align_chroma(take_chroma, seed_chroma, frame_rate=10)
         1 - a.cost  # mean cosine similarity along the alignment
     """
     import librosa
 
-    A, S = (
-        (_normalize(c) for c in (query, reference)) if normalize else (query, reference)
-    )
-
-    if S.shape[1] == 0 or A.shape[1] == 0:
-        raise ValueError("score or audio is empty")
+    A, S = _check_chroma(query, reference, transpose=transpose)
+    A, S = _normalize(A, silent=silent), _normalize(S, silent=silent)
     n, m = A.shape[1], S.shape[1]
-    if min(n, m) < 2:
-        raise ValueError(
-            f"too short to align: {n} and {m} frames at {frame_rate} frames/s"
-        )
-    shifts = range(12) if transpose == "auto" else [int(transpose) % 12]
+    steps = np.asarray(steps)
+    # librosa matches the first axis inside the second; with the query longer,
+    # match the transposed problem and read the path back.
+    swap = subsequence and n > m
+    shifts = range(N_PITCH_CLASSES) if transpose == "auto" else [int(transpose) % 12]
 
     best = None
     for k in shifts:
         Sk = np.roll(S, k, axis=0)
-        # librosa matches X as a subsequence of Y when subseq=True.
+        similarity = A.T @ Sk  # cosine: columns are unit-norm (or zero)
+        cost_matrix = 1.0 - similarity
         try:
             _, wp = librosa.sequence.dtw(
-                X=A,
-                Y=Sk,
-                metric="cosine",
+                C=cost_matrix.T if swap else cost_matrix,
                 subseq=subsequence,
-                step_sizes_sigma=steps,
+                step_sizes_sigma=steps[:, ::-1] if swap else steps,
                 weights_mul=np.ones(len(steps)),
             )
         except librosa.util.exceptions.ParameterError as exc:
+            span = (
+                f"{n / frame_rate:.1f}s of query against {m / frame_rate:.1f}s of "
+                f"reference, subsequence={subsequence}"
+            )
+            if not np.array_equal(steps, _STEPS):
+                raise ValueError(
+                    f"No alignment path with these steps: {span}."
+                ) from exc
             raise ValueError(
                 f"No alignment within the allowed tempo range (the recording at "
-                f"strictly between half and double the reference's speed): "
-                f"{n / frame_rate:.1f}s of query against {m / frame_rate:.1f}s of "
-                f"reference, subsequence={subsequence}. Crop the longer one to "
-                f"the shared passage, or pass subsequence=True to find a clip "
-                f"inside a longer reference."
+                f"strictly between half and double the reference's speed): {span}. "
+                f"Crop the longer one to the shared passage, or pass "
+                f"subsequence=True to find a clip inside a longer reference."
             ) from exc
         wp = wp[::-1]  # path runs end -> start
-        # Mean cosine distance along the path (columns are unit-norm). Not
-        # read off the accumulated matrix: librosa may transpose it when the
-        # query is longer than the reference.
-        cost = float(np.mean(1.0 - np.sum(A[:, wp[:, 0]] * Sk[:, wp[:, 1]], axis=0)))
+        if swap:
+            wp = wp[:, ::-1]
+        cost = float(np.mean(cost_matrix[wp[:, 0], wp[:, 1]]))
         if best is None or cost < best[0]:
             best = (cost, k, wp)
     cost, k, wp = best
@@ -312,3 +336,23 @@ def align_chroma(
         transpose=k if k <= 6 else k - 12,
         raw={"path": wp, "frame_rate": frame_rate},
     )
+
+
+def _check_chroma(query, reference, *, transpose):
+    """Both as float (rows, frames) arrays fit to align, or a ValueError naming the problem."""
+    A, S = (np.asarray(c, dtype=float) for c in (query, reference))
+    if A.ndim != 2 or S.ndim != 2:
+        raise ValueError(
+            f"chroma must be 2-D (rows, frames); got {A.shape} and {S.shape}"
+        )
+    if A.shape[0] != S.shape[0]:
+        raise ValueError(f"query has {A.shape[0]} rows, reference {S.shape[0]}")
+    if transpose != 0 and A.shape[0] != N_PITCH_CLASSES:
+        raise ValueError(
+            f"transpose needs {N_PITCH_CLASSES}-row chroma, got {A.shape[0]}"
+        )
+    if not (np.isfinite(A).all() and np.isfinite(S).all()):
+        raise ValueError("chroma has NaN or infinite values")
+    if min(A.shape[1], S.shape[1]) < 2:
+        raise ValueError(f"too short to align: {A.shape[1]} and {S.shape[1]} frames")
+    return A, S
