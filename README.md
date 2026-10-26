@@ -32,6 +32,7 @@ pitch.confidence  # voicing confidence
 
 # Beat tracking (uses librosa, no extra install needed)
 beats = denote.get_beats("song.wav")
+voice = denote.separate("song.wav").vocals  # stems: drums, bass, other, vocals
 beats.beats  # beat times in seconds
 beats.tempo  # BPM estimate
 ```
