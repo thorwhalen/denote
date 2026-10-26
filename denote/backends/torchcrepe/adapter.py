@@ -7,6 +7,23 @@ from denote.util import load_audio
 from denote.translation import make_kwargs_translator
 
 
+#: torchcrepe's model rate: it resamples every input to it.
+CREPE_SR = 16000
+
+
+def frame_period(hop_length: int, sr: int) -> float:
+    """Seconds between torchcrepe's frames for ``hop_length`` samples at ``sr``.
+
+    torchcrepe resamples to 16 kHz and truncates the hop there
+    (``int(hop * 16000 / sr)``), so the frame period is that over 16000, not
+    ``hop / sr``: at 22050 Hz a 220-sample hop is really 219.12 samples, and
+    times built from ``hop / sr`` drift 0.4 % (1.2 s at 5 minutes).
+    """
+    if sr == CREPE_SR:
+        return hop_length / sr
+    return int(hop_length * CREPE_SR / sr) / CREPE_SR
+
+
 class Adapter:
     """torchcrepe adapter for pitch/F0 estimation."""
 
@@ -48,10 +65,8 @@ class Adapter:
         pitch_np = pitch.squeeze().numpy()
         periodicity_np = periodicity.squeeze().numpy()
 
-        # Build time axis
-        hop = native_kwargs.get("hop_length") or int(actual_sr / 100)
-        n_frames = len(pitch_np)
-        times = np.arange(n_frames) * hop / actual_sr
+        hop = native_kwargs.get("hop_length") or actual_sr // 100
+        times = np.arange(len(pitch_np)) * frame_period(hop, actual_sr)
 
         # Replace unvoiced frames (low periodicity) with NaN
         frequencies = pitch_np.copy()
