@@ -32,9 +32,13 @@ pitch.confidence  # voicing confidence
 
 # Beat tracking (uses librosa, no extra install needed)
 beats = denote.get_beats("song.wav")
-voice = denote.separate("song.wav").vocals  # stems: drums, bass, other, vocals
 beats.beats  # beat times in seconds
 beats.tempo  # BPM estimate
+
+# Source separation (requires torch + torchaudio; weights download once)
+stems = denote.separate("song.wav")
+stems.stems  # {"drums", "bass", "other", "vocals"}: (2, frames) at stems.sr (44.1 kHz)
+stems.vocals  # the voice, mono
 ```
 
 ## Choose Your Backend
