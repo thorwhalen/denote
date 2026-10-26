@@ -29,6 +29,7 @@ from denote.base import (
     PitchResult,
     ChordResult,
     BeatResult,
+    SeparationResult,
     TASKS,
 )
 from denote.registry import (
@@ -96,6 +97,29 @@ def get_chords(audio, *, sr=None, backend=None, **kwargs):
     backend = backend or get_default_backend("chords")
     handle = services[backend]
     return handle.get_chords(audio, sr=sr, **kwargs)
+
+
+def separate(audio, *, sr=None, backend=None, **kwargs):
+    """Separate a mix into stems (drums, bass, other, vocals, ...).
+
+    Args:
+        audio: File path (str/Path) or numpy array.
+        sr: Sample rate (required when audio is an array).
+        backend: Backend name. Defaults to 'torchaudio_hdemucs'.
+        **kwargs: Backend-specific parameters (segment_s, overlap_s, device,
+            bundle, sources).
+
+    Returns:
+        SeparationResult with .stems ({name: (channels, frames)}), .sr, and
+        .vocals (mono).
+
+    Example::
+
+        voice = denote.separate("song.mp3").vocals
+    """
+    backend = backend or get_default_backend("separate")
+    handle = services[backend]
+    return handle.separate(audio, sr=sr, **kwargs)
 
 
 def get_beats(audio, *, sr=None, backend=None, **kwargs):

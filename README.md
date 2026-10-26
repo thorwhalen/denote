@@ -34,6 +34,11 @@ pitch.confidence  # voicing confidence
 beats = denote.get_beats("song.wav")
 beats.beats  # beat times in seconds
 beats.tempo  # BPM estimate
+
+# Source separation (requires torch + torchaudio; weights download once)
+stems = denote.separate("song.wav")
+stems.stems  # {"drums", "bass", "other", "vocals"}: (2, frames) at stems.sr (44.1 kHz)
+stems.vocals  # the voice, mono
 ```
 
 ## Choose Your Backend

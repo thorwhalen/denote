@@ -63,6 +63,27 @@ class BeatResult:
     backend: str = ""
 
 
+@dataclass
+class SeparationResult:
+    """Result of source separation: one ``(channels, frames)`` array per stem, at ``sr``."""
+
+    stems: dict  # stem name -> np.ndarray (channels, frames)
+    sr: int
+    raw: Any = None
+    backend: str = ""
+
+    def mono(self, name: str) -> np.ndarray:
+        """Stem ``name`` averaged to one channel."""
+        if name not in self.stems:
+            raise KeyError(f"no stem {name!r}; stems: {sorted(self.stems)}")
+        return np.asarray(self.stems[name]).mean(axis=0)
+
+    @property
+    def vocals(self) -> np.ndarray:
+        """The vocals stem, mono: ``separate(song, sr=sr).vocals``."""
+        return self.mono("vocals")
+
+
 # Supported task identifiers
 TASKS = {
     "transcribe": "Audio to MIDI transcription",

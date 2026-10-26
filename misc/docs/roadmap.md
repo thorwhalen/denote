@@ -27,7 +27,8 @@ Priority backends (permissive licenses, pip-installable, well-maintained):
 - [ ] `madmom_chords` — CNN+CRF chord recognition (BSD/CC-NC)
 - [ ] `madmom_beats` — RNN+DBN beat tracking
 - [ ] `beat_this` — SOTA beat tracking (MIT)
-- [ ] `demucs` — Source separation (MIT)
+- [x] `torchaudio_hdemucs` — Source separation via torchaudio's Hybrid Demucs bundle (no `demucs` package needed)
+- [ ] `demucs` — Source separation with the `demucs` package's newer models (htdemucs)
 
 ## Phase 4: Advanced Features (v0.0.4)
 
