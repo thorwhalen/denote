@@ -177,6 +177,28 @@ def test_align_chroma_names_bad_input(query, match):
         denote.align_chroma(query, _chroma_of(_MELODY, 2))
 
 
+@pytest.mark.parametrize(
+    "kwargs, match",
+    [
+        ({"steps": np.array([1, 1])}, "steps"),
+        ({"steps": np.array([[1.0, 1.0]])}, "steps"),
+        ({"steps": np.array([[1, 1], [0, 0]])}, "never"),
+        ({"transpose": 2.7}, "whole semitones"),
+        ({"frame_rate": 0}, "frame_rate"),
+    ],
+)
+def test_align_chroma_checks_its_options(kwargs, match):
+    reference = _chroma_of(_MELODY, 2)
+    with pytest.raises(ValueError, match=match):
+        denote.align_chroma(reference, reference, **kwargs)
+
+
+def test_align_chroma_rejects_negative_features():
+    reference = _chroma_of(_MELODY, 2)
+    with pytest.raises(ValueError, match="non-negative"):
+        denote.align_chroma(-reference, reference)
+
+
 def test_align_chroma_transpose_needs_twelve_rows():
     with pytest.raises(ValueError, match="12-row"):
         denote.align_chroma(np.ones((6, 10)), np.ones((6, 10)), transpose="auto")

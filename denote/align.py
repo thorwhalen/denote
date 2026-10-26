@@ -281,13 +281,19 @@ def align_chroma(
     import librosa
 
     A, S = _check_chroma(query, reference, transpose=transpose)
+    steps = _check_steps(steps)
+    if not frame_rate > 0:
+        raise ValueError(f"frame_rate must be positive, got {frame_rate}")
     A, S = _normalize(A, silent=silent), _normalize(S, silent=silent)
     n, m = A.shape[1], S.shape[1]
-    steps = np.asarray(steps)
     # librosa matches the first axis inside the second; with the query longer,
     # match the transposed problem and read the path back.
     swap = subsequence and n > m
-    shifts = range(N_PITCH_CLASSES) if transpose == "auto" else [int(transpose) % 12]
+    shifts = (
+        range(N_PITCH_CLASSES)
+        if transpose == "auto"
+        else [int(transpose) % N_PITCH_CLASSES]
+    )
 
     best = None
     for k in shifts:
@@ -338,6 +344,16 @@ def align_chroma(
     )
 
 
+def _check_steps(steps) -> np.ndarray:
+    """``steps`` as a (k, 2) int array of (query, reference) advances, or a ValueError."""
+    arr = np.asarray(steps)
+    if arr.ndim != 2 or arr.shape[1] != 2 or not np.issubdtype(arr.dtype, np.integer):
+        raise ValueError(f"steps must be (k, 2) integer pairs, got {steps!r}")
+    if (arr < 0).any() or (arr.sum(axis=1) == 0).any():
+        raise ValueError("steps must be non-negative and never (0, 0)")
+    return arr
+
+
 def _check_chroma(query, reference, *, transpose):
     """Both as float (rows, frames) arrays fit to align, or a ValueError naming the problem."""
     A, S = (np.asarray(c, dtype=float) for c in (query, reference))
@@ -347,12 +363,18 @@ def _check_chroma(query, reference, *, transpose):
         )
     if A.shape[0] != S.shape[0]:
         raise ValueError(f"query has {A.shape[0]} rows, reference {S.shape[0]}")
+    if transpose != "auto" and not float(transpose).is_integer():
+        raise ValueError(
+            f"transpose must be whole semitones or 'auto', got {transpose!r}"
+        )
     if transpose != 0 and A.shape[0] != N_PITCH_CLASSES:
         raise ValueError(
             f"transpose needs {N_PITCH_CLASSES}-row chroma, got {A.shape[0]}"
         )
     if not (np.isfinite(A).all() and np.isfinite(S).all()):
         raise ValueError("chroma has NaN or infinite values")
+    if (A < 0).any() or (S < 0).any() or A.shape[0] == 0:
+        raise ValueError("chroma must have rows of non-negative values (energies)")
     if min(A.shape[1], S.shape[1]) < 2:
         raise ValueError(f"too short to align: {A.shape[1]} and {S.shape[1]} frames")
     return A, S
