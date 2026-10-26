@@ -18,6 +18,9 @@
 - [denote.backends.librosa_pyin](denote.backends.librosa_pyin.html.md): | &#96;adapter&#96;   | Adapter for librosa pYIN — probabilistic pitch estimation.   |
 - [denote.backends.librosa_pyin.adapter](denote.backends.librosa_pyin.adapter.html.md): Adapter for librosa pYIN — probabilistic pitch estimation.
 - [denote.backends.librosa_pyin.config](denote.backends.librosa_pyin.config.html.md): Configuration for the librosa pYIN backend.
+- [denote.backends.torchaudio_hdemucs](denote.backends.torchaudio_hdemucs.html.md): torchaudio Hybrid Demucs source separation backend.
+- [denote.backends.torchaudio_hdemucs.adapter](denote.backends.torchaudio_hdemucs.adapter.html.md): Adapter for torchaudio’s Hybrid Demucs bundles (&#96;HDEMUCS_HIGH_MUSDB_PLUS&#96; by default).
+- [denote.backends.torchaudio_hdemucs.config](denote.backends.torchaudio_hdemucs.config.html.md): Configuration for the torchaudio Hybrid Demucs separation backend.
 - [denote.backends.torchcrepe](denote.backends.torchcrepe.html.md): | &#96;adapter&#96;   | Adapter for torchcrepe — GPU-accelerated pitch estimation.   |
 - [denote.backends.torchcrepe.adapter](denote.backends.torchcrepe.adapter.html.md): Adapter for torchcrepe — GPU-accelerated pitch estimation.
 - [denote.backends.torchcrepe.config](denote.backends.torchcrepe.config.html.md): Configuration for the torchcrepe backend.
@@ -26,7 +29,7 @@
 - [denote.registry](denote.registry.html.md): Backend discovery, registration, and lazy loading.
 - [denote.services](denote.services.html.md): Lazy mapping of backend names → ServiceHandle instances.
 - [denote.translation](denote.translation.html.md): Parameter translation between normalized and native backend interfaces.
-- [denote.util](denote.util.html.md): Audio loading and utility functions for denote.
+- [denote.util](denote.util.html.md): Audio loading (any layout to &#96;(channels, frames)&#96;), and chunked overlap-add for models
 
 ## Optional
 

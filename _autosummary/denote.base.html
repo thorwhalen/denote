@@ -139,7 +139,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#denote.base.PitchResult" title="denote.base.PitchResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PitchResult</span></code></a>(times, frequencies, confidence)</p></td>
 <td><p>Result of pitch/F0 estimation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.base.TranscriptionResult" title="denote.base.TranscriptionResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TranscriptionResult</span></code></a>(midi[, notes, raw, backend])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.base.SeparationResult" title="denote.base.SeparationResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SeparationResult</span></code></a>(stems, sr[, raw, backend])</p></td>
+<td><p>Result of source separation: one <code class="docutils literal notranslate"><span class="pre">(channels,</span> <span class="pre">frames)</span></code> array per stem, at <code class="docutils literal notranslate"><span class="pre">sr</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.base.TranscriptionResult" title="denote.base.TranscriptionResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TranscriptionResult</span></code></a>(midi[, notes, raw, backend])</p></td>
 <td><p>Result of audio-to-MIDI transcription.</p></td>
 </tr>
 </tbody>
@@ -177,6 +180,34 @@
 </dl>
 </dd></dl>
 <dl class="py class">
+<dt class="sig sig-object py" id="denote.base.SeparationResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">denote.base.</span></span><span class="sig-name descname"><span class="pre">SeparationResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stems</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/base.html#SeparationResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.base.SeparationResult" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.base.SeparationResult'">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></p>
+<p>Result of source separation: one <code class="docutils literal notranslate"><span class="pre">(channels,</span> <span class="pre">frames)</span></code> array per stem, at <code class="docutils literal notranslate"><span class="pre">sr</span></code>.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="denote.base.SeparationResult.mono">
+<span class="sig-name descname"><span class="pre">mono</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/base.html#SeparationResult.mono"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.base.SeparationResult.mono" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.base.SeparationResult.mono'">¶</a></dt>
+<dd><p>Stem <code class="docutils literal notranslate"><span class="pre">name</span></code> averaged to one channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="denote.base.SeparationResult.vocals">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">vocals</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.base.SeparationResult.vocals" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.base.SeparationResult.vocals'">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">separate(song,</span> <span class="pre">sr=sr).vocals</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The vocals stem, mono</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
 <dt class="sig sig-object py" id="denote.base.TranscriptionResult">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">denote.base.</span></span><span class="sig-name descname"><span class="pre">TranscriptionResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">midi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">list()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/base.html#TranscriptionResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.base.TranscriptionResult" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.base.TranscriptionResult'">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></p>
@@ -192,6 +223,11 @@
 <li><a :data-current="activeSection === '#denote.base.ChordResult'" class="reference internal" href="#denote.base.ChordResult"><code class="docutils literal notranslate"><span class="pre">ChordResult</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.base.NoteEvent'" class="reference internal" href="#denote.base.NoteEvent"><code class="docutils literal notranslate"><span class="pre">NoteEvent</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.base.PitchResult'" class="reference internal" href="#denote.base.PitchResult"><code class="docutils literal notranslate"><span class="pre">PitchResult</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.base.SeparationResult'" class="reference internal" href="#denote.base.SeparationResult"><code class="docutils literal notranslate"><span class="pre">SeparationResult</span></code></a><ul>
+<li><a :data-current="activeSection === '#denote.base.SeparationResult.mono'" class="reference internal" href="#denote.base.SeparationResult.mono"><code class="docutils literal notranslate"><span class="pre">SeparationResult.mono()</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.base.SeparationResult.vocals'" class="reference internal" href="#denote.base.SeparationResult.vocals"><code class="docutils literal notranslate"><span class="pre">SeparationResult.vocals</span></code></a></li>
+</ul>
+</li>
 <li><a :data-current="activeSection === '#denote.base.TranscriptionResult'" class="reference internal" href="#denote.base.TranscriptionResult"><code class="docutils literal notranslate"><span class="pre">TranscriptionResult</span></code></a></li>
 </ul>
 </div>
@@ -206,7 +242,7 @@
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=53b53b71"></script>
+<script src="../_static/documentation_options.js?v=f7cdbf68"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

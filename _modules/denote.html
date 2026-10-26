@@ -200,101 +200,128 @@
 </span><span id="line-29">    <span class="n">PitchResult</span><span class="p">,</span>
 </span><span id="line-30">    <span class="n">ChordResult</span><span class="p">,</span>
 </span><span id="line-31">    <span class="n">BeatResult</span><span class="p">,</span>
-</span><span id="line-32">    <span class="n">TASKS</span><span class="p">,</span>
-</span><span id="line-33"><span class="p">)</span>
-</span><span id="line-34"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.registry</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-</span><span id="line-35">    <span class="n">list_backends</span><span class="p">,</span>
-</span><span id="line-36">    <span class="n">get_default_backend</span><span class="p">,</span>
-</span><span id="line-37">    <span class="n">register_backend</span><span class="p">,</span>
-</span><span id="line-38">    <span class="n">get_config</span><span class="p">,</span>
-</span><span id="line-39"><span class="p">)</span>
-</span><span id="line-40"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServiceCollection</span>
-</span><span id="line-41"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.align</span><span class="w"> </span><span class="kn">import</span> <span class="n">align_score</span><span class="p">,</span> <span class="n">align_audio</span><span class="p">,</span> <span class="n">align_chroma</span><span class="p">,</span> <span class="n">ScoreAlignment</span>
-</span><span id="line-42"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.compare</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_audio</span><span class="p">,</span> <span class="n">AudioComparison</span>
-</span><span id="line-43">
-</span><span id="line-44"><span class="c1"># Lazy singleton for service-level access</span>
-</span><span id="line-45"><span class="n">services</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">()</span>
-</span><span id="line-46">
+</span><span id="line-32">    <span class="n">SeparationResult</span><span class="p">,</span>
+</span><span id="line-33">    <span class="n">TASKS</span><span class="p">,</span>
+</span><span id="line-34"><span class="p">)</span>
+</span><span id="line-35"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.registry</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="line-36">    <span class="n">list_backends</span><span class="p">,</span>
+</span><span id="line-37">    <span class="n">get_default_backend</span><span class="p">,</span>
+</span><span id="line-38">    <span class="n">register_backend</span><span class="p">,</span>
+</span><span id="line-39">    <span class="n">get_config</span><span class="p">,</span>
+</span><span id="line-40"><span class="p">)</span>
+</span><span id="line-41"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServiceCollection</span>
+</span><span id="line-42"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.align</span><span class="w"> </span><span class="kn">import</span> <span class="n">align_score</span><span class="p">,</span> <span class="n">align_audio</span><span class="p">,</span> <span class="n">align_chroma</span><span class="p">,</span> <span class="n">ScoreAlignment</span>
+</span><span id="line-43"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.compare</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_audio</span><span class="p">,</span> <span class="n">AudioComparison</span>
+</span><span id="line-44">
+</span><span id="line-45"><span class="c1"># Lazy singleton for service-level access</span>
+</span><span id="line-46"><span class="n">services</span> <span class="o">=</span> <span class="n">ServiceCollection</span><span class="p">()</span>
 </span><span id="line-47">
+</span><span id="line-48">
 <div class="viewcode-block" id="transcribe">
 <a class="viewcode-back" href="../_autosummary/denote.html#denote.transcribe">[docs]</a>
-</span><span id="line-48"><span class="k">def</span><span class="w"> </span><span class="nf">transcribe</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="line-49"><span class="w">    </span><span class="sd">"""Transcribe audio to MIDI.</span>
-</span><span id="line-50">
-</span><span id="line-51"><span class="sd">    Args:</span>
-</span><span id="line-52"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
-</span><span id="line-53"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
-</span><span id="line-54"><span class="sd">        backend: Backend name. Defaults to 'basic_pitch' if installed.</span>
-</span><span id="line-55"><span class="sd">        **kwargs: Backend-specific parameters (onset_threshold, min_note_length, etc.)</span>
-</span><span id="line-56">
-</span><span id="line-57"><span class="sd">    Returns:</span>
-</span><span id="line-58"><span class="sd">        TranscriptionResult with .midi, .notes, and .raw fields.</span>
-</span><span id="line-59"><span class="sd">    """</span>
-</span><span id="line-60">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"transcribe"</span><span class="p">)</span>
-</span><span id="line-61">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
-</span><span id="line-62">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">transcribe</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</span><span id="line-49"><span class="k">def</span><span class="w"> </span><span class="nf">transcribe</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="line-50"><span class="w">    </span><span class="sd">"""Transcribe audio to MIDI.</span>
+</span><span id="line-51">
+</span><span id="line-52"><span class="sd">    Args:</span>
+</span><span id="line-53"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
+</span><span id="line-54"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
+</span><span id="line-55"><span class="sd">        backend: Backend name. Defaults to 'basic_pitch' if installed.</span>
+</span><span id="line-56"><span class="sd">        **kwargs: Backend-specific parameters (onset_threshold, min_note_length, etc.)</span>
+</span><span id="line-57">
+</span><span id="line-58"><span class="sd">    Returns:</span>
+</span><span id="line-59"><span class="sd">        TranscriptionResult with .midi, .notes, and .raw fields.</span>
+</span><span id="line-60"><span class="sd">    """</span>
+</span><span id="line-61">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"transcribe"</span><span class="p">)</span>
+</span><span id="line-62">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+</span><span id="line-63">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">transcribe</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-</span><span id="line-63">
 </span><span id="line-64">
+</span><span id="line-65">
 <div class="viewcode-block" id="get_pitch">
 <a class="viewcode-back" href="../_autosummary/denote.html#denote.get_pitch">[docs]</a>
-</span><span id="line-65"><span class="k">def</span><span class="w"> </span><span class="nf">get_pitch</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="line-66"><span class="w">    </span><span class="sd">"""Estimate pitch/F0 from audio.</span>
-</span><span id="line-67">
-</span><span id="line-68"><span class="sd">    Args:</span>
-</span><span id="line-69"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
-</span><span id="line-70"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
-</span><span id="line-71"><span class="sd">        backend: Backend name. Defaults to 'torchcrepe' if installed,</span>
-</span><span id="line-72"><span class="sd">            falls back to 'librosa_pyin'.</span>
-</span><span id="line-73"><span class="sd">        **kwargs: Backend-specific parameters (min_frequency, max_frequency,</span>
-</span><span id="line-74"><span class="sd">            model, device, hop_length).</span>
-</span><span id="line-75">
-</span><span id="line-76"><span class="sd">    Returns:</span>
-</span><span id="line-77"><span class="sd">        PitchResult with .times, .frequencies, .confidence fields.</span>
-</span><span id="line-78"><span class="sd">    """</span>
-</span><span id="line-79">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"pitch"</span><span class="p">)</span>
-</span><span id="line-80">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
-</span><span id="line-81">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_pitch</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</span><span id="line-66"><span class="k">def</span><span class="w"> </span><span class="nf">get_pitch</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="line-67"><span class="w">    </span><span class="sd">"""Estimate pitch/F0 from audio.</span>
+</span><span id="line-68">
+</span><span id="line-69"><span class="sd">    Args:</span>
+</span><span id="line-70"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
+</span><span id="line-71"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
+</span><span id="line-72"><span class="sd">        backend: Backend name. Defaults to 'torchcrepe' if installed,</span>
+</span><span id="line-73"><span class="sd">            falls back to 'librosa_pyin'.</span>
+</span><span id="line-74"><span class="sd">        **kwargs: Backend-specific parameters (min_frequency, max_frequency,</span>
+</span><span id="line-75"><span class="sd">            model, device, hop_length).</span>
+</span><span id="line-76">
+</span><span id="line-77"><span class="sd">    Returns:</span>
+</span><span id="line-78"><span class="sd">        PitchResult with .times, .frequencies, .confidence fields.</span>
+</span><span id="line-79"><span class="sd">    """</span>
+</span><span id="line-80">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"pitch"</span><span class="p">)</span>
+</span><span id="line-81">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+</span><span id="line-82">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_pitch</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-</span><span id="line-82">
 </span><span id="line-83">
+</span><span id="line-84">
 <div class="viewcode-block" id="get_chords">
 <a class="viewcode-back" href="../_autosummary/denote.html#denote.get_chords">[docs]</a>
-</span><span id="line-84"><span class="k">def</span><span class="w"> </span><span class="nf">get_chords</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="line-85"><span class="w">    </span><span class="sd">"""Recognize chords from audio.</span>
-</span><span id="line-86">
-</span><span id="line-87"><span class="sd">    Args:</span>
-</span><span id="line-88"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
-</span><span id="line-89"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
-</span><span id="line-90"><span class="sd">        backend: Backend name.</span>
-</span><span id="line-91"><span class="sd">        **kwargs: Backend-specific parameters.</span>
-</span><span id="line-92">
-</span><span id="line-93"><span class="sd">    Returns:</span>
-</span><span id="line-94"><span class="sd">        ChordResult with .intervals, .labels fields.</span>
-</span><span id="line-95"><span class="sd">    """</span>
-</span><span id="line-96">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"chords"</span><span class="p">)</span>
-</span><span id="line-97">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
-</span><span id="line-98">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_chords</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</span><span id="line-85"><span class="k">def</span><span class="w"> </span><span class="nf">get_chords</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="line-86"><span class="w">    </span><span class="sd">"""Recognize chords from audio.</span>
+</span><span id="line-87">
+</span><span id="line-88"><span class="sd">    Args:</span>
+</span><span id="line-89"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
+</span><span id="line-90"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
+</span><span id="line-91"><span class="sd">        backend: Backend name.</span>
+</span><span id="line-92"><span class="sd">        **kwargs: Backend-specific parameters.</span>
+</span><span id="line-93">
+</span><span id="line-94"><span class="sd">    Returns:</span>
+</span><span id="line-95"><span class="sd">        ChordResult with .intervals, .labels fields.</span>
+</span><span id="line-96"><span class="sd">    """</span>
+</span><span id="line-97">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"chords"</span><span class="p">)</span>
+</span><span id="line-98">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+</span><span id="line-99">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_chords</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-</span><span id="line-99">
 </span><span id="line-100">
+</span><span id="line-101">
+<div class="viewcode-block" id="separate">
+<a class="viewcode-back" href="../_autosummary/denote.html#denote.separate">[docs]</a>
+</span><span id="line-102"><span class="k">def</span><span class="w"> </span><span class="nf">separate</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="line-103"><span class="w">    </span><span class="sd">"""Separate a mix into stems (drums, bass, other, vocals, ...).</span>
+</span><span id="line-104">
+</span><span id="line-105"><span class="sd">    Args:</span>
+</span><span id="line-106"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
+</span><span id="line-107"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
+</span><span id="line-108"><span class="sd">        backend: Backend name. Defaults to 'torchaudio_hdemucs'.</span>
+</span><span id="line-109"><span class="sd">        **kwargs: Backend-specific parameters (segment_s, overlap_s, device,</span>
+</span><span id="line-110"><span class="sd">            bundle, sources).</span>
+</span><span id="line-111">
+</span><span id="line-112"><span class="sd">    Returns:</span>
+</span><span id="line-113"><span class="sd">        SeparationResult with .stems ({name: (channels, frames)}), .sr, and</span>
+</span><span id="line-114"><span class="sd">        .vocals (mono).</span>
+</span><span id="line-115">
+</span><span id="line-116"><span class="sd">    Example::</span>
+</span><span id="line-117">
+</span><span id="line-118"><span class="sd">        voice = denote.separate("song.mp3").vocals</span>
+</span><span id="line-119"><span class="sd">    """</span>
+</span><span id="line-120">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"separate"</span><span class="p">)</span>
+</span><span id="line-121">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+</span><span id="line-122">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+</span><span id="line-123">
+</span><span id="line-124">
 <div class="viewcode-block" id="get_beats">
 <a class="viewcode-back" href="../_autosummary/denote.html#denote.get_beats">[docs]</a>
-</span><span id="line-101"><span class="k">def</span><span class="w"> </span><span class="nf">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="line-102"><span class="w">    </span><span class="sd">"""Track beats in audio.</span>
-</span><span id="line-103">
-</span><span id="line-104"><span class="sd">    Args:</span>
-</span><span id="line-105"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
-</span><span id="line-106"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
-</span><span id="line-107"><span class="sd">        backend: Backend name. Defaults to 'librosa_beats'.</span>
-</span><span id="line-108"><span class="sd">        **kwargs: Backend-specific parameters (hop_length, start_bpm).</span>
-</span><span id="line-109">
-</span><span id="line-110"><span class="sd">    Returns:</span>
-</span><span id="line-111"><span class="sd">        BeatResult with .beats, .downbeats, .tempo fields.</span>
-</span><span id="line-112"><span class="sd">    """</span>
-</span><span id="line-113">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"beats"</span><span class="p">)</span>
-</span><span id="line-114">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
-</span><span id="line-115">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</span><span id="line-125"><span class="k">def</span><span class="w"> </span><span class="nf">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="line-126"><span class="w">    </span><span class="sd">"""Track beats in audio.</span>
+</span><span id="line-127">
+</span><span id="line-128"><span class="sd">    Args:</span>
+</span><span id="line-129"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
+</span><span id="line-130"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
+</span><span id="line-131"><span class="sd">        backend: Backend name. Defaults to 'librosa_beats'.</span>
+</span><span id="line-132"><span class="sd">        **kwargs: Backend-specific parameters (hop_length, start_bpm).</span>
+</span><span id="line-133">
+</span><span id="line-134"><span class="sd">    Returns:</span>
+</span><span id="line-135"><span class="sd">        BeatResult with .beats, .downbeats, .tempo fields.</span>
+</span><span id="line-136"><span class="sd">    """</span>
+</span><span id="line-137">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"beats"</span><span class="p">)</span>
+</span><span id="line-138">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+</span><span id="line-139">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </span></code></pre></div>
     </div></div>
@@ -309,7 +336,7 @@
 </footer>
     </div>
     
-    <script src="../_static/documentation_options.js?v=53b53b71"></script>
+    <script src="../_static/documentation_options.js?v=f7cdbf68"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

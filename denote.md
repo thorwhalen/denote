@@ -1,4 +1,4 @@
-> built 2026-10-26 12:02 UTC from 10beafa (main) · denote 0.0.8. Details: build_info.json
+> built 2026-10-26 12:26 UTC from 24635fb (main) · denote 0.0.9. Details: build_info.json
 
 # index.html.md
 
@@ -40,6 +40,11 @@ pitch.confidence  # voicing confidence
 beats = denote.get_beats("song.wav")
 beats.beats  # beat times in seconds
 beats.tempo  # BPM estimate
+
+# Source separation (requires torch + torchaudio; weights download once)
+stems = denote.separate("song.wav")
+stems.stems  # {"drums", "bass", "other", "vocals"}: (2, frames) at stems.sr (44.1 kHz)
+stems.vocals  # the voice, mono
 ```
 
 ## Choose Your Backend
@@ -502,11 +507,12 @@ Backend packages for denote. Each subpackage provides a config.py and adapter.py
 
 ### Modules
 
-| [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)     |    |
-|-----------------------------------------------------------------------------------------------------|----|
-| [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats) |    |
-| [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)   |    |
-| [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)       |    |
+| [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)               |                                                     |
+|---------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
+| [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats)           |                                                     |
+| [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)             |                                                     |
+| [`torchaudio_hdemucs`](_autosummary/denote.backends.torchaudio_hdemucs.html.md#module-denote.backends.torchaudio_hdemucs) | torchaudio Hybrid Demucs source separation backend. |
+| [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)                 |                                                     |
 
 
 # _autosummary/denote.backends.librosa_beats.adapter.html.md
@@ -604,6 +610,88 @@ Configuration for the librosa pYIN backend.
 | [`config`](_autosummary/denote.backends.librosa_pyin.config.html.md#module-denote.backends.librosa_pyin.config)     | Configuration for the librosa pYIN backend.                  |
 
 
+# _autosummary/denote.backends.torchaudio_hdemucs.adapter.html.md
+
+# denote.backends.torchaudio_hdemucs.adapter
+
+Adapter for torchaudio’s Hybrid Demucs bundles (`HDEMUCS_HIGH_MUSDB_PLUS` by default).
+
+### Module Attributes
+
+| [`MIN_FRAMES`](_autosummary/denote.backends.torchaudio_hdemucs.adapter.html.md#denote.backends.torchaudio_hdemucs.adapter.MIN_FRAMES)      | Shortest input HDemucs accepts for sure.                                       |
+|------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`NORM_EPS`](_autosummary/denote.backends.torchaudio_hdemucs.adapter.html.md#denote.backends.torchaudio_hdemucs.adapter.NORM_EPS)        | Added to the mix's std before normalizing, so silence does not divide by zero. |
+| [`HDEMUCS_BUNDLES`](_autosummary/denote.backends.torchaudio_hdemucs.adapter.html.md#denote.backends.torchaudio_hdemucs.adapter.HDEMUCS_BUNDLES) | The torchaudio.pipelines bundles this adapter runs (four-stem Hybrid Demucs).  |
+
+### Classes
+
+| [`Adapter`](_autosummary/denote.backends.torchaudio_hdemucs.adapter.html.md#denote.backends.torchaudio_hdemucs.adapter.Adapter)(config)   | Hybrid Demucs: drums, bass, other, vocals from a stereo mix.   |
+|--------------------------------------------------------------------|----------------------------------------------------------------|
+
+### *class* denote.backends.torchaudio_hdemucs.adapter.Adapter(config)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Hybrid Demucs: drums, bass, other, vocals from a stereo mix.
+
+#### separate(audio, , sr=None, \*\*kwargs)
+
+Separate a mix into stems.
+
+* **Parameters:**
+  * **audio** – File path, numpy array or torch tensor (mono, `(frames, channels)`
+    or `(channels, frames)`); mono is duplicated to stereo.
+  * **sr** – Sample rate (required if audio is an array).
+  * **\*\*kwargs** – Normalized parameters (see `config.param_map`):
+    `segment_s` (chunk length; memory per chunk grows with it),
+    `overlap_s` (crossfade between chunks, 0 allowed, shorter than
+    `segment_s`), `device`, `bundle` (a torchaudio.pipelines name:
+    `HDEMUCS_HIGH_MUSDB_PLUS` or `HDEMUCS_HIGH_MUSDB`), `sources`
+    (stem names to keep, default all; the others are never stored).
+* **Return type:**
+  [`SeparationResult`](_autosummary/denote.base.html.md#denote.base.SeparationResult)
+* **Returns:**
+  SeparationResult with `(2, frames)` stems at the bundle’s rate (44.1 kHz).
+  The model’s four stems add up to the mix up to its own error (a few %);
+  `.vocals` is mono.
+
+### denote.backends.torchaudio_hdemucs.adapter.HDEMUCS_BUNDLES *= ('HDEMUCS_HIGH_MUSDB_PLUS', 'HDEMUCS_HIGH_MUSDB')*
+
+The torchaudio.pipelines bundles this adapter runs (four-stem Hybrid Demucs).
+
+### denote.backends.torchaudio_hdemucs.adapter.MIN_FRAMES *= 1281*
+
+Shortest input HDemucs accepts for sure. Measured on the torchaudio bundles
+(nfft 4096, hop 1024): lengths 769..1024 and >= 1281 run, 1..768 and 1025..1280
+fail inside `_spec` (“Spectrogram’s last dimension must be …”), because its
+reflect padding falls back to extra zero padding that changes the frame count.
+Shorter chunks are zero-padded to this and cropped back.
+
+### denote.backends.torchaudio_hdemucs.adapter.NORM_EPS *= 1e-08*
+
+Added to the mix’s std before normalizing, so silence does not divide by zero.
+
+
+# _autosummary/denote.backends.torchaudio_hdemucs.config.html.md
+
+# denote.backends.torchaudio_hdemucs.config
+
+Configuration for the torchaudio Hybrid Demucs separation backend.
+
+
+# _autosummary/denote.backends.torchaudio_hdemucs.html.md
+
+# denote.backends.torchaudio_hdemucs
+
+torchaudio Hybrid Demucs source separation backend.
+
+### Modules
+
+| [`adapter`](_autosummary/denote.backends.torchaudio_hdemucs.adapter.html.md#module-denote.backends.torchaudio_hdemucs.adapter)   | Adapter for torchaudio's Hybrid Demucs bundles (`HDEMUCS_HIGH_MUSDB_PLUS` by default).   |
+|--------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| [`config`](_autosummary/denote.backends.torchaudio_hdemucs.config.html.md#module-denote.backends.torchaudio_hdemucs.config)     | Configuration for the torchaudio Hybrid Demucs separation backend.                       |
+
+
 # _autosummary/denote.backends.torchcrepe.adapter.html.md
 
 # denote.backends.torchcrepe.adapter
@@ -689,12 +777,13 @@ Core types and result dataclasses for denote.
 
 ### Classes
 
-| [`BeatResult`](_autosummary/denote.base.html.md#denote.base.BeatResult)(beats[, downbeats, tempo, raw, ...])   | Result of beat/downbeat tracking.                                 |
-|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
-| [`ChordResult`](_autosummary/denote.base.html.md#denote.base.ChordResult)(intervals[, labels, raw, backend])    | Result of chord recognition.                                      |
-| [`NoteEvent`](_autosummary/denote.base.html.md#denote.base.NoteEvent)(start_time, end_time, pitch, velocity)  | A single note event with timing, pitch, and optional pitch bends. |
-| [`PitchResult`](_autosummary/denote.base.html.md#denote.base.PitchResult)(times, frequencies, confidence)       | Result of pitch/F0 estimation.                                    |
-| [`TranscriptionResult`](_autosummary/denote.base.html.md#denote.base.TranscriptionResult)(midi[, notes, raw, backend])  | Result of audio-to-MIDI transcription.                            |
+| [`BeatResult`](_autosummary/denote.base.html.md#denote.base.BeatResult)(beats[, downbeats, tempo, raw, ...])   | Result of beat/downbeat tracking.                                              |
+|----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`ChordResult`](_autosummary/denote.base.html.md#denote.base.ChordResult)(intervals[, labels, raw, backend])    | Result of chord recognition.                                                   |
+| [`NoteEvent`](_autosummary/denote.base.html.md#denote.base.NoteEvent)(start_time, end_time, pitch, velocity)  | A single note event with timing, pitch, and optional pitch bends.              |
+| [`PitchResult`](_autosummary/denote.base.html.md#denote.base.PitchResult)(times, frequencies, confidence)       | Result of pitch/F0 estimation.                                                 |
+| [`SeparationResult`](_autosummary/denote.base.html.md#denote.base.SeparationResult)(stems, sr[, raw, backend])       | Result of source separation: one `(channels, frames)` array per stem, at `sr`. |
+| [`TranscriptionResult`](_autosummary/denote.base.html.md#denote.base.TranscriptionResult)(midi[, notes, raw, backend])  | Result of audio-to-MIDI transcription.                                         |
 
 ### *class* denote.base.BeatResult(beats, downbeats=<factory>, tempo=None, raw=None, backend='')
 
@@ -719,6 +808,26 @@ A single note event with timing, pitch, and optional pitch bends.
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of pitch/F0 estimation.
+
+### *class* denote.base.SeparationResult(stems, sr, raw=None, backend='')
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Result of source separation: one `(channels, frames)` array per stem, at `sr`.
+
+#### mono(name)
+
+Stem `name` averaged to one channel.
+
+* **Return type:**
+  `ndarray`
+
+#### *property* vocals *: ndarray*
+
+`separate(song, sr=sr).vocals`.
+
+* **Type:**
+  The vocals stem, mono
 
 ### *class* denote.base.TranscriptionResult(midi, notes=list(), raw=None, backend='')
 
@@ -896,11 +1005,12 @@ denote.services.basic_pitch.adapter  # raw adapter instance
 
 ### Functions
 
-| [`get_beats`](_autosummary/denote.html.md#denote.get_beats)(audio, \*[, sr, backend])   | Track beats in audio.         |
-|----------------------------------------------------------------------------------------|-------------------------------|
-| [`get_chords`](_autosummary/denote.html.md#denote.get_chords)(audio, \*[, sr, backend])  | Recognize chords from audio.  |
-| [`get_pitch`](_autosummary/denote.html.md#denote.get_pitch)(audio, \*[, sr, backend])   | Estimate pitch/F0 from audio. |
-| [`transcribe`](_autosummary/denote.html.md#denote.transcribe)(audio, \*[, sr, backend])  | Transcribe audio to MIDI.     |
+| [`get_beats`](_autosummary/denote.html.md#denote.get_beats)(audio, \*[, sr, backend])   | Track beats in audio.                                        |
+|----------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| [`get_chords`](_autosummary/denote.html.md#denote.get_chords)(audio, \*[, sr, backend])  | Recognize chords from audio.                                 |
+| [`get_pitch`](_autosummary/denote.html.md#denote.get_pitch)(audio, \*[, sr, backend])   | Estimate pitch/F0 from audio.                                |
+| [`separate`](_autosummary/denote.html.md#denote.separate)(audio, \*[, sr, backend])    | Separate a mix into stems (drums, bass, other, vocals, ...). |
+| [`transcribe`](_autosummary/denote.html.md#denote.transcribe)(audio, \*[, sr, backend])  | Transcribe audio to MIDI.                                    |
 
 ### denote.get_beats(audio, , sr=None, backend=None, \*\*kwargs)
 
@@ -940,6 +1050,28 @@ Estimate pitch/F0 from audio.
 * **Returns:**
   PitchResult with .times, .frequencies, .confidence fields.
 
+### denote.separate(audio, , sr=None, backend=None, \*\*kwargs)
+
+Separate a mix into stems (drums, bass, other, vocals, …).
+
+* **Parameters:**
+  * **audio** – File path (str/Path) or numpy array.
+  * **sr** – Sample rate (required when audio is an array).
+  * **backend** – Backend name. Defaults to ‘torchaudio_hdemucs’.
+  * **\*\*kwargs** – Backend-specific parameters (segment_s, overlap_s, device,
+    bundle, sources).
+* **Returns:**
+  (channels, frames)}), .sr, and
+  .vocals (mono).
+* **Return type:**
+  SeparationResult with .stems ({name
+
+Example:
+
+```default
+voice = denote.separate("song.mp3").vocals
+```
+
 ### denote.transcribe(audio, , sr=None, backend=None, \*\*kwargs)
 
 Transcribe audio to MIDI.
@@ -954,15 +1086,15 @@ Transcribe audio to MIDI.
 
 ### Modules
 
-| [`align`](_autosummary/denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).                    |
-|----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                      |
-| [`base`](_autosummary/denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                     |
-| [`compare`](_autosummary/denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3). |
-| [`registry`](_autosummary/denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                |
-| [`services`](_autosummary/denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                          |
-| [`translation`](_autosummary/denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                           |
-| [`util`](_autosummary/denote.util.html.md#module-denote.util)               | Audio loading and utility functions for denote.                                                   |
+| [`align`](_autosummary/denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).                                                      |
+|----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
+| [`base`](_autosummary/denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
+| [`compare`](_autosummary/denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
+| [`registry`](_autosummary/denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                                                  |
+| [`services`](_autosummary/denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
+| [`translation`](_autosummary/denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                                                             |
+| [`util`](_autosummary/denote.util.html.md#module-denote.util)               | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |
 
 
 # _autosummary/denote.registry.html.md
@@ -1038,7 +1170,7 @@ Register a backend (for third-party plugins).
 
 # denote.services
 
-### denote.services *= <ServiceCollection backends=['basic_pitch', 'librosa_beats', 'librosa_pyin', 'torchcrepe']>*
+### denote.services *= <ServiceCollection backends=['basic_pitch', 'librosa_beats', 'librosa_pyin', 'torchaudio_hdemucs', 'torchcrepe']>*
 
 Lazy mapping of backend names → ServiceHandle instances.
 
@@ -1096,13 +1228,80 @@ Checks ‘min’, ‘max’, and ‘choices’ constraints.
 
 # denote.util
 
-Audio loading and utility functions for denote.
+Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models
+that take bounded lengths (`chunked_apply`).
 
 ### Functions
 
-| [`ensure_file_path`](_autosummary/denote.util.html.md#denote.util.ensure_file_path)(audio, \*[, sr])            | Ensure audio is available as a file path.                  |
-|-----------------------------------------------------------------------------------------------|------------------------------------------------------------|
-| [`load_audio`](_autosummary/denote.util.html.md#denote.util.load_audio)(audio, \*[, sr, mono, target_sr]) | Load audio from a file path or validate an existing array. |
+| [`channels_first`](_autosummary/denote.util.html.md#denote.util.channels_first)(y)                            | A multichannel array as `(channels, frames)`, whichever way it came.                                                                        |
+|-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| [`chunk_bounds`](_autosummary/denote.util.html.md#denote.util.chunk_bounds)(n, \*, segment, overlap)        | `(start, end)` of the chunks that cover `n` frames, `segment` long and overlapping by at least `overlap`.                                   |
+| [`chunked_apply`](_autosummary/denote.util.html.md#denote.util.chunked_apply)(fn, x, \*, segment, overlap)   | Apply `fn` to overlapping chunks of `x` along its last axis and overlap-add the results, so `fn` only ever sees `segment` frames at a time. |
+| [`ensure_file_path`](_autosummary/denote.util.html.md#denote.util.ensure_file_path)(audio, \*[, sr])            | Ensure audio is available as a file path.                                                                                                   |
+| [`load_audio`](_autosummary/denote.util.html.md#denote.util.load_audio)(audio, \*[, sr, mono, target_sr]) | Load audio from a file path or validate an existing array.                                                                                  |
+
+### denote.util.channels_first(y)
+
+A multichannel array as `(channels, frames)`, whichever way it came.
+
+librosa and torchaudio give `(channels, frames)`, soundfile
+`(frames, channels)`. Leading size-1 axes (a batch of one) are dropped. An
+axis of size 2 or less beside a longer one is the channels axis, so a
+one-frame stereo clip stays stereo; otherwise the longer axis is time.
+
+* **Return type:**
+  `ndarray`
+
+### denote.util.chunk_bounds(n, , segment, overlap)
+
+`(start, end)` of the chunks that cover `n` frames, `segment` long and
+overlapping by at least `overlap`.
+
+Every chunk is exactly `segment` long (one chunk of `n` when `n <= segment`):
+the last one ends at `n`, so it may overlap its neighbour by more than
+`overlap`.
+
+```pycon
+>>> chunk_bounds(10, segment=4, overlap=1)
+[(0, 4), (3, 7), (6, 10)]
+>>> chunk_bounds(9, segment=4, overlap=0)
+[(0, 4), (4, 8), (5, 9)]
+>>> chunk_bounds(3, segment=4, overlap=1)
+[(0, 3)]
+```
+
+* **Return type:**
+  [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)]]
+
+### denote.util.chunked_apply(fn, x, , segment, overlap)
+
+Apply `fn` to overlapping chunks of `x` along its last axis and overlap-add
+the results, so `fn` only ever sees `segment` frames at a time.
+
+* **Parameters:**
+  * **fn** ([`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[`ndarray`], `ndarray`]) – Takes a `(..., m)` chunk of `x` and returns a `(..., m)` array (any
+    leading shape, the same for every chunk; `m` frames, as given).
+  * **x** (`ndarray`) – Array, typically `(channels, frames)`.
+  * **segment** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Chunk length in frames. Every chunk has this length unless `x` is
+    shorter (see `chunk_bounds`).
+  * **overlap** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Minimum overlap between neighbouring chunks, in frames (0 allowed).
+* **Returns:**
+  where chunks overlap, a weighted average of their outputs,
+  crossfaded linearly over the actual overlap. The output is divided by the
+  summed weights, so it is an average even where ramps collide (an overlap
+  above half the segment); the ramps alone sum to one wherever exactly two
+  chunks overlap and do not collide.
+* **Return type:**
+  `ndarray`
+
+Only the output, a `(frames,)` weight vector and one chunk’s temporaries are
+held in memory; the division is done in place.
+
+```pycon
+>>> x = np.arange(10.0)[None]
+>>> np.allclose(chunked_apply(lambda c: 2 * c, x, segment=4, overlap=1), 2 * x)
+True
+```
 
 ### denote.util.ensure_file_path(audio, , sr=None)
 
@@ -1139,7 +1338,7 @@ Load audio from a file path or validate an existing array.
 
 # About this build
 
-This documentation was built on **2026-10-26 12:02 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/10beafa1fe2103af2cb7cbbf03da1eaf967e1f69"><code>10beafa</code></a> on branch <code>main</code>, for **denote 0.0.8** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-26 12:26 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/24635fbd0d9384c66868f3270ffca64efcf53ee3"><code>24635fb</code></a> on branch <code>main</code>, for **denote 0.0.9** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -1148,9 +1347,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/10beafa1fe2103af2cb7cbbf03da1eaf967e1f69"><code>10beafa1fe2103af2cb7cbbf03da1eaf967e1f69</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/24635fbd0d9384c66868f3270ffca64efcf53ee3"><code>24635fbd0d9384c66868f3270ffca64efcf53ee3</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.8</code>                                                                                                                                       |
+| Tags at this commit | <code>0.0.9</code>                                                                                                                                       |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -1159,9 +1358,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/40319065049">40319065049</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/40322260151">40322260151</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>538d836a32b6f24538553b025278b71dde3b8529</code> (in the history of the built commit) |
+| Event commit | <code>bf93134d0080407cd5cd6208c77fdc7fdb3a2ef1</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1186,13 +1385,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.8/">0.0.8</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.9/">0.0.9</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 10beafa1fe2103af2cb7cbbf03da1eaf967e1f69
+git checkout 24635fbd0d9384c66868f3270ffca64efcf53ee3
 pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

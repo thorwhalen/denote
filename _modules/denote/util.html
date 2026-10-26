@@ -172,115 +172,230 @@
 
     <div id="content" role="main">
       <h1>Source code for denote.util</h1><div class="highlight"><pre>
-<span></span><code><span id="line-1"><span class="sd">"""Audio loading and utility functions for denote."""</span>
-</span><span id="line-2">
-</span><span id="line-3"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
-</span><span id="line-4"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-</span><span id="line-5">
-</span><span id="line-6"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="line-7">
+<span></span><code><span id="line-1"><span class="sd">"""Audio loading (any layout to ``(channels, frames)``), and chunked overlap-add for models</span>
+</span><span id="line-2"><span class="sd">that take bounded lengths (``chunked_apply``)."""</span>
+</span><span id="line-3">
+</span><span id="line-4"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+</span><span id="line-5"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span id="line-6">
+</span><span id="line-7"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="line-8">
+</span><span id="line-9">
 <div class="viewcode-block" id="load_audio">
 <a class="viewcode-back" href="../../_autosummary/denote.util.html#denote.util.load_audio">[docs]</a>
-</span><span id="line-9"><span class="k">def</span><span class="w"> </span><span class="nf">load_audio</span><span class="p">(</span>
-</span><span id="line-10">    <span class="n">audio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
-</span><span id="line-11">    <span class="o">*</span><span class="p">,</span>
-</span><span id="line-12">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-13">    <span class="n">mono</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="line-14">    <span class="n">target_sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-15"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="line-16"><span class="w">    </span><span class="sd">"""Load audio from a file path or validate an existing array.</span>
-</span><span id="line-17">
-</span><span id="line-18"><span class="sd">    Args:</span>
-</span><span id="line-19"><span class="sd">        audio: File path (str/Path) or numpy array of audio samples.</span>
-</span><span id="line-20"><span class="sd">        sr: Sample rate. Required when audio is an array. Ignored for file paths</span>
-</span><span id="line-21"><span class="sd">            (detected automatically).</span>
-</span><span id="line-22"><span class="sd">        mono: If True, convert to mono.</span>
-</span><span id="line-23"><span class="sd">        target_sr: If set, resample to this rate.</span>
-</span><span id="line-24">
-</span><span id="line-25"><span class="sd">    Returns:</span>
-</span><span id="line-26"><span class="sd">        Tuple of (audio_array, sample_rate).</span>
-</span><span id="line-27">
-</span><span id="line-28"><span class="sd">    Raises:</span>
-</span><span id="line-29"><span class="sd">        ValueError: If audio is an array and sr is not provided.</span>
-</span><span id="line-30"><span class="sd">        FileNotFoundError: If audio is a path that doesn't exist.</span>
-</span><span id="line-31"><span class="sd">    """</span>
-</span><span id="line-32">    <span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
-</span><span id="line-33">
-</span><span id="line-34">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
-</span><span id="line-35">        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
-</span><span id="line-36">        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-</span><span id="line-37">            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Audio file not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span><span id="line-38">        <span class="n">y</span><span class="p">,</span> <span class="n">file_sr</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">sr</span><span class="o">=</span><span class="n">target_sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="n">mono</span><span class="p">)</span>
-</span><span id="line-39">        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">target_sr</span> <span class="ow">or</span> <span class="n">file_sr</span>
-</span><span id="line-40">
-</span><span id="line-41">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-</span><span id="line-42">        <span class="k">if</span> <span class="n">sr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-43">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="line-44">                <span class="s2">"Sample rate (sr) is required when audio is a numpy array."</span>
-</span><span id="line-45">            <span class="p">)</span>
-</span><span id="line-46">        <span class="n">y</span> <span class="o">=</span> <span class="n">audio</span>
-</span><span id="line-47">        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
-</span><span id="line-48">            <span class="c1"># PCM integers (e.g. int16 from soundfile/scipy): scale to [-1, 1] floats.</span>
-</span><span id="line-49">            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
-</span><span id="line-50">        <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
-</span><span id="line-51">            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-</span><span id="line-52">        <span class="k">if</span> <span class="n">mono</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="line-53">            <span class="c1"># librosa wants (channels, frames); soundfile gives (frames, channels).</span>
-</span><span id="line-54">            <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-</span><span id="line-55">                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">T</span>
+</span><span id="line-10"><span class="k">def</span><span class="w"> </span><span class="nf">load_audio</span><span class="p">(</span>
+</span><span id="line-11">    <span class="n">audio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+</span><span id="line-12">    <span class="o">*</span><span class="p">,</span>
+</span><span id="line-13">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-14">    <span class="n">mono</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="line-15">    <span class="n">target_sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-16"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="line-17"><span class="w">    </span><span class="sd">"""Load audio from a file path or validate an existing array.</span>
+</span><span id="line-18">
+</span><span id="line-19"><span class="sd">    Args:</span>
+</span><span id="line-20"><span class="sd">        audio: File path (str/Path) or numpy array of audio samples.</span>
+</span><span id="line-21"><span class="sd">        sr: Sample rate. Required when audio is an array. Ignored for file paths</span>
+</span><span id="line-22"><span class="sd">            (detected automatically).</span>
+</span><span id="line-23"><span class="sd">        mono: If True, convert to mono.</span>
+</span><span id="line-24"><span class="sd">        target_sr: If set, resample to this rate.</span>
+</span><span id="line-25">
+</span><span id="line-26"><span class="sd">    Returns:</span>
+</span><span id="line-27"><span class="sd">        Tuple of (audio_array, sample_rate).</span>
+</span><span id="line-28">
+</span><span id="line-29"><span class="sd">    Raises:</span>
+</span><span id="line-30"><span class="sd">        ValueError: If audio is an array and sr is not provided.</span>
+</span><span id="line-31"><span class="sd">        FileNotFoundError: If audio is a path that doesn't exist.</span>
+</span><span id="line-32"><span class="sd">    """</span>
+</span><span id="line-33">    <span class="kn">import</span><span class="w"> </span><span class="nn">librosa</span>
+</span><span id="line-34">
+</span><span id="line-35">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
+</span><span id="line-36">        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
+</span><span id="line-37">        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span id="line-38">            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Audio file not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-39">        <span class="n">y</span><span class="p">,</span> <span class="n">file_sr</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">sr</span><span class="o">=</span><span class="n">target_sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="n">mono</span><span class="p">)</span>
+</span><span id="line-40">        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">target_sr</span> <span class="ow">or</span> <span class="n">file_sr</span>
+</span><span id="line-41">
+</span><span id="line-42">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+</span><span id="line-43">        <span class="k">if</span> <span class="n">sr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-44">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-45">                <span class="s2">"Sample rate (sr) is required when audio is a numpy array."</span>
+</span><span id="line-46">            <span class="p">)</span>
+</span><span id="line-47">        <span class="n">y</span> <span class="o">=</span> <span class="n">audio</span>
+</span><span id="line-48">        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+</span><span id="line-49">            <span class="c1"># PCM integers (e.g. int16 from soundfile/scipy): scale to [-1, 1] floats.</span>
+</span><span id="line-50">            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+</span><span id="line-51">        <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+</span><span id="line-52">            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span><span id="line-53">        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="line-54">            <span class="n">y</span> <span class="o">=</span> <span class="n">channels_first</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</span><span id="line-55">        <span class="k">if</span> <span class="n">mono</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="line-56">            <span class="n">y</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">to_mono</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
 </span><span id="line-57">        <span class="k">if</span> <span class="n">target_sr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">target_sr</span> <span class="o">!=</span> <span class="n">sr</span><span class="p">:</span>
 </span><span id="line-58">            <span class="n">y</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">orig_sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">target_sr</span><span class="p">)</span>
 </span><span id="line-59">            <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">target_sr</span>
 </span><span id="line-60">        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">sr</span>
 </span><span id="line-61">
-</span><span id="line-62">    <span class="c1"># Try torch.Tensor</span>
+</span><span id="line-62">    <span class="c1"># Try torch.Tensor (on any device)</span>
 </span><span id="line-63">    <span class="k">try</span><span class="p">:</span>
-</span><span id="line-64">        <span class="n">y</span> <span class="o">=</span> <span class="n">audio</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-</span><span id="line-65">        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="line-66">            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
-</span><span id="line-67">        <span class="k">if</span> <span class="n">sr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-68">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Sample rate (sr) is required when audio is a tensor."</span><span class="p">)</span>
-</span><span id="line-69">        <span class="k">return</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="n">mono</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">target_sr</span><span class="p">)</span>
-</span><span id="line-70">    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-</span><span id="line-71">        <span class="k">pass</span>
-</span><span id="line-72">
-</span><span id="line-73">    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="line-74">        <span class="sa">f</span><span class="s2">"Unsupported audio type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span><span class="si">}</span><span class="s2">. "</span>
-</span><span id="line-75">        <span class="s2">"Expected str, Path, np.ndarray, or torch.Tensor."</span>
-</span><span id="line-76">    <span class="p">)</span></div>
+</span><span id="line-64">        <span class="n">y</span> <span class="o">=</span> <span class="n">audio</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</span><span id="line-65">        <span class="k">if</span> <span class="n">sr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-66">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Sample rate (sr) is required when audio is a tensor."</span><span class="p">)</span>
+</span><span id="line-67">        <span class="k">return</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="n">mono</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">target_sr</span><span class="p">)</span>
+</span><span id="line-68">    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+</span><span id="line-69">        <span class="k">pass</span>
+</span><span id="line-70">
+</span><span id="line-71">    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="line-72">        <span class="sa">f</span><span class="s2">"Unsupported audio type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span><span class="si">}</span><span class="s2">. "</span>
+</span><span id="line-73">        <span class="s2">"Expected str, Path, np.ndarray, or torch.Tensor."</span>
+</span><span id="line-74">    <span class="p">)</span></div>
 
-</span><span id="line-77">
-</span><span id="line-78">
+</span><span id="line-75">
+</span><span id="line-76">
+<div class="viewcode-block" id="channels_first">
+<a class="viewcode-back" href="../../_autosummary/denote.util.html#denote.util.channels_first">[docs]</a>
+</span><span id="line-77"><span class="k">def</span><span class="w"> </span><span class="nf">channels_first</span><span class="p">(</span><span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-78"><span class="w">    </span><span class="sd">"""A multichannel array as ``(channels, frames)``, whichever way it came.</span>
+</span><span id="line-79">
+</span><span id="line-80"><span class="sd">    librosa and torchaudio give ``(channels, frames)``, soundfile</span>
+</span><span id="line-81"><span class="sd">    ``(frames, channels)``. Leading size-1 axes (a batch of one) are dropped. An</span>
+</span><span id="line-82"><span class="sd">    axis of size 2 or less beside a longer one is the channels axis, so a</span>
+</span><span id="line-83"><span class="sd">    one-frame stereo clip stays stereo; otherwise the longer axis is time.</span>
+</span><span id="line-84"><span class="sd">    """</span>
+</span><span id="line-85">    <span class="k">while</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="line-86">        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="line-87">    <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+</span><span id="line-88">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"expected 1-D or 2-D audio, got shape </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-89">    <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span>
+</span><span id="line-90">    <span class="k">if</span> <span class="n">cols</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">rows</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rows</span> <span class="o">&gt;</span> <span class="n">cols</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">rows</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">):</span>
+</span><span id="line-91">        <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">T</span>
+</span><span id="line-92">    <span class="k">return</span> <span class="n">y</span></div>
+
+</span><span id="line-93">
+</span><span id="line-94">
 <div class="viewcode-block" id="ensure_file_path">
 <a class="viewcode-back" href="../../_autosummary/denote.util.html#denote.util.ensure_file_path">[docs]</a>
-</span><span id="line-79"><span class="k">def</span><span class="w"> </span><span class="nf">ensure_file_path</span><span class="p">(</span>
-</span><span id="line-80">    <span class="n">audio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
-</span><span id="line-81">    <span class="o">*</span><span class="p">,</span>
-</span><span id="line-82">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-83"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="line-84"><span class="w">    </span><span class="sd">"""Ensure audio is available as a file path.</span>
-</span><span id="line-85">
-</span><span id="line-86"><span class="sd">    If audio is already a path, return it as a string.</span>
-</span><span id="line-87"><span class="sd">    If it's an array, write to a temporary WAV file and return the path.</span>
-</span><span id="line-88"><span class="sd">    """</span>
-</span><span id="line-89">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
-</span><span id="line-90">        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
-</span><span id="line-91">        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-</span><span id="line-92">            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Audio file not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span><span id="line-93">        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</span><span id="line-94">
-</span><span id="line-95">    <span class="c1"># It's an array — write to temp file</span>
-</span><span id="line-96">    <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
-</span><span id="line-97">    <span class="kn">import</span><span class="w"> </span><span class="nn">soundfile</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sf</span>
-</span><span id="line-98">
-</span><span id="line-99">    <span class="k">if</span> <span class="n">sr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-100">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Sample rate (sr) is required when audio is an array."</span><span class="p">)</span>
-</span><span id="line-101">    <span class="n">y</span><span class="p">,</span> <span class="n">actual_sr</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="line-102">    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">".wav"</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="line-103">    <span class="n">sf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">actual_sr</span><span class="p">)</span>
-</span><span id="line-104">    <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">name</span></div>
+</span><span id="line-95"><span class="k">def</span><span class="w"> </span><span class="nf">ensure_file_path</span><span class="p">(</span>
+</span><span id="line-96">    <span class="n">audio</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+</span><span id="line-97">    <span class="o">*</span><span class="p">,</span>
+</span><span id="line-98">    <span class="n">sr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-99"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-100"><span class="w">    </span><span class="sd">"""Ensure audio is available as a file path.</span>
+</span><span id="line-101">
+</span><span id="line-102"><span class="sd">    If audio is already a path, return it as a string.</span>
+</span><span id="line-103"><span class="sd">    If it's an array, write to a temporary WAV file and return the path.</span>
+</span><span id="line-104"><span class="sd">    """</span>
+</span><span id="line-105">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
+</span><span id="line-106">        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
+</span><span id="line-107">        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span id="line-108">            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Audio file not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-109">        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="line-110">
+</span><span id="line-111">    <span class="c1"># It's an array — write to temp file</span>
+</span><span id="line-112">    <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+</span><span id="line-113">    <span class="kn">import</span><span class="w"> </span><span class="nn">soundfile</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sf</span>
+</span><span id="line-114">
+</span><span id="line-115">    <span class="k">if</span> <span class="n">sr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-116">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Sample rate (sr) is required when audio is an array."</span><span class="p">)</span>
+</span><span id="line-117">    <span class="n">y</span><span class="p">,</span> <span class="n">actual_sr</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-118">    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">".wav"</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="line-119">    <span class="n">sf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">actual_sr</span><span class="p">)</span>
+</span><span id="line-120">    <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">name</span></div>
+
+</span><span id="line-121">
+</span><span id="line-122">
+<div class="viewcode-block" id="chunk_bounds">
+<a class="viewcode-back" href="../../_autosummary/denote.util.html#denote.util.chunk_bounds">[docs]</a>
+</span><span id="line-123"><span class="k">def</span><span class="w"> </span><span class="nf">chunk_bounds</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">segment</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">overlap</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="line-124"><span class="w">    </span><span class="sd">"""``(start, end)`` of the chunks that cover ``n`` frames, ``segment`` long and</span>
+</span><span id="line-125"><span class="sd">    overlapping by at least ``overlap``.</span>
+</span><span id="line-126">
+</span><span id="line-127"><span class="sd">    Every chunk is exactly ``segment`` long (one chunk of ``n`` when ``n &lt;= segment``):</span>
+</span><span id="line-128"><span class="sd">    the last one ends at ``n``, so it may overlap its neighbour by more than</span>
+</span><span id="line-129"><span class="sd">    ``overlap``.</span>
+</span><span id="line-130">
+</span><span id="line-131"><span class="sd">    &gt;&gt;&gt; chunk_bounds(10, segment=4, overlap=1)</span>
+</span><span id="line-132"><span class="sd">    [(0, 4), (3, 7), (6, 10)]</span>
+</span><span id="line-133"><span class="sd">    &gt;&gt;&gt; chunk_bounds(9, segment=4, overlap=0)</span>
+</span><span id="line-134"><span class="sd">    [(0, 4), (4, 8), (5, 9)]</span>
+</span><span id="line-135"><span class="sd">    &gt;&gt;&gt; chunk_bounds(3, segment=4, overlap=1)</span>
+</span><span id="line-136"><span class="sd">    [(0, 3)]</span>
+</span><span id="line-137"><span class="sd">    """</span>
+</span><span id="line-138">    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">overlap</span> <span class="o">&lt;</span> <span class="n">segment</span><span class="p">:</span>
+</span><span id="line-139">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-140">            <span class="sa">f</span><span class="s2">"need 0 &lt;= overlap &lt; segment (in frames); got overlap=</span><span class="si">{</span><span class="n">overlap</span><span class="si">}</span><span class="s2">, "</span>
+</span><span id="line-141">            <span class="sa">f</span><span class="s2">"segment=</span><span class="si">{</span><span class="n">segment</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="line-142">        <span class="p">)</span>
+</span><span id="line-143">    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">segment</span><span class="p">:</span>
+</span><span id="line-144">        <span class="k">return</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+</span><span id="line-145">    <span class="n">starts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="n">segment</span><span class="p">,</span> <span class="n">segment</span> <span class="o">-</span> <span class="n">overlap</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="n">segment</span><span class="p">]</span>
+</span><span id="line-146">    <span class="k">return</span> <span class="p">[(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="n">segment</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">starts</span><span class="p">]</span></div>
+
+</span><span id="line-147">
+</span><span id="line-148">
+<div class="viewcode-block" id="chunked_apply">
+<a class="viewcode-back" href="../../_autosummary/denote.util.html#denote.util.chunked_apply">[docs]</a>
+</span><span id="line-149"><span class="k">def</span><span class="w"> </span><span class="nf">chunked_apply</span><span class="p">(</span>
+</span><span id="line-150">    <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+</span><span id="line-151">    <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="line-152">    <span class="o">*</span><span class="p">,</span>
+</span><span id="line-153">    <span class="n">segment</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="line-154">    <span class="n">overlap</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="line-155"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-156"><span class="w">    </span><span class="sd">"""Apply ``fn`` to overlapping chunks of ``x`` along its last axis and overlap-add</span>
+</span><span id="line-157"><span class="sd">    the results, so ``fn`` only ever sees ``segment`` frames at a time.</span>
+</span><span id="line-158">
+</span><span id="line-159"><span class="sd">    Args:</span>
+</span><span id="line-160"><span class="sd">        fn: Takes a ``(..., m)`` chunk of ``x`` and returns a ``(..., m)`` array (any</span>
+</span><span id="line-161"><span class="sd">            leading shape, the same for every chunk; ``m`` frames, as given).</span>
+</span><span id="line-162"><span class="sd">        x: Array, typically ``(channels, frames)``.</span>
+</span><span id="line-163"><span class="sd">        segment: Chunk length in frames. Every chunk has this length unless ``x`` is</span>
+</span><span id="line-164"><span class="sd">            shorter (see ``chunk_bounds``).</span>
+</span><span id="line-165"><span class="sd">        overlap: Minimum overlap between neighbouring chunks, in frames (0 allowed).</span>
+</span><span id="line-166">
+</span><span id="line-167"><span class="sd">    Returns:</span>
+</span><span id="line-168"><span class="sd">        ``(..., frames)``: where chunks overlap, a weighted average of their outputs,</span>
+</span><span id="line-169"><span class="sd">        crossfaded linearly over the actual overlap. The output is divided by the</span>
+</span><span id="line-170"><span class="sd">        summed weights, so it is an average even where ramps collide (an overlap</span>
+</span><span id="line-171"><span class="sd">        above half the segment); the ramps alone sum to one wherever exactly two</span>
+</span><span id="line-172"><span class="sd">        chunks overlap and do not collide.</span>
+</span><span id="line-173">
+</span><span id="line-174"><span class="sd">    Only the output, a ``(frames,)`` weight vector and one chunk's temporaries are</span>
+</span><span id="line-175"><span class="sd">    held in memory; the division is done in place.</span>
+</span><span id="line-176">
+</span><span id="line-177"><span class="sd">    &gt;&gt;&gt; x = np.arange(10.0)[None]</span>
+</span><span id="line-178"><span class="sd">    &gt;&gt;&gt; np.allclose(chunked_apply(lambda c: 2 * c, x, segment=4, overlap=1), 2 * x)</span>
+</span><span id="line-179"><span class="sd">    True</span>
+</span><span id="line-180"><span class="sd">    """</span>
+</span><span id="line-181">
+</span><span id="line-182">    <span class="k">def</span><span class="w"> </span><span class="nf">crossfade</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">fade_in</span><span class="p">,</span> <span class="n">fade_out</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+</span><span id="line-183">        <span class="c1"># linear ramps, strictly positive, over the first fade_in and last fade_out</span>
+</span><span id="line-184">        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span><span id="line-185">        <span class="k">if</span> <span class="n">fade_in</span><span class="p">:</span>
+</span><span id="line-186">            <span class="n">w</span><span class="p">[:</span><span class="n">fade_in</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fade_in</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="line-187">        <span class="k">if</span> <span class="n">fade_out</span><span class="p">:</span>
+</span><span id="line-188">            <span class="n">w</span><span class="p">[</span><span class="n">length</span> <span class="o">-</span> <span class="n">fade_out</span> <span class="p">:]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">fade_out</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="line-189">        <span class="k">return</span> <span class="n">w</span>
+</span><span id="line-190">
+</span><span id="line-191">    <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="line-192">    <span class="n">bounds</span> <span class="o">=</span> <span class="n">chunk_bounds</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="n">segment</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="n">overlap</span><span class="p">)</span>
+</span><span id="line-193">    <span class="n">out</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-194">    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bounds</span><span class="p">):</span>
+</span><span id="line-195">        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]))</span>
+</span><span id="line-196">        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">e</span> <span class="o">-</span> <span class="n">s</span><span class="p">:</span>
+</span><span id="line-197">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-198">                <span class="sa">f</span><span class="s2">"fn returned </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> frames for a </span><span class="si">{</span><span class="n">e</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">s</span><span class="si">}</span><span class="s2">-frame chunk"</span>
+</span><span id="line-199">            <span class="p">)</span>
+</span><span id="line-200">        <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-201">            <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span><span id="line-202">            <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span><span id="line-203">            <span class="n">weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+</span><span id="line-204">        <span class="n">fade_in</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+</span><span id="line-205">        <span class="n">fade_out</span> <span class="o">=</span> <span class="n">e</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+</span><span id="line-206">        <span class="n">w</span> <span class="o">=</span> <span class="n">crossfade</span><span class="p">(</span><span class="n">e</span> <span class="o">-</span> <span class="n">s</span><span class="p">,</span> <span class="n">fade_in</span><span class="p">,</span> <span class="n">fade_out</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</span><span id="line-207">        <span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span> <span class="o">+=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">w</span>
+</span><span id="line-208">        <span class="n">weight</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span> <span class="o">+=</span> <span class="n">w</span>
+</span><span id="line-209">    <span class="n">out</span> <span class="o">/=</span> <span class="n">weight</span>
+</span><span id="line-210">    <span class="k">return</span> <span class="n">out</span></div>
 
 </span></code></pre></div>
     </div></div>
@@ -295,7 +410,7 @@
 </footer>
     </div>
     
-    <script src="../../_static/documentation_options.js?v=53b53b71"></script>
+    <script src="../../_static/documentation_options.js?v=f7cdbf68"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

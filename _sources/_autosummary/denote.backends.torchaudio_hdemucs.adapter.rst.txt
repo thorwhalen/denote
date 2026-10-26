@@ -1,0 +1,20 @@
+denote.backends.torchaudio\_hdemucs.adapter
+===========================================
+
+.. automodule:: denote.backends.torchaudio_hdemucs.adapter
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      MIN_FRAMES
+      NORM_EPS
+      HDEMUCS_BUNDLES
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

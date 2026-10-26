@@ -156,7 +156,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#denote.get_pitch" title="denote.get_pitch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pitch</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Estimate pitch/F0 from audio.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.transcribe" title="denote.transcribe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transcribe</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.separate" title="denote.separate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">separate</span></code></a>(audio, *[, sr, backend])</p></td>
+<td><p>Separate a mix into stems (drums, bass, other, vocals, ...).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.transcribe" title="denote.transcribe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transcribe</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Transcribe audio to MIDI.</p></td>
 </tr>
 </tbody>
@@ -218,6 +221,33 @@ model, device, hop_length).</p></li>
 </dl>
 </dd></dl>
 <dl class="py function">
+<dt class="sig sig-object py" id="denote.separate">
+<span class="sig-prename descclassname"><span class="pre">denote.</span></span><span class="sig-name descname"><span class="pre">separate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote.html#separate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.separate" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.separate'">¶</a></dt>
+<dd><p>Separate a mix into stems (drums, bass, other, vocals, …).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>audio</strong> – File path (str/Path) or numpy array.</p></li>
+<li><p><strong>sr</strong> – Sample rate (required when audio is an array).</p></li>
+<li><p><strong>backend</strong> – Backend name. Defaults to ‘torchaudio_hdemucs’.</p></li>
+<li><p><strong>**kwargs</strong> – Backend-specific parameters (segment_s, overlap_s, device,
+bundle, sources).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(channels, frames)}), .sr, and
+.vocals (mono).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SeparationResult with .stems ({name</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">voice</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s2">"song.mp3"</span><span class="p">)</span><span class="o">.</span><span class="n">vocals</span>
+</span></code></pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
 <dt class="sig sig-object py" id="denote.transcribe">
 <span class="sig-prename descclassname"><span class="pre">denote.</span></span><span class="sig-name descname"><span class="pre">transcribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote.html#transcribe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.transcribe" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.transcribe'">¶</a></dt>
 <dd><p>Transcribe audio to MIDI.</p>
@@ -260,7 +290,7 @@ model, device, hop_length).</p></li>
 <td><p>Parameter translation between normalized and native backend interfaces.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="denote.util.html#module-denote.util" title="denote.util"><code class="xref py py-obj docutils literal notranslate"><span class="pre">util</span></code></a></p></td>
-<td><p>Audio loading and utility functions for denote.</p></td>
+<td><p>Audio loading (any layout to <code class="docutils literal notranslate"><span class="pre">(channels,</span> <span class="pre">frames)</span></code>), and chunked overlap-add for models that take bounded lengths (<code class="docutils literal notranslate"><span class="pre">chunked_apply</span></code>).</p></td>
 </tr>
 </tbody>
 </table>
@@ -271,6 +301,7 @@ model, device, hop_length).</p></li>
 <li><a :data-current="activeSection === '#denote.get_beats'" class="reference internal" href="#denote.get_beats"><code class="docutils literal notranslate"><span class="pre">get_beats()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.get_chords'" class="reference internal" href="#denote.get_chords"><code class="docutils literal notranslate"><span class="pre">get_chords()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.get_pitch'" class="reference internal" href="#denote.get_pitch"><code class="docutils literal notranslate"><span class="pre">get_pitch()</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.separate'" class="reference internal" href="#denote.separate"><code class="docutils literal notranslate"><span class="pre">separate()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.transcribe'" class="reference internal" href="#denote.transcribe"><code class="docutils literal notranslate"><span class="pre">transcribe()</span></code></a></li>
 </ul>
 </div>
@@ -285,7 +316,7 @@ model, device, hop_length).</p></li>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=53b53b71"></script>
+<script src="../_static/documentation_options.js?v=f7cdbf68"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

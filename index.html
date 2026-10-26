@@ -143,6 +143,11 @@ Each backend is an optional dependency — install only what you need.</p>
 </span><span id="line-15"><span class="n">beats</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_beats</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>
 </span><span id="line-16"><span class="n">beats</span><span class="o">.</span><span class="n">beats</span>  <span class="c1"># beat times in seconds</span>
 </span><span id="line-17"><span class="n">beats</span><span class="o">.</span><span class="n">tempo</span>  <span class="c1"># BPM estimate</span>
+</span><span id="line-18">
+</span><span id="line-19"><span class="c1"># Source separation (requires torch + torchaudio; weights download once)</span>
+</span><span id="line-20"><span class="n">stems</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>
+</span><span id="line-21"><span class="n">stems</span><span class="o">.</span><span class="n">stems</span>  <span class="c1"># {"drums", "bass", "other", "vocals"}: (2, frames) at stems.sr (44.1 kHz)</span>
+</span><span id="line-22"><span class="n">stems</span><span class="o">.</span><span class="n">vocals</span>  <span class="c1"># the voice, mono</span>
 </span></code></pre></div>
 </div>
 </section>
@@ -224,7 +229,7 @@ Each backend is an optional dependency — install only what you need.</p>
 
 </section>
 </section>
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-10-26 12:02 UTC from <a href="https://github.com/thorwhalen/denote/commit/10beafa1fe2103af2cb7cbbf03da1eaf967e1f69">10beafa</a> (main) · denote 0.0.8 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-10-26 12:26 UTC from <a href="https://github.com/thorwhalen/denote/commit/24635fbd0d9384c66868f3270ffca64efcf53ee3">24635fb</a> (main) · denote 0.0.9 · <a href="about-this-build.html">about this build</a></p>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
@@ -247,7 +252,7 @@ Each backend is an optional dependency — install only what you need.</p>
 </div>
 </footer>
 </div>
-<script src="_static/documentation_options.js?v=53b53b71"></script>
+<script src="_static/documentation_options.js?v=f7cdbf68"></script>
 <script src="_static/doctools.js?v=fd6eb6e6"></script>
 <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="_static/clipboard.min.js?v=a7894cd8"></script>

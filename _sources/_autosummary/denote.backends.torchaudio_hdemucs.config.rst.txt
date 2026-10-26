@@ -1,0 +1,6 @@
+denote.backends.torchaudio\_hdemucs.config
+==========================================
+
+.. automodule:: denote.backends.torchaudio_hdemucs.config
+
+   

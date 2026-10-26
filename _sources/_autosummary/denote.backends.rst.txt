@@ -13,4 +13,5 @@ denote.backends
    basic_pitch
    librosa_beats
    librosa_pyin
+   torchaudio_hdemucs
    torchcrepe

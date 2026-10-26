@@ -8,6 +8,9 @@ denote.util
 
    .. autosummary::
    
+      channels_first
+      chunk_bounds
+      chunked_apply
       ensure_file_path
       load_audio
    

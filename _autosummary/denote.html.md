@@ -31,11 +31,12 @@ denote.services.basic_pitch.adapter  # raw adapter instance
 
 ### Functions
 
-| [`get_beats`](#denote.get_beats)(audio, \*[, sr, backend])   | Track beats in audio.         |
-|----------------------------------------------------------------------------------------|-------------------------------|
-| [`get_chords`](#denote.get_chords)(audio, \*[, sr, backend])  | Recognize chords from audio.  |
-| [`get_pitch`](#denote.get_pitch)(audio, \*[, sr, backend])   | Estimate pitch/F0 from audio. |
-| [`transcribe`](#denote.transcribe)(audio, \*[, sr, backend])  | Transcribe audio to MIDI.     |
+| [`get_beats`](#denote.get_beats)(audio, \*[, sr, backend])   | Track beats in audio.                                        |
+|----------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| [`get_chords`](#denote.get_chords)(audio, \*[, sr, backend])  | Recognize chords from audio.                                 |
+| [`get_pitch`](#denote.get_pitch)(audio, \*[, sr, backend])   | Estimate pitch/F0 from audio.                                |
+| [`separate`](#denote.separate)(audio, \*[, sr, backend])    | Separate a mix into stems (drums, bass, other, vocals, ...). |
+| [`transcribe`](#denote.transcribe)(audio, \*[, sr, backend])  | Transcribe audio to MIDI.                                    |
 
 ### denote.get_beats(audio, , sr=None, backend=None, \*\*kwargs)
 
@@ -75,6 +76,28 @@ Estimate pitch/F0 from audio.
 * **Returns:**
   PitchResult with .times, .frequencies, .confidence fields.
 
+### denote.separate(audio, , sr=None, backend=None, \*\*kwargs)
+
+Separate a mix into stems (drums, bass, other, vocals, …).
+
+* **Parameters:**
+  * **audio** – File path (str/Path) or numpy array.
+  * **sr** – Sample rate (required when audio is an array).
+  * **backend** – Backend name. Defaults to ‘torchaudio_hdemucs’.
+  * **\*\*kwargs** – Backend-specific parameters (segment_s, overlap_s, device,
+    bundle, sources).
+* **Returns:**
+  (channels, frames)}), .sr, and
+  .vocals (mono).
+* **Return type:**
+  SeparationResult with .stems ({name
+
+Example:
+
+```default
+voice = denote.separate("song.mp3").vocals
+```
+
 ### denote.transcribe(audio, , sr=None, backend=None, \*\*kwargs)
 
 Transcribe audio to MIDI.
@@ -89,12 +112,12 @@ Transcribe audio to MIDI.
 
 ### Modules
 
-| [`align`](denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).                    |
-|----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| [`backends`](denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                      |
-| [`base`](denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                     |
-| [`compare`](denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3). |
-| [`registry`](denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                |
-| [`services`](denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                          |
-| [`translation`](denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                           |
-| [`util`](denote.util.html.md#module-denote.util)               | Audio loading and utility functions for denote.                                                   |
+| [`align`](denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).                                                      |
+|----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| [`backends`](denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
+| [`base`](denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
+| [`compare`](denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
+| [`registry`](denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                                                  |
+| [`services`](denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
+| [`translation`](denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                                                             |
+| [`util`](denote.util.html.md#module-denote.util)               | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |

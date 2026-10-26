@@ -12,5 +12,6 @@ denote.base
       ChordResult
       NoteEvent
       PitchResult
+      SeparationResult
       TranscriptionResult
    
