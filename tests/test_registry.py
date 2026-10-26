@@ -79,6 +79,6 @@ def test_unknown_backend_raises():
 
 
 def test_no_backends_for_task_raises():
-    # Empty registry, no backends at all
+    # A task no backend declares ('separate' served this example until it got a backend)
     with pytest.raises(ValueError, match='No backends registered'):
-        get_default_backend('separate')
+        get_default_backend('no_backend_declares_this_task')
