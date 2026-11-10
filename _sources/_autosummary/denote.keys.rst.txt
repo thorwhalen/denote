@@ -1,0 +1,30 @@
+denote.keys
+===========
+
+.. automodule:: denote.keys
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      FLAT_RTOL
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      key_from_chroma
+      key_name
+      key_scores
+      parse_key
+      pitch_class_vector
+      relative_key
+      resolve_profile
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      KeyProfile
+   

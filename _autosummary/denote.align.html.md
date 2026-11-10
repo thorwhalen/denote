@@ -23,11 +23,10 @@ recording, which makes it a ranking of how faithful each score is.
 
 ### Module Attributes
 
-| [`DFLT_FRAME_RATE`](#denote.align.DFLT_FRAME_RATE)   | Default analysis rate (frames per second) for both score and audio.     |
-|--------------------------------------------------------------------|-------------------------------------------------------------------------|
-| [`DFLT_AUDIO_SR`](#denote.align.DFLT_AUDIO_SR)     | Default sample rate the audio is resampled to before chroma extraction. |
-| [`N_PITCH_CLASSES`](#denote.align.N_PITCH_CLASSES)   | Pitch classes per chroma column.                                        |
-| [`SILENT_NORM`](#denote.align.SILENT_NORM)       | A column with a smaller norm than this is a silent frame.               |
+| [`DFLT_FRAME_RATE`](#denote.align.DFLT_FRAME_RATE)   | Default analysis rate (frames per second) for both score and audio.   |
+|--------------------------------------------------------------------|-----------------------------------------------------------------------|
+| [`N_PITCH_CLASSES`](#denote.align.N_PITCH_CLASSES)   | Pitch classes per chroma column.                                      |
+| [`SILENT_NORM`](#denote.align.SILENT_NORM)       | A column with a smaller norm than this is a silent frame.             |
 
 ### Functions
 
@@ -42,10 +41,6 @@ recording, which makes it a ranking of how faithful each score is.
 
 | [`ScoreAlignment`](#denote.align.ScoreAlignment)(score_times, audio_times, cost)   | A monotone time map between a score's timeline and a recording's.   |
 |---------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
-
-### denote.align.DFLT_AUDIO_SR *= 22050*
-
-Default sample rate the audio is resampled to before chroma extraction.
 
 ### denote.align.DFLT_FRAME_RATE *= 10.0*
 

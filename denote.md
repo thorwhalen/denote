@@ -1,4 +1,4 @@
-> built 2026-10-26 12:26 UTC from 24635fb (main) · denote 0.0.9. Details: build_info.json
+> built 2026-11-10 09:57 UTC from 4cdc03d (main) · denote 0.0.10. Details: build_info.json
 
 # index.html.md
 
@@ -45,6 +45,13 @@ beats.tempo  # BPM estimate
 stems = denote.separate("song.wav")
 stems.stems  # {"drums", "bass", "other", "vocals"}: (2, frames) at stems.sr (44.1 kHz)
 stems.vocals  # the voice, mono
+
+# Key estimation (uses librosa, no extra install needed)
+key = denote.get_key("song.wav")
+key.key  # "A minor"
+key.confidence  # the winner's profile correlation (not a probability)
+key.margin  # lead over the runner-up: small means ambiguous
+key.ranked[:3]  # all 24 keys, best first; key.relative names the relative key
 ```
 
 ## Choose Your Backend
@@ -73,12 +80,13 @@ denote.services.basic_pitch.adapter
 
 ## Supported Backends
 
-| Backend               | Task               | License    | Install                           |
-|-----------------------|--------------------|------------|-----------------------------------|
-| Basic Pitch (Spotify) | MIDI transcription | Apache 2.0 | `pip install denote[basic_pitch]` |
-| torchcrepe            | Pitch estimation   | MIT        | `pip install denote[torchcrepe]`  |
-| librosa pYIN          | Pitch estimation   | ISC        | (included)                        |
-| librosa beats         | Beat tracking      | ISC        | (included)                        |
+| Backend                            | Task               | License    | Install                           |
+|------------------------------------|--------------------|------------|-----------------------------------|
+| Basic Pitch (Spotify)              | MIDI transcription | Apache 2.0 | `pip install denote[basic_pitch]` |
+| torchcrepe                         | Pitch estimation   | MIT        | `pip install denote[torchcrepe]`  |
+| librosa pYIN                       | Pitch estimation   | ISC        | (included)                        |
+| librosa beats                      | Beat tracking      | ISC        | (included)                        |
+| librosa key (Krumhansl-Schmuckler) | Key estimation     | ISC        | (included)                        |
 
 More backends coming: pesto-pitch, madmom, autochord, beat-this, demucs.
 
@@ -130,11 +138,10 @@ recording, which makes it a ranking of how faithful each score is.
 
 ### Module Attributes
 
-| [`DFLT_FRAME_RATE`](_autosummary/denote.align.html.md#denote.align.DFLT_FRAME_RATE)   | Default analysis rate (frames per second) for both score and audio.     |
-|--------------------------------------------------------------------|-------------------------------------------------------------------------|
-| [`DFLT_AUDIO_SR`](_autosummary/denote.align.html.md#denote.align.DFLT_AUDIO_SR)     | Default sample rate the audio is resampled to before chroma extraction. |
-| [`N_PITCH_CLASSES`](_autosummary/denote.align.html.md#denote.align.N_PITCH_CLASSES)   | Pitch classes per chroma column.                                        |
-| [`SILENT_NORM`](_autosummary/denote.align.html.md#denote.align.SILENT_NORM)       | A column with a smaller norm than this is a silent frame.               |
+| [`DFLT_FRAME_RATE`](_autosummary/denote.align.html.md#denote.align.DFLT_FRAME_RATE)   | Default analysis rate (frames per second) for both score and audio.   |
+|--------------------------------------------------------------------|-----------------------------------------------------------------------|
+| [`N_PITCH_CLASSES`](_autosummary/denote.align.html.md#denote.align.N_PITCH_CLASSES)   | Pitch classes per chroma column.                                      |
+| [`SILENT_NORM`](_autosummary/denote.align.html.md#denote.align.SILENT_NORM)       | A column with a smaller norm than this is a silent frame.             |
 
 ### Functions
 
@@ -149,10 +156,6 @@ recording, which makes it a ranking of how faithful each score is.
 
 | [`ScoreAlignment`](_autosummary/denote.align.html.md#denote.align.ScoreAlignment)(score_times, audio_times, cost)   | A monotone time map between a score's timeline and a recording's.   |
 |---------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
-
-### denote.align.DFLT_AUDIO_SR *= 22050*
-
-Default sample rate the audio is resampled to before chroma extraction.
 
 ### denote.align.DFLT_FRAME_RATE *= 10.0*
 
@@ -507,12 +510,13 @@ Backend packages for denote. Each subpackage provides a config.py and adapter.py
 
 ### Modules
 
-| [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)               |                                                     |
-|---------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
-| [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats)           |                                                     |
-| [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)             |                                                     |
-| [`torchaudio_hdemucs`](_autosummary/denote.backends.torchaudio_hdemucs.html.md#module-denote.backends.torchaudio_hdemucs) | torchaudio Hybrid Demucs source separation backend. |
-| [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)                 |                                                     |
+| [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)               |                                                                            |
+|---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats)           |                                                                            |
+| [`librosa_key`](_autosummary/denote.backends.librosa_key.html.md#module-denote.backends.librosa_key)               | librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma. |
+| [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)             |                                                                            |
+| [`torchaudio_hdemucs`](_autosummary/denote.backends.torchaudio_hdemucs.html.md#module-denote.backends.torchaudio_hdemucs) | torchaudio Hybrid Demucs source separation backend.                        |
+| [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)                 |                                                                            |
 
 
 # _autosummary/denote.backends.librosa_beats.adapter.html.md
@@ -560,6 +564,102 @@ Configuration for the librosa beat tracking backend.
 | [`adapter`](_autosummary/denote.backends.librosa_beats.adapter.html.md#module-denote.backends.librosa_beats.adapter)   | Adapter for librosa beat tracking.                   |
 |---------------------------------------------------------------------------------------------------------|------------------------------------------------------|
 | [`config`](_autosummary/denote.backends.librosa_beats.config.html.md#module-denote.backends.librosa_beats.config)     | Configuration for the librosa beat tracking backend. |
+
+
+# _autosummary/denote.backends.librosa_key.adapter.html.md
+
+# denote.backends.librosa_key.adapter
+
+Adapter for key estimation from librosa chroma and published key profiles.
+
+### Functions
+
+| [`chroma_cens`](_autosummary/denote.backends.librosa_key.adapter.html.md#denote.backends.librosa_key.adapter.chroma_cens)(y, sr)                       | CENS chromagram: CQT chroma smoothed and quantized, robust to timbre.       |
+|-------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| [`chroma_stft`](_autosummary/denote.backends.librosa_key.adapter.html.md#denote.backends.librosa_key.adapter.chroma_stft)(y, sr)                       | STFT chromagram: faster than CQT, coarser in the bass.                      |
+| [`frame_rms`](_autosummary/denote.backends.librosa_key.adapter.html.md#denote.backends.librosa_key.adapter.frame_rms)(y, n_frames, \*[, hop_length]) | RMS per frame, resampled to `n_frames` (so any chroma callable can use it). |
+
+### Classes
+
+| [`Adapter`](_autosummary/denote.backends.librosa_key.adapter.html.md#denote.backends.librosa_key.adapter.Adapter)(config)   | Key estimation: weighted mean chroma correlated with 24 rotated key profiles.   |
+|--------------------------------------------------------------------|---------------------------------------------------------------------------------|
+
+### *class* denote.backends.librosa_key.adapter.Adapter(config)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Key estimation: weighted mean chroma correlated with 24 rotated key profiles.
+
+#### get_key(audio, , sr=None, \*\*kwargs)
+
+Estimate the key (tonic + mode) of a whole recording.
+
+* **Parameters:**
+  * **audio** – File path or numpy array.
+  * **sr** – Sample rate (required if audio is an array).
+  * **\*\*kwargs** – `profile` (a name in `denote.keys.KEY_PROFILES`, default
+    `"krumhansl"`, or a `(major, minor)` pair of 12 weights),
+    `chroma` (`"cqt"` default, `"stft"`, `"cens"`, or a callable
+    `(y, sr) -> (12, frames)`), `audio_sr` (rate the audio is
+    resampled to first, default 22050), `weighting` (`"energy"`
+    default: frames weighted by RMS; or `"uniform"`), `min_rms`
+    and `min_duration_s` (refuse quieter or shorter audio).
+* **Returns:**
+  KeyResult; `confidence` is the winning key’s Pearson correlation,
+  `margin` its lead over the runner-up, `scores` all 24 keys best
+  first, `raw` the averaged chroma, the RMS and the duration.
+* **Raises:**
+  [**ValueError**](https://docs.python.org/3/builtins/exceptions.html#ValueError) – audio shorter than `min_duration_s` or quieter than
+      `min_rms`, or an unknown `chroma`/`weighting`/`profile`.
+
+### denote.backends.librosa_key.adapter.chroma_cens(y, sr)
+
+CENS chromagram: CQT chroma smoothed and quantized, robust to timbre.
+
+### denote.backends.librosa_key.adapter.chroma_stft(y, sr)
+
+STFT chromagram: faster than CQT, coarser in the bass.
+
+### denote.backends.librosa_key.adapter.frame_rms(y, n_frames, , hop_length=512)
+
+RMS per frame, resampled to `n_frames` (so any chroma callable can use it).
+
+
+# _autosummary/denote.backends.librosa_key.config.html.md
+
+# denote.backends.librosa_key.config
+
+Configuration for the librosa key estimation backend (the single source of its defaults).
+
+### Module Attributes
+
+| [`DFLT_MIN_RMS`](_autosummary/denote.backends.librosa_key.config.html.md#denote.backends.librosa_key.config.DFLT_MIN_RMS)        | Audio quieter than this overall RMS (-60 dBFS) is refused as "no music to key".   |
+|----------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| [`DFLT_MIN_DURATION_S`](_autosummary/denote.backends.librosa_key.config.html.md#denote.backends.librosa_key.config.DFLT_MIN_DURATION_S) | too few notes to imply a key.                                                     |
+
+### denote.backends.librosa_key.config.DFLT_MIN_DURATION_S *= 1.0*
+
+too few notes to imply a key.
+
+* **Type:**
+  Audio shorter than this (seconds) is refused
+
+### denote.backends.librosa_key.config.DFLT_MIN_RMS *= 0.001*
+
+Audio quieter than this overall RMS (-60 dBFS) is refused as “no music to key”.
+
+
+# _autosummary/denote.backends.librosa_key.html.md
+
+# denote.backends.librosa_key
+
+librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma.
+
+### Modules
+
+| [`adapter`](_autosummary/denote.backends.librosa_key.adapter.html.md#module-denote.backends.librosa_key.adapter)   | Adapter for key estimation from librosa chroma and published key profiles.                |
+|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| [`config`](_autosummary/denote.backends.librosa_key.config.html.md#module-denote.backends.librosa_key.config)     | Configuration for the librosa key estimation backend (the single source of its defaults). |
 
 
 # _autosummary/denote.backends.librosa_pyin.adapter.html.md
@@ -780,6 +880,7 @@ Core types and result dataclasses for denote.
 | [`BeatResult`](_autosummary/denote.base.html.md#denote.base.BeatResult)(beats[, downbeats, tempo, raw, ...])   | Result of beat/downbeat tracking.                                              |
 |----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
 | [`ChordResult`](_autosummary/denote.base.html.md#denote.base.ChordResult)(intervals[, labels, raw, backend])    | Result of chord recognition.                                                   |
+| [`KeyResult`](_autosummary/denote.base.html.md#denote.base.KeyResult)(key, tonic, mode, confidence[, ...])    | Result of key estimation: tonic + mode, with every candidate key's score.      |
 | [`NoteEvent`](_autosummary/denote.base.html.md#denote.base.NoteEvent)(start_time, end_time, pitch, velocity)  | A single note event with timing, pitch, and optional pitch bends.              |
 | [`PitchResult`](_autosummary/denote.base.html.md#denote.base.PitchResult)(times, frequencies, confidence)       | Result of pitch/F0 estimation.                                                 |
 | [`SeparationResult`](_autosummary/denote.base.html.md#denote.base.SeparationResult)(stems, sr[, raw, backend])       | Result of source separation: one `(channels, frames)` array per stem, at `sr`. |
@@ -796,6 +897,35 @@ Result of beat/downbeat tracking.
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of chord recognition.
+
+### *class* denote.base.KeyResult(key, tonic, mode, confidence, margin=0.0, scores=dict(), profile='', raw=None, backend='')
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Result of key estimation: tonic + mode, with every candidate key’s score.
+
+`confidence` is the winning key’s score: for profile backends (`librosa_key`)
+the Pearson correlation, in [-1, 1], between the recording’s mean chroma and that
+key’s profile. It measures fit, and is not a probability. `margin` is the
+winner’s score minus the runner-up’s; a small margin means two keys fit about
+equally well, most often the relative key (C major / A minor share every pitch
+class), the parallel key or a key a fifth away. Look at `ranked` before
+trusting the winner when the margin is small.
+
+#### *property* ranked *: [List](https://docs.python.org/3/library/typing.html#typing.List)[[Tuple](https://docs.python.org/3/library/typing.html#typing.Tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [float](https://docs.python.org/3/builtins/functions.html#float)]]*
+
+`[(key, score), ...]` for every candidate key, best first (`scores`’ order).
+
+#### *property* relative *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+The relative key of the estimate (C major -> A minor); `""` if none applies.
+
+Only major and minor have a relative key here; a backend reporting another
+mode (dorian, …) gets `""`.
+
+#### *property* runner_up *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+The second-best key (`""` when only one was scored).
 
 ### *class* denote.base.NoteEvent(start_time, end_time, pitch, velocity, pitch_bends=None)
 
@@ -984,6 +1114,7 @@ result = denote.transcribe("song.wav")         # audio -> MIDI
 chords = denote.get_chords("song.wav")         # audio -> chord labels
 pitch = denote.get_pitch("vocal.wav")           # audio -> F0
 beats = denote.get_beats("song.wav")            # audio -> beat times
+key = denote.get_key("song.wav")                # audio -> "A minor" + scores
 sync = denote.align_score("song.mid", "song.wav")  # score <-> recording time map
 
 denote.list_backends()                          # see what's available
@@ -1008,6 +1139,7 @@ denote.services.basic_pitch.adapter  # raw adapter instance
 | [`get_beats`](_autosummary/denote.html.md#denote.get_beats)(audio, \*[, sr, backend])   | Track beats in audio.                                        |
 |----------------------------------------------------------------------------------------|--------------------------------------------------------------|
 | [`get_chords`](_autosummary/denote.html.md#denote.get_chords)(audio, \*[, sr, backend])  | Recognize chords from audio.                                 |
+| [`get_key`](_autosummary/denote.html.md#denote.get_key)(audio, \*[, sr, backend])     | Estimate the key (tonic + mode) of a recording.              |
 | [`get_pitch`](_autosummary/denote.html.md#denote.get_pitch)(audio, \*[, sr, backend])   | Estimate pitch/F0 from audio.                                |
 | [`separate`](_autosummary/denote.html.md#denote.separate)(audio, \*[, sr, backend])    | Separate a mix into stems (drums, bass, other, vocals, ...). |
 | [`transcribe`](_autosummary/denote.html.md#denote.transcribe)(audio, \*[, sr, backend])  | Transcribe audio to MIDI.                                    |
@@ -1035,6 +1167,29 @@ Recognize chords from audio.
   * **\*\*kwargs** – Backend-specific parameters.
 * **Returns:**
   ChordResult with .intervals, .labels fields.
+
+### denote.get_key(audio, , sr=None, backend=None, \*\*kwargs)
+
+Estimate the key (tonic + mode) of a recording.
+
+* **Parameters:**
+  * **audio** – File path (str/Path) or numpy array.
+  * **sr** – Sample rate (required when audio is an array).
+  * **backend** – Backend name. Defaults to ‘librosa_key’.
+  * **\*\*kwargs** – Backend-specific parameters (`profile`: ‘krumhansl’ default or
+    ‘temperley’ or a (major, minor) pair; `chroma`: ‘cqt’ default,
+    ‘stft’, ‘cens’ or a callable (y, sr) -> (12, frames)).
+* **Returns:**
+  KeyResult with .key (“A minor”), .tonic, .mode, .confidence (the winner’s
+  profile correlation, not a probability), .margin (lead over the runner-up),
+  .scores (all 24 keys, best first) and .relative.
+
+Example:
+
+```default
+k = denote.get_key("song.wav")
+k.key, k.margin, k.ranked[:2]
+```
 
 ### denote.get_pitch(audio, , sr=None, backend=None, \*\*kwargs)
 
@@ -1091,10 +1246,182 @@ Transcribe audio to MIDI.
 | [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
 | [`base`](_autosummary/denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
 | [`compare`](_autosummary/denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
+| [`keys`](_autosummary/denote.keys.html.md#module-denote.keys)               | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
 | [`registry`](_autosummary/denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                                                  |
 | [`services`](_autosummary/denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
 | [`translation`](_autosummary/denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                                                             |
 | [`util`](_autosummary/denote.util.html.md#module-denote.util)               | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |
+
+
+# _autosummary/denote.keys.html.md
+
+# denote.keys
+
+Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).
+
+Correlate a 12-bin pitch-class vector (the mean chroma of a recording, or a note
+histogram of a score) with a major and a minor *key profile* rotated to each of the
+12 tonics. The best of the 24 Pearson correlations names the key. This module is the
+audio-free core; `denote.get_key` computes the chroma and calls it.
+
+```pycon
+>>> major = KEY_PROFILES["krumhansl"].major
+>>> r = key_from_chroma(major)  # the C major profile itself
+>>> r.key, round(r.confidence, 3)
+('C major', 1.0)
+>>> r.relative
+'A minor'
+>>> key_from_chroma(np.roll(major, 3)).key  # rotated up three semitones
+'Eb major'
+>>> parse_key("F# minor")
+(6, 'minor')
+```
+
+Profiles (`KEY_PROFILES`), each a published table of how well each pitch class
+fits a key, tonic first:
+
+- `"krumhansl"`: Krumhansl and Kessler’s probe-tone ratings (Krumhansl & Kessler
+  1982; Krumhansl, *Cognitive Foundations of Musical Pitch*, 1990, Table 2.1).
+- `"temperley"`: Temperley’s profiles from the Kostka-Payne corpus (Temperley,
+  *Music and Probability*, 2007), as listed by Humdrum `keycor`.
+
+Both sets of numbers are as given at [https://extras.humdrum.org/man/keycor/](https://extras.humdrum.org/man/keycor/) (and in
+music21’s `analysis.discrete`). Any other `(major, minor)` pair of 12 numbers
+can be passed as `profile`.
+
+Key names follow the fewest-accidentals convention (Eb major, C# minor, Gb major,
+Eb minor), the one `chordsym` uses for chord spelling.
+
+### Module Attributes
+
+| [`FLAT_RTOL`](_autosummary/denote.keys.html.md#denote.keys.FLAT_RTOL)   | A vector whose spread is below this fraction of its largest value is flat.   |
+|--------------------------------------------------------------|------------------------------------------------------------------------------|
+
+### Functions
+
+| [`key_from_chroma`](_autosummary/denote.keys.html.md#denote.keys.key_from_chroma)(chroma, \*[, profile, ...])   | The best of the 24 keys for a chroma vector or chromagram.                    |
+|------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| [`key_name`](_autosummary/denote.keys.html.md#denote.keys.key_name)(tonic_pc, mode)                      | `"Eb major"`: the key on pitch class `tonic_pc` (C = 0) in `mode`.            |
+| [`key_scores`](_autosummary/denote.keys.html.md#denote.keys.key_scores)(chroma, \*[, profile])             | `{key name: Pearson correlation}` for all 24 keys, best first.                |
+| [`parse_key`](_autosummary/denote.keys.html.md#denote.keys.parse_key)(name)                               | `(tonic_pc, mode)` from a key name.                                           |
+| [`pitch_class_vector`](_autosummary/denote.keys.html.md#denote.keys.pitch_class_vector)(chroma, \*[, weights])     | A `(12,)` vector: `chroma` itself, or its mean over frames if `(12, frames)`. |
+| [`relative_key`](_autosummary/denote.keys.html.md#denote.keys.relative_key)(name)                            | The key sharing `name`'s key signature: C major <-> A minor.                  |
+| [`resolve_profile`](_autosummary/denote.keys.html.md#denote.keys.resolve_profile)(profile)                      | A `KeyProfile` from a name in `KEY_PROFILES`, a `KeyProfile` or a pair.       |
+
+### Classes
+
+| [`KeyProfile`](_autosummary/denote.keys.html.md#denote.keys.KeyProfile)(major, minor[, source])   | A major and a minor key profile: 12 weights each, tonic first (C = index 0).   |
+|---------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+
+### denote.keys.FLAT_RTOL *= 1e-06*
+
+A vector whose spread is below this fraction of its largest value is flat.
+
+### *class* denote.keys.KeyProfile(major, minor, source='')
+
+Bases: [`NamedTuple`](https://docs.python.org/3/library/typing.html#typing.NamedTuple)
+
+A major and a minor key profile: 12 weights each, tonic first (C = index 0).
+
+#### major *: [Tuple](https://docs.python.org/3/library/typing.html#typing.Tuple)[[float](https://docs.python.org/3/builtins/functions.html#float), ...]*
+
+Alias for field number 0
+
+#### minor *: [Tuple](https://docs.python.org/3/library/typing.html#typing.Tuple)[[float](https://docs.python.org/3/builtins/functions.html#float), ...]*
+
+Alias for field number 1
+
+#### source *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+Alias for field number 2
+
+### denote.keys.key_from_chroma(chroma, , profile='krumhansl', weights=None, backend='')
+
+The best of the 24 keys for a chroma vector or chromagram.
+
+* **Parameters:**
+  * **chroma** – `(12,)` pitch-class weights (C first) or a `(12, frames)`
+    chromagram, averaged over frames.
+  * **profile** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`KeyProfile`](_autosummary/denote.keys.html.md#denote.keys.KeyProfile), [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[[`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`float`](https://docs.python.org/3/builtins/functions.html#float)], [`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]]]) – A name in `KEY_PROFILES` (default `"krumhansl"`), a
+    `KeyProfile`, or a `(major, minor)` pair of 12 weights each.
+  * **weights** – Optional per-frame weights for the average (e.g. frame RMS).
+  * **backend** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Recorded on the result.
+* **Return type:**
+  [`KeyResult`](_autosummary/denote.base.html.md#denote.base.KeyResult)
+* **Returns:**
+  KeyResult whose `confidence` is the winner’s correlation, `margin` the
+  gap to the runner-up, `scores` every key’s correlation (best first), and
+  `raw["chroma"]` the 12-bin vector correlated.
+
+### denote.keys.key_name(tonic_pc, mode)
+
+`"Eb major"`: the key on pitch class `tonic_pc` (C = 0) in `mode`.
+
+```pycon
+>>> key_name(3, "major"), key_name(1, "minor")
+('Eb major', 'C# minor')
+```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### denote.keys.key_scores(chroma, , profile='krumhansl')
+
+`{key name: Pearson correlation}` for all 24 keys, best first.
+
+Raises `ValueError` when the vector is flat to within `FLAT_RTOL` (silence,
+or no pitched content), since a correlation with a constant is undefined.
+Level gating (very quiet or very short audio) is the audio adapter’s job:
+per-frame chroma normalization makes even faint noise look pitched here.
+
+* **Return type:**
+  [`Dict`](https://docs.python.org/3/library/typing.html#typing.Dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`float`](https://docs.python.org/3/builtins/functions.html#float)]
+
+### denote.keys.parse_key(name)
+
+`(tonic_pc, mode)` from a key name.
+
+Accepted: `"Eb major"`, `"c# minor"`, `"A min"`, `"Am"`, `"Amin"`,
+`"Amaj"` and a bare uppercase tonic (`"Bb"`, major). A bare *lowercase*
+tonic (`"a"`) is rejected, because some conventions read it as minor; say
+`"a minor"` or `"am"`.
+
+```pycon
+>>> parse_key("Eb major"), parse_key("Am"), parse_key("Bbmaj")
+((3, 'major'), (9, 'minor'), (10, 'major'))
+```
+
+* **Return type:**
+  [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
+### denote.keys.pitch_class_vector(chroma, , weights=None)
+
+A `(12,)` vector: `chroma` itself, or its mean over frames if `(12, frames)`.
+
+`weights` (one non-negative number per frame) makes it a weighted mean, e.g.
+by frame energy so quiet frames count less.
+
+* **Return type:**
+  `ndarray`
+
+### denote.keys.relative_key(name)
+
+The key sharing `name`’s key signature: C major <-> A minor.
+
+```pycon
+>>> relative_key("C major"), relative_key("F# minor")
+('A minor', 'A major')
+```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### denote.keys.resolve_profile(profile)
+
+A `KeyProfile` from a name in `KEY_PROFILES`, a `KeyProfile` or a pair.
+
+* **Return type:**
+  [`KeyProfile`](_autosummary/denote.keys.html.md#denote.keys.KeyProfile)
 
 
 # _autosummary/denote.registry.html.md
@@ -1170,7 +1497,7 @@ Register a backend (for third-party plugins).
 
 # denote.services
 
-### denote.services *= <ServiceCollection backends=['basic_pitch', 'librosa_beats', 'librosa_pyin', 'torchaudio_hdemucs', 'torchcrepe']>*
+### denote.services *= <ServiceCollection backends=['basic_pitch', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'torchaudio_hdemucs', 'torchcrepe']>*
 
 Lazy mapping of backend names → ServiceHandle instances.
 
@@ -1231,14 +1558,31 @@ Checks ‘min’, ‘max’, and ‘choices’ constraints.
 Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models
 that take bounded lengths (`chunked_apply`).
 
+### Module Attributes
+
+| [`DFLT_AUDIO_SR`](_autosummary/denote.util.html.md#denote.util.DFLT_AUDIO_SR)   | Sample rate audio is resampled to before chroma extraction.   |
+|------------------------------------------------------------------|---------------------------------------------------------------|
+| [`DFLT_CHROMA_HOP`](_autosummary/denote.util.html.md#denote.util.DFLT_CHROMA_HOP) | Hop between chroma frames, in samples (librosa's default).    |
+
 ### Functions
 
 | [`channels_first`](_autosummary/denote.util.html.md#denote.util.channels_first)(y)                            | A multichannel array as `(channels, frames)`, whichever way it came.                                                                        |
 |-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | [`chunk_bounds`](_autosummary/denote.util.html.md#denote.util.chunk_bounds)(n, \*, segment, overlap)        | `(start, end)` of the chunks that cover `n` frames, `segment` long and overlapping by at least `overlap`.                                   |
 | [`chunked_apply`](_autosummary/denote.util.html.md#denote.util.chunked_apply)(fn, x, \*, segment, overlap)   | Apply `fn` to overlapping chunks of `x` along its last axis and overlap-add the results, so `fn` only ever sees `segment` frames at a time. |
+| [`cqt_chroma`](_autosummary/denote.util.html.md#denote.util.cqt_chroma)(y, sr, \*[, hop_length])          | Constant-Q chroma `(12, frames)` of a mono signal, as librosa returns it.                                                                   |
 | [`ensure_file_path`](_autosummary/denote.util.html.md#denote.util.ensure_file_path)(audio, \*[, sr])            | Ensure audio is available as a file path.                                                                                                   |
 | [`load_audio`](_autosummary/denote.util.html.md#denote.util.load_audio)(audio, \*[, sr, mono, target_sr]) | Load audio from a file path or validate an existing array.                                                                                  |
+
+### denote.util.DFLT_AUDIO_SR *= 22050*
+
+Sample rate audio is resampled to before chroma extraction. librosa’s CQT chroma
+needs more than about 8.2 kHz (its top wavelets exceed Nyquist below that), so
+every chroma path in denote (align, compare, get_key) loads at this rate.
+
+### denote.util.DFLT_CHROMA_HOP *= 512*
+
+Hop between chroma frames, in samples (librosa’s default).
 
 ### denote.util.channels_first(y)
 
@@ -1303,6 +1647,14 @@ held in memory; the division is done in place.
 True
 ```
 
+### denote.util.cqt_chroma(y, sr, , hop_length=512)
+
+Constant-Q chroma `(12, frames)` of a mono signal, as librosa returns it.
+
+The one CQT chroma call denote makes, shared by `align` and `get_key`.
+Load the audio at `DFLT_AUDIO_SR` first (`load_audio(..., target_sr=...)`):
+below about 8.2 kHz librosa refuses the transform.
+
 ### denote.util.ensure_file_path(audio, , sr=None)
 
 Ensure audio is available as a file path.
@@ -1338,7 +1690,7 @@ Load audio from a file path or validate an existing array.
 
 # About this build
 
-This documentation was built on **2026-10-26 12:26 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/24635fbd0d9384c66868f3270ffca64efcf53ee3"><code>24635fb</code></a> on branch <code>main</code>, for **denote 0.0.9** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-10 09:57 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/4cdc03d59d8564fec279e29c6705bd1ffd443c23"><code>4cdc03d</code></a> on branch <code>main</code>, for **denote 0.0.10** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -1347,9 +1699,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/24635fbd0d9384c66868f3270ffca64efcf53ee3"><code>24635fbd0d9384c66868f3270ffca64efcf53ee3</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/4cdc03d59d8564fec279e29c6705bd1ffd443c23"><code>4cdc03d59d8564fec279e29c6705bd1ffd443c23</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.9</code>                                                                                                                                       |
+| Tags at this commit | <code>0.0.10</code>                                                                                                                                      |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -1358,9 +1710,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/40322260151">40322260151</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/42794669203">42794669203</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>bf93134d0080407cd5cd6208c77fdc7fdb3a2ef1</code> (in the history of the built commit) |
+| Event commit | <code>4d10de0aecfe445ee198ea628d9430be877974fa</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1369,7 +1721,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 | epythet  | 0.2.22  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
-| Python   | 3.12.15 |
+| Python   | 3.12.16 |
 
 ## Configuration as resolved
 
@@ -1385,13 +1737,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.9/">0.0.9</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.10/">0.0.10</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 24635fbd0d9384c66868f3270ffca64efcf53ee3
+git checkout 4cdc03d59d8564fec279e29c6705bd1ffd443c23
 pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

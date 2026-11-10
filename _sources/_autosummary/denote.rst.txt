@@ -10,6 +10,7 @@
    
       get_beats
       get_chords
+      get_key
       get_pitch
       separate
       transcribe
@@ -24,6 +25,7 @@
    backends
    base
    compare
+   keys
    registry
    services
    translation

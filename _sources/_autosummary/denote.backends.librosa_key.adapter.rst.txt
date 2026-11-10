@@ -1,0 +1,20 @@
+denote.backends.librosa\_key.adapter
+====================================
+
+.. automodule:: denote.backends.librosa_key.adapter
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      chroma_cens
+      chroma_stft
+      frame_rms
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

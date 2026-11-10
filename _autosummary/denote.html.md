@@ -10,6 +10,7 @@ result = denote.transcribe("song.wav")         # audio -> MIDI
 chords = denote.get_chords("song.wav")         # audio -> chord labels
 pitch = denote.get_pitch("vocal.wav")           # audio -> F0
 beats = denote.get_beats("song.wav")            # audio -> beat times
+key = denote.get_key("song.wav")                # audio -> "A minor" + scores
 sync = denote.align_score("song.mid", "song.wav")  # score <-> recording time map
 
 denote.list_backends()                          # see what's available
@@ -34,6 +35,7 @@ denote.services.basic_pitch.adapter  # raw adapter instance
 | [`get_beats`](#denote.get_beats)(audio, \*[, sr, backend])   | Track beats in audio.                                        |
 |----------------------------------------------------------------------------------------|--------------------------------------------------------------|
 | [`get_chords`](#denote.get_chords)(audio, \*[, sr, backend])  | Recognize chords from audio.                                 |
+| [`get_key`](#denote.get_key)(audio, \*[, sr, backend])     | Estimate the key (tonic + mode) of a recording.              |
 | [`get_pitch`](#denote.get_pitch)(audio, \*[, sr, backend])   | Estimate pitch/F0 from audio.                                |
 | [`separate`](#denote.separate)(audio, \*[, sr, backend])    | Separate a mix into stems (drums, bass, other, vocals, ...). |
 | [`transcribe`](#denote.transcribe)(audio, \*[, sr, backend])  | Transcribe audio to MIDI.                                    |
@@ -61,6 +63,29 @@ Recognize chords from audio.
   * **\*\*kwargs** – Backend-specific parameters.
 * **Returns:**
   ChordResult with .intervals, .labels fields.
+
+### denote.get_key(audio, , sr=None, backend=None, \*\*kwargs)
+
+Estimate the key (tonic + mode) of a recording.
+
+* **Parameters:**
+  * **audio** – File path (str/Path) or numpy array.
+  * **sr** – Sample rate (required when audio is an array).
+  * **backend** – Backend name. Defaults to ‘librosa_key’.
+  * **\*\*kwargs** – Backend-specific parameters (`profile`: ‘krumhansl’ default or
+    ‘temperley’ or a (major, minor) pair; `chroma`: ‘cqt’ default,
+    ‘stft’, ‘cens’ or a callable (y, sr) -> (12, frames)).
+* **Returns:**
+  KeyResult with .key (“A minor”), .tonic, .mode, .confidence (the winner’s
+  profile correlation, not a probability), .margin (lead over the runner-up),
+  .scores (all 24 keys, best first) and .relative.
+
+Example:
+
+```default
+k = denote.get_key("song.wav")
+k.key, k.margin, k.ranked[:2]
+```
 
 ### denote.get_pitch(audio, , sr=None, backend=None, \*\*kwargs)
 
@@ -117,6 +142,7 @@ Transcribe audio to MIDI.
 | [`backends`](denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
 | [`base`](denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
 | [`compare`](denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
+| [`keys`](denote.keys.html.md#module-denote.keys)               | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
 | [`registry`](denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                                                  |
 | [`services`](denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
 | [`translation`](denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                                                             |

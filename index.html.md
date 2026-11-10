@@ -41,6 +41,13 @@ beats.tempo  # BPM estimate
 stems = denote.separate("song.wav")
 stems.stems  # {"drums", "bass", "other", "vocals"}: (2, frames) at stems.sr (44.1 kHz)
 stems.vocals  # the voice, mono
+
+# Key estimation (uses librosa, no extra install needed)
+key = denote.get_key("song.wav")
+key.key  # "A minor"
+key.confidence  # the winner's profile correlation (not a probability)
+key.margin  # lead over the runner-up: small means ambiguous
+key.ranked[:3]  # all 24 keys, best first; key.relative names the relative key
 ```
 
 ## Choose Your Backend
@@ -69,12 +76,13 @@ denote.services.basic_pitch.adapter
 
 ## Supported Backends
 
-| Backend               | Task               | License    | Install                           |
-|-----------------------|--------------------|------------|-----------------------------------|
-| Basic Pitch (Spotify) | MIDI transcription | Apache 2.0 | `pip install denote[basic_pitch]` |
-| torchcrepe            | Pitch estimation   | MIT        | `pip install denote[torchcrepe]`  |
-| librosa pYIN          | Pitch estimation   | ISC        | (included)                        |
-| librosa beats         | Beat tracking      | ISC        | (included)                        |
+| Backend                            | Task               | License    | Install                           |
+|------------------------------------|--------------------|------------|-----------------------------------|
+| Basic Pitch (Spotify)              | MIDI transcription | Apache 2.0 | `pip install denote[basic_pitch]` |
+| torchcrepe                         | Pitch estimation   | MIT        | `pip install denote[torchcrepe]`  |
+| librosa pYIN                       | Pitch estimation   | ISC        | (included)                        |
+| librosa beats                      | Beat tracking      | ISC        | (included)                        |
+| librosa key (Krumhansl-Schmuckler) | Key estimation     | ISC        | (included)                        |
 
 More backends coming: pesto-pitch, madmom, autochord, beat-this, demucs.
 

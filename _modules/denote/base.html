@@ -118,6 +118,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/denote.translation.html">denote.translation</a></li>
@@ -279,14 +280,67 @@
 
 </span><span id="line-85">
 </span><span id="line-86">
-</span><span id="line-87"><span class="c1"># Supported task identifiers</span>
-</span><span id="line-88"><span class="n">TASKS</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="line-89">    <span class="s2">"transcribe"</span><span class="p">:</span> <span class="s2">"Audio to MIDI transcription"</span><span class="p">,</span>
-</span><span id="line-90">    <span class="s2">"pitch"</span><span class="p">:</span> <span class="s2">"Pitch / F0 estimation"</span><span class="p">,</span>
-</span><span id="line-91">    <span class="s2">"chords"</span><span class="p">:</span> <span class="s2">"Chord recognition"</span><span class="p">,</span>
-</span><span id="line-92">    <span class="s2">"beats"</span><span class="p">:</span> <span class="s2">"Beat and downbeat tracking"</span><span class="p">,</span>
-</span><span id="line-93">    <span class="s2">"separate"</span><span class="p">:</span> <span class="s2">"Source separation"</span><span class="p">,</span>
-</span><span id="line-94"><span class="p">}</span>
+<div class="viewcode-block" id="KeyResult">
+<a class="viewcode-back" href="../../_autosummary/denote.base.html#denote.base.KeyResult">[docs]</a>
+</span><span id="line-87"><span class="nd">@dataclass</span>
+</span><span id="line-88"><span class="k">class</span><span class="w"> </span><span class="nc">KeyResult</span><span class="p">:</span>
+</span><span id="line-89"><span class="w">    </span><span class="sd">"""Result of key estimation: tonic + mode, with every candidate key's score.</span>
+</span><span id="line-90">
+</span><span id="line-91"><span class="sd">    ``confidence`` is the winning key's score: for profile backends (``librosa_key``)</span>
+</span><span id="line-92"><span class="sd">    the Pearson correlation, in [-1, 1], between the recording's mean chroma and that</span>
+</span><span id="line-93"><span class="sd">    key's profile. It measures fit, and is not a probability. ``margin`` is the</span>
+</span><span id="line-94"><span class="sd">    winner's score minus the runner-up's; a small margin means two keys fit about</span>
+</span><span id="line-95"><span class="sd">    equally well, most often the relative key (C major / A minor share every pitch</span>
+</span><span id="line-96"><span class="sd">    class), the parallel key or a key a fifth away. Look at ``ranked`` before</span>
+</span><span id="line-97"><span class="sd">    trusting the winner when the margin is small.</span>
+</span><span id="line-98"><span class="sd">    """</span>
+</span><span id="line-99">
+</span><span id="line-100">    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "C major", "F# minor"</span>
+</span><span id="line-101">    <span class="n">tonic</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "C", "F#"</span>
+</span><span id="line-102">    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "major" or "minor"</span>
+</span><span id="line-103">    <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># the winner's score (correlation for profile backends)</span>
+</span><span id="line-104">    <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># winner's score minus runner-up's</span>
+</span><span id="line-105">    <span class="n">scores</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># key name -&gt; score, best first</span>
+</span><span id="line-106">    <span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>  <span class="c1"># key profile used, e.g. "krumhansl"</span>
+</span><span id="line-107">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-108">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+</span><span id="line-109">
+</span><span id="line-110">    <span class="nd">@property</span>
+</span><span id="line-111">    <span class="k">def</span><span class="w"> </span><span class="nf">ranked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+</span><span id="line-112"><span class="w">        </span><span class="sd">"""``[(key, score), ...]`` for every candidate key, best first (``scores``' order)."""</span>
+</span><span id="line-113">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</span><span id="line-114">
+</span><span id="line-115">    <span class="nd">@property</span>
+</span><span id="line-116">    <span class="k">def</span><span class="w"> </span><span class="nf">runner_up</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-117"><span class="w">        </span><span class="sd">"""The second-best key (``""`` when only one was scored)."""</span>
+</span><span id="line-118">        <span class="n">ranked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranked</span>
+</span><span id="line-119">        <span class="k">return</span> <span class="n">ranked</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranked</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span>
+</span><span id="line-120">
+</span><span id="line-121">    <span class="nd">@property</span>
+</span><span id="line-122">    <span class="k">def</span><span class="w"> </span><span class="nf">relative</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-123"><span class="w">        </span><span class="sd">"""The relative key of the estimate (C major -&gt; A minor); ``""`` if none applies.</span>
+</span><span id="line-124">
+</span><span id="line-125"><span class="sd">        Only major and minor have a relative key here; a backend reporting another</span>
+</span><span id="line-126"><span class="sd">        mode (dorian, ...) gets ``""``.</span>
+</span><span id="line-127"><span class="sd">        """</span>
+</span><span id="line-128">        <span class="kn">from</span><span class="w"> </span><span class="nn">denote.keys</span><span class="w"> </span><span class="kn">import</span> <span class="n">relative_key</span>
+</span><span id="line-129">
+</span><span id="line-130">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-131">            <span class="k">return</span> <span class="n">relative_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+</span><span id="line-132">        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="line-133">            <span class="k">return</span> <span class="s2">""</span></div>
+
+</span><span id="line-134">
+</span><span id="line-135">
+</span><span id="line-136"><span class="c1"># Supported task identifiers</span>
+</span><span id="line-137"><span class="n">TASKS</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="line-138">    <span class="s2">"transcribe"</span><span class="p">:</span> <span class="s2">"Audio to MIDI transcription"</span><span class="p">,</span>
+</span><span id="line-139">    <span class="s2">"pitch"</span><span class="p">:</span> <span class="s2">"Pitch / F0 estimation"</span><span class="p">,</span>
+</span><span id="line-140">    <span class="s2">"chords"</span><span class="p">:</span> <span class="s2">"Chord recognition"</span><span class="p">,</span>
+</span><span id="line-141">    <span class="s2">"beats"</span><span class="p">:</span> <span class="s2">"Beat and downbeat tracking"</span><span class="p">,</span>
+</span><span id="line-142">    <span class="s2">"separate"</span><span class="p">:</span> <span class="s2">"Source separation"</span><span class="p">,</span>
+</span><span id="line-143">    <span class="s2">"key"</span><span class="p">:</span> <span class="s2">"Key (tonic + mode) estimation"</span><span class="p">,</span>
+</span><span id="line-144"><span class="p">}</span>
 </span></code></pre></div>
     </div></div>
           </main>
@@ -300,7 +354,7 @@
 </footer>
     </div>
     
-    <script src="../../_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="../../_static/documentation_options.js?v=a83ce22a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

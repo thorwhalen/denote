@@ -10,6 +10,7 @@ denote.base
    
       BeatResult
       ChordResult
+      KeyResult
       NoteEvent
       PitchResult
       SeparationResult

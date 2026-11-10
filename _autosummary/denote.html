@@ -88,6 +88,7 @@
 <li class="toctree-l3"><a class="reference internal" href="denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.translation.html">denote.translation</a></li>
@@ -129,10 +130,11 @@
 </span><span id="line-3"><span class="n">chords</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_chords</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>         <span class="c1"># audio -&gt; chord labels</span>
 </span><span id="line-4"><span class="n">pitch</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_pitch</span><span class="p">(</span><span class="s2">"vocal.wav"</span><span class="p">)</span>           <span class="c1"># audio -&gt; F0</span>
 </span><span id="line-5"><span class="n">beats</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_beats</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>            <span class="c1"># audio -&gt; beat times</span>
-</span><span id="line-6"><span class="n">sync</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">align_score</span><span class="p">(</span><span class="s2">"song.mid"</span><span class="p">,</span> <span class="s2">"song.wav"</span><span class="p">)</span>  <span class="c1"># score &lt;-&gt; recording time map</span>
-</span><span id="line-7">
-</span><span id="line-8"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">()</span>                          <span class="c1"># see what's available</span>
-</span><span id="line-9"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">(</span><span class="s1">'pitch'</span><span class="p">)</span>                   <span class="c1"># backends for a task</span>
+</span><span id="line-6"><span class="n">key</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>                <span class="c1"># audio -&gt; "A minor" + scores</span>
+</span><span id="line-7"><span class="n">sync</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">align_score</span><span class="p">(</span><span class="s2">"song.mid"</span><span class="p">,</span> <span class="s2">"song.wav"</span><span class="p">)</span>  <span class="c1"># score &lt;-&gt; recording time map</span>
+</span><span id="line-8">
+</span><span id="line-9"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">()</span>                          <span class="c1"># see what's available</span>
+</span><span id="line-10"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">(</span><span class="s1">'pitch'</span><span class="p">)</span>                   <span class="c1"># backends for a task</span>
 </span></code></pre></div>
 </div>
 <p>Service-level access:</p>
@@ -153,13 +155,16 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#denote.get_chords" title="denote.get_chords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_chords</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Recognize chords from audio.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.get_pitch" title="denote.get_pitch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pitch</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.get_key" title="denote.get_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key</span></code></a>(audio, *[, sr, backend])</p></td>
+<td><p>Estimate the key (tonic + mode) of a recording.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.get_pitch" title="denote.get_pitch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pitch</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Estimate pitch/F0 from audio.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.separate" title="denote.separate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">separate</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.separate" title="denote.separate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">separate</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Separate a mix into stems (drums, bass, other, vocals, ...).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.transcribe" title="denote.transcribe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transcribe</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.transcribe" title="denote.transcribe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transcribe</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Transcribe audio to MIDI.</p></td>
 </tr>
 </tbody>
@@ -199,6 +204,33 @@
 <dd class="field-even"><p>ChordResult with .intervals, .labels fields.</p>
 </dd>
 </dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="denote.get_key">
+<span class="sig-prename descclassname"><span class="pre">denote.</span></span><span class="sig-name descname"><span class="pre">get_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote.html#get_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.get_key" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.get_key'">¶</a></dt>
+<dd><p>Estimate the key (tonic + mode) of a recording.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>audio</strong> – File path (str/Path) or numpy array.</p></li>
+<li><p><strong>sr</strong> – Sample rate (required when audio is an array).</p></li>
+<li><p><strong>backend</strong> – Backend name. Defaults to ‘librosa_key’.</p></li>
+<li><p><strong>**kwargs</strong> – Backend-specific parameters (<code class="docutils literal notranslate"><span class="pre">profile</span></code>: ‘krumhansl’ default or
+‘temperley’ or a (major, minor) pair; <code class="docutils literal notranslate"><span class="pre">chroma</span></code>: ‘cqt’ default,
+‘stft’, ‘cens’ or a callable (y, sr) -&gt; (12, frames)).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>KeyResult with .key (“A minor”), .tonic, .mode, .confidence (the winner’s
+profile correlation, not a probability), .margin (lead over the runner-up),
+.scores (all 24 keys, best first) and .relative.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">k</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>
+</span><span id="line-2"><span class="n">k</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">ranked</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+</span></code></pre></div>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="denote.get_pitch">
@@ -280,16 +312,19 @@ bundle, sources).</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="denote.compare.html#module-denote.compare" title="denote.compare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare</span></code></a></p></td>
 <td><p>Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.registry.html#module-denote.registry" title="denote.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.keys.html#module-denote.keys" title="denote.keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code></a></p></td>
+<td><p>Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.registry.html#module-denote.registry" title="denote.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
 <td><p>Backend discovery, registration, and lazy loading.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="denote.services.html#denote.services" title="denote.services"><code class="xref py py-obj docutils literal notranslate"><span class="pre">services</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.services.html#denote.services" title="denote.services"><code class="xref py py-obj docutils literal notranslate"><span class="pre">services</span></code></a></p></td>
 <td><p>Lazy mapping of backend names → ServiceHandle instances.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.translation.html#module-denote.translation" title="denote.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.translation.html#module-denote.translation" title="denote.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
 <td><p>Parameter translation between normalized and native backend interfaces.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="denote.util.html#module-denote.util" title="denote.util"><code class="xref py py-obj docutils literal notranslate"><span class="pre">util</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.util.html#module-denote.util" title="denote.util"><code class="xref py py-obj docutils literal notranslate"><span class="pre">util</span></code></a></p></td>
 <td><p>Audio loading (any layout to <code class="docutils literal notranslate"><span class="pre">(channels,</span> <span class="pre">frames)</span></code>), and chunked overlap-add for models that take bounded lengths (<code class="docutils literal notranslate"><span class="pre">chunked_apply</span></code>).</p></td>
 </tr>
 </tbody>
@@ -300,6 +335,7 @@ bundle, sources).</p></li>
 <ul>
 <li><a :data-current="activeSection === '#denote.get_beats'" class="reference internal" href="#denote.get_beats"><code class="docutils literal notranslate"><span class="pre">get_beats()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.get_chords'" class="reference internal" href="#denote.get_chords"><code class="docutils literal notranslate"><span class="pre">get_chords()</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.get_key'" class="reference internal" href="#denote.get_key"><code class="docutils literal notranslate"><span class="pre">get_key()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.get_pitch'" class="reference internal" href="#denote.get_pitch"><code class="docutils literal notranslate"><span class="pre">get_pitch()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.separate'" class="reference internal" href="#denote.separate"><code class="docutils literal notranslate"><span class="pre">separate()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.transcribe'" class="reference internal" href="#denote.transcribe"><code class="docutils literal notranslate"><span class="pre">transcribe()</span></code></a></li>
@@ -316,7 +352,7 @@ bundle, sources).</p></li>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=f7cdbf68"></script>
+<script src="../_static/documentation_options.js?v=a83ce22a"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

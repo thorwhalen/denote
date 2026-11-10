@@ -17,6 +17,9 @@
 - [denote.backends.librosa_beats](_autosummary/denote.backends.librosa_beats.html.md): | &#96;adapter&#96;   | Adapter for librosa beat tracking.                   |
 - [denote.backends.librosa_beats.adapter](_autosummary/denote.backends.librosa_beats.adapter.html.md): Adapter for librosa beat tracking.
 - [denote.backends.librosa_beats.config](_autosummary/denote.backends.librosa_beats.config.html.md): Configuration for the librosa beat tracking backend.
+- [denote.backends.librosa_key](_autosummary/denote.backends.librosa_key.html.md): librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma.
+- [denote.backends.librosa_key.adapter](_autosummary/denote.backends.librosa_key.adapter.html.md): Adapter for key estimation from librosa chroma and published key profiles.
+- [denote.backends.librosa_key.config](_autosummary/denote.backends.librosa_key.config.html.md): Configuration for the librosa key estimation backend (the single source of its defaults).
 - [denote.backends.librosa_pyin](_autosummary/denote.backends.librosa_pyin.html.md): | &#96;adapter&#96;   | Adapter for librosa pYIN — probabilistic pitch estimation.   |
 - [denote.backends.librosa_pyin.adapter](_autosummary/denote.backends.librosa_pyin.adapter.html.md): Adapter for librosa pYIN — probabilistic pitch estimation.
 - [denote.backends.librosa_pyin.config](_autosummary/denote.backends.librosa_pyin.config.html.md): Configuration for the librosa pYIN backend.
@@ -28,12 +31,13 @@
 - [denote.backends.torchcrepe.config](_autosummary/denote.backends.torchcrepe.config.html.md): Configuration for the torchcrepe backend.
 - [denote.base](_autosummary/denote.base.html.md): Core types and result dataclasses for denote.
 - [denote.compare](_autosummary/denote.compare.html.md): Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).
+- [denote.keys](_autosummary/denote.keys.html.md): Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).
 - [denote.registry](_autosummary/denote.registry.html.md): Backend discovery, registration, and lazy loading.
 - [denote.services](_autosummary/denote.services.html.md): Lazy mapping of backend names → ServiceHandle instances.
 - [denote.translation](_autosummary/denote.translation.html.md): Parameter translation between normalized and native backend interfaces.
 - [denote.util](_autosummary/denote.util.html.md): Audio loading (any layout to &#96;(channels, frames)&#96;), and chunked overlap-add for models
 - [For AI agents](ai-agents.html.md): &#96;denote&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-26 12:26 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-10 09:57 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
 
 ## Optional
 

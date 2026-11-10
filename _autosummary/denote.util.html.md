@@ -3,14 +3,31 @@
 Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models
 that take bounded lengths (`chunked_apply`).
 
+### Module Attributes
+
+| [`DFLT_AUDIO_SR`](#denote.util.DFLT_AUDIO_SR)   | Sample rate audio is resampled to before chroma extraction.   |
+|------------------------------------------------------------------|---------------------------------------------------------------|
+| [`DFLT_CHROMA_HOP`](#denote.util.DFLT_CHROMA_HOP) | Hop between chroma frames, in samples (librosa's default).    |
+
 ### Functions
 
 | [`channels_first`](#denote.util.channels_first)(y)                            | A multichannel array as `(channels, frames)`, whichever way it came.                                                                        |
 |-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | [`chunk_bounds`](#denote.util.chunk_bounds)(n, \*, segment, overlap)        | `(start, end)` of the chunks that cover `n` frames, `segment` long and overlapping by at least `overlap`.                                   |
 | [`chunked_apply`](#denote.util.chunked_apply)(fn, x, \*, segment, overlap)   | Apply `fn` to overlapping chunks of `x` along its last axis and overlap-add the results, so `fn` only ever sees `segment` frames at a time. |
+| [`cqt_chroma`](#denote.util.cqt_chroma)(y, sr, \*[, hop_length])          | Constant-Q chroma `(12, frames)` of a mono signal, as librosa returns it.                                                                   |
 | [`ensure_file_path`](#denote.util.ensure_file_path)(audio, \*[, sr])            | Ensure audio is available as a file path.                                                                                                   |
 | [`load_audio`](#denote.util.load_audio)(audio, \*[, sr, mono, target_sr]) | Load audio from a file path or validate an existing array.                                                                                  |
+
+### denote.util.DFLT_AUDIO_SR *= 22050*
+
+Sample rate audio is resampled to before chroma extraction. librosa’s CQT chroma
+needs more than about 8.2 kHz (its top wavelets exceed Nyquist below that), so
+every chroma path in denote (align, compare, get_key) loads at this rate.
+
+### denote.util.DFLT_CHROMA_HOP *= 512*
+
+Hop between chroma frames, in samples (librosa’s default).
 
 ### denote.util.channels_first(y)
 
@@ -74,6 +91,14 @@ held in memory; the division is done in place.
 >>> np.allclose(chunked_apply(lambda c: 2 * c, x, segment=4, overlap=1), 2 * x)
 True
 ```
+
+### denote.util.cqt_chroma(y, sr, , hop_length=512)
+
+Constant-Q chroma `(12, frames)` of a mono signal, as librosa returns it.
+
+The one CQT chroma call denote makes, shared by `align` and `get_key`.
+Load the audio at `DFLT_AUDIO_SR` first (`load_audio(..., target_sr=...)`):
+below about 8.2 kHz librosa refuses the transform.
 
 ### denote.util.ensure_file_path(audio, , sr=None)
 

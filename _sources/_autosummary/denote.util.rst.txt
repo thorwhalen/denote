@@ -4,6 +4,13 @@ denote.util
 .. automodule:: denote.util
 
    
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DFLT_AUDIO_SR
+      DFLT_CHROMA_HOP
+   
    .. rubric:: Functions
 
    .. autosummary::
@@ -11,6 +18,7 @@ denote.util
       channels_first
       chunk_bounds
       chunked_apply
+      cqt_chroma
       ensure_file_path
       load_audio
    

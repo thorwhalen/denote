@@ -118,6 +118,7 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.translation.html">denote.translation</a></li>
@@ -175,6 +176,8 @@
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.backends.librosa_beats.adapter.html#denote.backends.librosa_beats.adapter.Adapter">(class in denote.backends.librosa_beats.adapter)</a>
 </li>
+        <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.Adapter">(class in denote.backends.librosa_key.adapter)</a>
+</li>
         <li><a href="_autosummary/denote.backends.librosa_pyin.adapter.html#denote.backends.librosa_pyin.adapter.Adapter">(class in denote.backends.librosa_pyin.adapter)</a>
 </li>
         <li><a href="_autosummary/denote.backends.torchaudio_hdemucs.adapter.html#denote.backends.torchaudio_hdemucs.adapter.Adapter">(class in denote.backends.torchaudio_hdemucs.adapter)</a>
@@ -220,7 +223,11 @@
 </li>
       <li><a href="_autosummary/denote.base.html#denote.base.ChordResult">ChordResult (class in denote.base)</a>
 </li>
+      <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.chroma_cens">chroma_cens() (in module denote.backends.librosa_key.adapter)</a>
+</li>
       <li><a href="_autosummary/denote.compare.html#denote.compare.chroma_metric">chroma_metric() (in module denote.compare)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.chroma_stft">chroma_stft() (in module denote.backends.librosa_key.adapter)</a>
 </li>
       <li><a href="_autosummary/denote.util.html#denote.util.chunk_bounds">chunk_bounds() (in module denote.util)</a>
 </li>
@@ -233,6 +240,8 @@
       <li><a href="_autosummary/denote.compare.html#denote.compare.compare_audio">compare_audio() (in module denote.compare)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.cost">cost (denote.align.ScoreAlignment attribute)</a>
+</li>
+      <li><a href="_autosummary/denote.util.html#denote.util.cqt_chroma">cqt_chroma() (in module denote.util)</a>
 </li>
       <li><a href="_autosummary/denote.backends.torchcrepe.adapter.html#denote.backends.torchcrepe.adapter.CREPE_SR">CREPE_SR (in module denote.backends.torchcrepe.adapter)</a>
 </li>
@@ -311,6 +320,27 @@
 
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.backends.librosa_beats.config.html#module-denote.backends.librosa_beats.config">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.librosa_key
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.librosa_key.html#module-denote.backends.librosa_key">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.librosa_key.adapter
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#module-denote.backends.librosa_key.adapter">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.librosa_key.config
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.librosa_key.config.html#module-denote.backends.librosa_key.config">module</a>
 </li>
       </ul></li>
       <li>
@@ -393,6 +423,13 @@
 </li>
       </ul></li>
       <li>
+    denote.keys
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.keys.html#module-denote.keys">module</a>
+</li>
+      </ul></li>
+      <li>
     denote.registry
 
       <ul style="list-style-type:none">
@@ -413,11 +450,17 @@
         <li><a href="_autosummary/denote.util.html#module-denote.util">module</a>
 </li>
       </ul></li>
-      <li><a href="_autosummary/denote.align.html#denote.align.DFLT_AUDIO_SR">DFLT_AUDIO_SR (in module denote.align)</a>
+      <li><a href="_autosummary/denote.util.html#denote.util.DFLT_AUDIO_SR">DFLT_AUDIO_SR (in module denote.util)</a>
+</li>
+      <li><a href="_autosummary/denote.util.html#denote.util.DFLT_CHROMA_HOP">DFLT_CHROMA_HOP (in module denote.util)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.DFLT_FRAME_RATE">DFLT_FRAME_RATE (in module denote.align)</a>
 </li>
       <li><a href="_autosummary/denote.compare.html#denote.compare.DFLT_METRICS">DFLT_METRICS (in module denote.compare)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.librosa_key.config.html#denote.backends.librosa_key.config.DFLT_MIN_DURATION_S">DFLT_MIN_DURATION_S (in module denote.backends.librosa_key.config)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.librosa_key.config.html#denote.backends.librosa_key.config.DFLT_MIN_RMS">DFLT_MIN_RMS (in module denote.backends.librosa_key.config)</a>
 </li>
   </ul></td>
   </tr>
@@ -435,7 +478,13 @@
   <h2 id="F">F</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.keys.html#denote.keys.FLAT_RTOL">FLAT_RTOL (in module denote.keys)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.backends.torchcrepe.adapter.html#denote.backends.torchcrepe.adapter.frame_period">frame_period() (in module denote.backends.torchcrepe.adapter)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.frame_rms">frame_rms() (in module denote.backends.librosa_key.adapter)</a>
 </li>
   </ul></td>
   </tr>
@@ -454,12 +503,18 @@
       </ul></li>
       <li><a href="_autosummary/denote.html#denote.get_chords">get_chords() (in module denote)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.registry.html#denote.registry.get_config">get_config() (in module denote.registry)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.registry.html#denote.registry.get_default_backend">get_default_backend() (in module denote.registry)</a>
 </li>
+      <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.Adapter.get_key">get_key() (denote.backends.librosa_key.adapter.Adapter method)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.html#denote.get_key">(in module denote)</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/denote.backends.librosa_pyin.adapter.html#denote.backends.librosa_pyin.adapter.Adapter.get_pitch">get_pitch() (denote.backends.librosa_pyin.adapter.Adapter method)</a>
 
       <ul style="list-style-type:none">
@@ -498,6 +553,25 @@
   </tr>
       </table>
   
+  <h2 id="K">K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.keys.html#denote.keys.key_from_chroma">key_from_chroma() (in module denote.keys)</a>
+</li>
+      <li><a href="_autosummary/denote.keys.html#denote.keys.key_name">key_name() (in module denote.keys)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.keys.html#denote.keys.key_scores">key_scores() (in module denote.keys)</a>
+</li>
+      <li><a href="_autosummary/denote.keys.html#denote.keys.KeyProfile">KeyProfile (class in denote.keys)</a>
+</li>
+      <li><a href="_autosummary/denote.base.html#denote.base.KeyResult">KeyResult (class in denote.base)</a>
+</li>
+  </ul></td>
+  </tr>
+      </table>
+  
   <h2 id="L">L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
@@ -514,6 +588,8 @@
   <h2 id="M">M</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.keys.html#denote.keys.KeyProfile.major">major (denote.keys.KeyProfile attribute)</a>
+</li>
       <li><a href="_autosummary/denote.translation.html#denote.translation.make_kwargs_translator">make_kwargs_translator() (in module denote.translation)</a>
 </li>
       <li><a href="_autosummary/denote.compare.html#denote.compare.Metric">Metric (in module denote.compare)</a>
@@ -521,6 +597,8 @@
       <li><a href="_autosummary/denote.compare.html#denote.compare.METRICS">METRICS (in module denote.compare)</a>
 </li>
       <li><a href="_autosummary/denote.backends.torchaudio_hdemucs.adapter.html#denote.backends.torchaudio_hdemucs.adapter.MIN_FRAMES">MIN_FRAMES (in module denote.backends.torchaudio_hdemucs.adapter)</a>
+</li>
+      <li><a href="_autosummary/denote.keys.html#denote.keys.KeyProfile.minor">minor (denote.keys.KeyProfile attribute)</a>
 </li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.model_path">model_path() (in module denote.backends.basic_pitch.compat)</a>
 </li>
@@ -550,6 +628,12 @@
 </li>
         <li><a href="_autosummary/denote.backends.librosa_beats.config.html#module-denote.backends.librosa_beats.config">denote.backends.librosa_beats.config</a>
 </li>
+        <li><a href="_autosummary/denote.backends.librosa_key.html#module-denote.backends.librosa_key">denote.backends.librosa_key</a>
+</li>
+        <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#module-denote.backends.librosa_key.adapter">denote.backends.librosa_key.adapter</a>
+</li>
+        <li><a href="_autosummary/denote.backends.librosa_key.config.html#module-denote.backends.librosa_key.config">denote.backends.librosa_key.config</a>
+</li>
         <li><a href="_autosummary/denote.backends.librosa_pyin.html#module-denote.backends.librosa_pyin">denote.backends.librosa_pyin</a>
 </li>
         <li><a href="_autosummary/denote.backends.librosa_pyin.adapter.html#module-denote.backends.librosa_pyin.adapter">denote.backends.librosa_pyin.adapter</a>
@@ -571,6 +655,8 @@
         <li><a href="_autosummary/denote.base.html#module-denote.base">denote.base</a>
 </li>
         <li><a href="_autosummary/denote.compare.html#module-denote.compare">denote.compare</a>
+</li>
+        <li><a href="_autosummary/denote.keys.html#module-denote.keys">denote.keys</a>
 </li>
         <li><a href="_autosummary/denote.registry.html#module-denote.registry">denote.registry</a>
 </li>
@@ -614,10 +700,14 @@
   <h2 id="P">P</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
-      <li><a href="_autosummary/denote.base.html#denote.base.PitchResult">PitchResult (class in denote.base)</a>
+      <li><a href="_autosummary/denote.keys.html#denote.keys.parse_key">parse_key() (in module denote.keys)</a>
+</li>
+      <li><a href="_autosummary/denote.keys.html#denote.keys.pitch_class_vector">pitch_class_vector() (in module denote.keys)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.base.html#denote.base.PitchResult">PitchResult (class in denote.base)</a>
+</li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.preload_resampy">preload_resampy() (in module denote.backends.basic_pitch.compat)</a>
 </li>
   </ul></td>
@@ -636,15 +726,25 @@
   <h2 id="R">R</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.base.html#denote.base.KeyResult.ranked">ranked (denote.base.KeyResult property)</a>
+</li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.raw">raw (denote.align.ScoreAlignment attribute)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.reference_times">reference_times (denote.align.ScoreAlignment property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.registry.html#denote.registry.register_backend">register_backend() (in module denote.registry)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.base.html#denote.base.KeyResult.relative">relative (denote.base.KeyResult property)</a>
+</li>
+      <li><a href="_autosummary/denote.keys.html#denote.keys.relative_key">relative_key() (in module denote.keys)</a>
+</li>
+      <li><a href="_autosummary/denote.keys.html#denote.keys.resolve_profile">resolve_profile() (in module denote.keys)</a>
+</li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.restore_scipy_gaussian">restore_scipy_gaussian() (in module denote.backends.basic_pitch.compat)</a>
+</li>
+      <li><a href="_autosummary/denote.base.html#denote.base.KeyResult.runner_up">runner_up (denote.base.KeyResult property)</a>
 </li>
   </ul></td>
   </tr>
@@ -676,6 +776,8 @@
       <li><a href="_autosummary/denote.services.html#denote.services">services (in module denote)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.SILENT_NORM">SILENT_NORM (in module denote.align)</a>
+</li>
+      <li><a href="_autosummary/denote.keys.html#denote.keys.KeyProfile.source">source (denote.keys.KeyProfile attribute)</a>
 </li>
   </ul></td>
   </tr>
@@ -719,7 +821,7 @@
 </div></div>
 <aside id="right-sidebar" class="hidden text-sm xl:block">
 <div class="sticky top-16 -mt-10 max-h-[calc(var(--vh)-4rem)] overflow-y-auto pt-6 space-y-2">
-<a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#A">A</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#B">B</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#C">C</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#D">D</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#E">E</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#F">F</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#G">G</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#H">H</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#I">I</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#L">L</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#M">M</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#N">N</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#O">O</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#P">P</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#Q">Q</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#R">R</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#S">S</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#T">T</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#V">V</a>
+<a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#A">A</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#B">B</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#C">C</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#D">D</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#E">E</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#F">F</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#G">G</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#H">H</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#I">I</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#K">K</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#L">L</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#M">M</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#N">N</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#O">O</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#P">P</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#Q">Q</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#R">R</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#S">S</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#T">T</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#V">V</a>
 </div>
 </aside>
           </main>
@@ -733,7 +835,7 @@
 </footer>
     </div>
     
-    <script src="_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="_static/documentation_options.js?v=a83ce22a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>

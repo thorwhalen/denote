@@ -87,6 +87,7 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.translation.html">denote.translation</a></li>
@@ -148,6 +149,13 @@ Each backend is an optional dependency — install only what you need.</p>
 </span><span id="line-20"><span class="n">stems</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>
 </span><span id="line-21"><span class="n">stems</span><span class="o">.</span><span class="n">stems</span>  <span class="c1"># {"drums", "bass", "other", "vocals"}: (2, frames) at stems.sr (44.1 kHz)</span>
 </span><span id="line-22"><span class="n">stems</span><span class="o">.</span><span class="n">vocals</span>  <span class="c1"># the voice, mono</span>
+</span><span id="line-23">
+</span><span id="line-24"><span class="c1"># Key estimation (uses librosa, no extra install needed)</span>
+</span><span id="line-25"><span class="n">key</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>
+</span><span id="line-26"><span class="n">key</span><span class="o">.</span><span class="n">key</span>  <span class="c1"># "A minor"</span>
+</span><span id="line-27"><span class="n">key</span><span class="o">.</span><span class="n">confidence</span>  <span class="c1"># the winner's profile correlation (not a probability)</span>
+</span><span id="line-28"><span class="n">key</span><span class="o">.</span><span class="n">margin</span>  <span class="c1"># lead over the runner-up: small means ambiguous</span>
+</span><span id="line-29"><span class="n">key</span><span class="o">.</span><span class="n">ranked</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># all 24 keys, best first; key.relative names the relative key</span>
 </span></code></pre></div>
 </div>
 </section>
@@ -205,6 +213,11 @@ Each backend is an optional dependency — install only what you need.</p>
 <td><p>ISC</p></td>
 <td><p>(included)</p></td>
 </tr>
+<tr class="row-even"><td><p>librosa key (Krumhansl-Schmuckler)</p></td>
+<td><p>Key estimation</p></td>
+<td><p>ISC</p></td>
+<td><p>(included)</p></td>
+</tr>
 </tbody>
 </table>
 <p>More backends coming: pesto-pitch, madmom, autochord, beat-this, demucs.</p>
@@ -229,7 +242,7 @@ Each backend is an optional dependency — install only what you need.</p>
 
 </section>
 </section>
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-10-26 12:26 UTC from <a href="https://github.com/thorwhalen/denote/commit/24635fbd0d9384c66868f3270ffca64efcf53ee3">24635fb</a> (main) · denote 0.0.9 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-10 09:57 UTC from <a href="https://github.com/thorwhalen/denote/commit/4cdc03d59d8564fec279e29c6705bd1ffd443c23">4cdc03d</a> (main) · denote 0.0.10 · <a href="about-this-build.html">about this build</a></p>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
@@ -252,7 +265,7 @@ Each backend is an optional dependency — install only what you need.</p>
 </div>
 </footer>
 </div>
-<script src="_static/documentation_options.js?v=f7cdbf68"></script>
+<script src="_static/documentation_options.js?v=a83ce22a"></script>
 <script src="_static/doctools.js?v=fd6eb6e6"></script>
 <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="_static/clipboard.min.js?v=a7894cd8"></script>

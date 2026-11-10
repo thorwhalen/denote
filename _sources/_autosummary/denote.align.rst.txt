@@ -9,7 +9,6 @@ denote.align
    .. autosummary::
    
       DFLT_FRAME_RATE
-      DFLT_AUDIO_SR
       N_PITCH_CLASSES
       SILENT_NORM
    

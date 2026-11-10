@@ -88,6 +88,7 @@
 <li class="toctree-l3"><a class="reference internal" href="denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.translation.html">denote.translation</a></li>
@@ -125,6 +126,17 @@
 <span id="denote-util"></span><h1>denote.util<a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#module-denote.util">¶</a></h1>
 <p>Audio loading (any layout to <code class="docutils literal notranslate"><span class="pre">(channels,</span> <span class="pre">frames)</span></code>), and chunked overlap-add for models
 that take bounded lengths (<code class="docutils literal notranslate"><span class="pre">chunked_apply</span></code>).</p>
+<p class="rubric">Module Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.util.DFLT_AUDIO_SR" title="denote.util.DFLT_AUDIO_SR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_AUDIO_SR</span></code></a></p></td>
+<td><p>Sample rate audio is resampled to before chroma extraction.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.util.DFLT_CHROMA_HOP" title="denote.util.DFLT_CHROMA_HOP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_CHROMA_HOP</span></code></a></p></td>
+<td><p>Hop between chroma frames, in samples (librosa's default).</p></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -137,14 +149,29 @@ that take bounded lengths (<code class="docutils literal notranslate"><span clas
 <tr class="row-odd"><td><p><a class="reference internal" href="#denote.util.chunked_apply" title="denote.util.chunked_apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chunked_apply</span></code></a>(fn, x, *, segment, overlap)</p></td>
 <td><p>Apply <code class="docutils literal notranslate"><span class="pre">fn</span></code> to overlapping chunks of <code class="docutils literal notranslate"><span class="pre">x</span></code> along its last axis and overlap-add the results, so <code class="docutils literal notranslate"><span class="pre">fn</span></code> only ever sees <code class="docutils literal notranslate"><span class="pre">segment</span></code> frames at a time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.util.ensure_file_path" title="denote.util.ensure_file_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensure_file_path</span></code></a>(audio, *[, sr])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.util.cqt_chroma" title="denote.util.cqt_chroma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cqt_chroma</span></code></a>(y, sr, *[, hop_length])</p></td>
+<td><p>Constant-Q chroma <code class="docutils literal notranslate"><span class="pre">(12,</span> <span class="pre">frames)</span></code> of a mono signal, as librosa returns it.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.util.ensure_file_path" title="denote.util.ensure_file_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensure_file_path</span></code></a>(audio, *[, sr])</p></td>
 <td><p>Ensure audio is available as a file path.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.util.load_audio" title="denote.util.load_audio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_audio</span></code></a>(audio, *[, sr, mono, target_sr])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.util.load_audio" title="denote.util.load_audio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_audio</span></code></a>(audio, *[, sr, mono, target_sr])</p></td>
 <td><p>Load audio from a file path or validate an existing array.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py data">
+<dt class="sig sig-object py" id="denote.util.DFLT_AUDIO_SR">
+<span class="sig-prename descclassname"><span class="pre">denote.util.</span></span><span class="sig-name descname"><span class="pre">DFLT_AUDIO_SR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">22050</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.util.DFLT_AUDIO_SR" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.util.DFLT_AUDIO_SR'">¶</a></dt>
+<dd><p>Sample rate audio is resampled to before chroma extraction. librosa’s CQT chroma
+needs more than about 8.2 kHz (its top wavelets exceed Nyquist below that), so
+every chroma path in denote (align, compare, get_key) loads at this rate.</p>
+</dd></dl>
+<dl class="py data">
+<dt class="sig sig-object py" id="denote.util.DFLT_CHROMA_HOP">
+<span class="sig-prename descclassname"><span class="pre">denote.util.</span></span><span class="sig-name descname"><span class="pre">DFLT_CHROMA_HOP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">512</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.util.DFLT_CHROMA_HOP" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.util.DFLT_CHROMA_HOP'">¶</a></dt>
+<dd><p>Hop between chroma frames, in samples (librosa’s default).</p>
+</dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="denote.util.channels_first">
 <span class="sig-prename descclassname"><span class="pre">denote.util.</span></span><span class="sig-name descname"><span class="pre">channels_first</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/util.html#channels_first"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.util.channels_first" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.util.channels_first'">¶</a></dt>
@@ -217,6 +244,16 @@ held in memory; the division is done in place.</p>
 </div>
 </dd></dl>
 <dl class="py function">
+<dt class="sig sig-object py" id="denote.util.cqt_chroma">
+<span class="sig-prename descclassname"><span class="pre">denote.util.</span></span><span class="sig-name descname"><span class="pre">cqt_chroma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">hop_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/util.html#cqt_chroma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.util.cqt_chroma" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.util.cqt_chroma'">¶</a></dt>
+<dd><p>Constant-Q chroma <code class="docutils literal notranslate"><span class="pre">(12,</span> <span class="pre">frames)</span></code> of a mono signal, as librosa returns it.</p>
+<p>The one CQT chroma call denote makes, shared by <code class="docutils literal notranslate"><span class="pre">align</span></code> and <code class="docutils literal notranslate"><span class="pre">get_key</span></code>.
+Load the audio at <code class="docutils literal notranslate"><span class="pre">DFLT_AUDIO_SR</span></code> first (<code class="docutils literal notranslate"><span class="pre">load_audio(...,</span> <span class="pre">target_sr=...)</span></code>):
+below about 8.2 kHz librosa refuses the transform.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+<dl class="py function">
 <dt class="sig sig-object py" id="denote.util.ensure_file_path">
 <span class="sig-prename descclassname"><span class="pre">denote.util.</span></span><span class="sig-name descname"><span class="pre">ensure_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/util.html#ensure_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.util.ensure_file_path" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.util.ensure_file_path'">¶</a></dt>
 <dd><p>Ensure audio is available as a file path.</p>
@@ -260,9 +297,12 @@ If it’s an array, write to a temporary WAV file and return the path.</p>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
+<li><a :data-current="activeSection === '#denote.util.DFLT_AUDIO_SR'" class="reference internal" href="#denote.util.DFLT_AUDIO_SR"><code class="docutils literal notranslate"><span class="pre">DFLT_AUDIO_SR</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.util.DFLT_CHROMA_HOP'" class="reference internal" href="#denote.util.DFLT_CHROMA_HOP"><code class="docutils literal notranslate"><span class="pre">DFLT_CHROMA_HOP</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.util.channels_first'" class="reference internal" href="#denote.util.channels_first"><code class="docutils literal notranslate"><span class="pre">channels_first()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.util.chunk_bounds'" class="reference internal" href="#denote.util.chunk_bounds"><code class="docutils literal notranslate"><span class="pre">chunk_bounds()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.util.chunked_apply'" class="reference internal" href="#denote.util.chunked_apply"><code class="docutils literal notranslate"><span class="pre">chunked_apply()</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.util.cqt_chroma'" class="reference internal" href="#denote.util.cqt_chroma"><code class="docutils literal notranslate"><span class="pre">cqt_chroma()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.util.ensure_file_path'" class="reference internal" href="#denote.util.ensure_file_path"><code class="docutils literal notranslate"><span class="pre">ensure_file_path()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.util.load_audio'" class="reference internal" href="#denote.util.load_audio"><code class="docutils literal notranslate"><span class="pre">load_audio()</span></code></a></li>
 </ul>
@@ -278,7 +318,7 @@ If it’s an array, write to a temporary WAV file and return the path.</p>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=f7cdbf68"></script>
+<script src="../_static/documentation_options.js?v=a83ce22a"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

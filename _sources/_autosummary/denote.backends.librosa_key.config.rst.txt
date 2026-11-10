@@ -1,0 +1,13 @@
+denote.backends.librosa\_key.config
+===================================
+
+.. automodule:: denote.backends.librosa_key.config
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DFLT_MIN_RMS
+      DFLT_MIN_DURATION_S
+   

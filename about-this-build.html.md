@@ -2,7 +2,7 @@
 
 # About this build
 
-This documentation was built on **2026-10-26 12:26 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/24635fbd0d9384c66868f3270ffca64efcf53ee3"><code>24635fb</code></a> on branch <code>main</code>, for **denote 0.0.9** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-10 09:57 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/4cdc03d59d8564fec279e29c6705bd1ffd443c23"><code>4cdc03d</code></a> on branch <code>main</code>, for **denote 0.0.10** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -11,9 +11,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/24635fbd0d9384c66868f3270ffca64efcf53ee3"><code>24635fbd0d9384c66868f3270ffca64efcf53ee3</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/4cdc03d59d8564fec279e29c6705bd1ffd443c23"><code>4cdc03d59d8564fec279e29c6705bd1ffd443c23</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.9</code>                                                                                                                                       |
+| Tags at this commit | <code>0.0.10</code>                                                                                                                                      |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -22,9 +22,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/40322260151">40322260151</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/42794669203">42794669203</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>bf93134d0080407cd5cd6208c77fdc7fdb3a2ef1</code> (in the history of the built commit) |
+| Event commit | <code>4d10de0aecfe445ee198ea628d9430be877974fa</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -33,7 +33,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 | epythet  | 0.2.22  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
-| Python   | 3.12.15 |
+| Python   | 3.12.16 |
 
 ## Configuration as resolved
 
@@ -49,13 +49,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.9/">0.0.9</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.10/">0.0.10</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 24635fbd0d9384c66868f3270ffca64efcf53ee3
+git checkout 4cdc03d59d8564fec279e29c6705bd1ffd443c23
 pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
