@@ -6,6 +6,10 @@ BACKEND_CONFIG = {
     "pip_install": "librosa>=0.10",
     "import_name": "librosa",
     "license": "ISC",
+    # No learned weights: a dynamic-programming tracker (https://github.com/librosa/librosa/blob/main/LICENSE.md)
+    "weights_license": "none",
+    "weights_license_note": "no learned weights (dynamic programming)",
+    "commercial_use": "yes",
     "tasks": ["beats"],
     "default_for": ["beats"],
     "supports_realtime": False,

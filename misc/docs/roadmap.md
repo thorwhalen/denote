@@ -22,13 +22,15 @@ Priority backends (permissive licenses, pip-installable, well-maintained):
 
 ## Phase 3: Expand Backends (v0.0.3)
 
-- [ ] `pesto` — Lightweight pitch estimation (MIT, 30K params)
+- [x] `pesto` — Lightweight pitch estimation (LGPL-3.0 code and weights, outputs unrestricted; about 130K params)
+- [x] `swift_f0` — Tiny CNN pitch estimation on CPU (MIT, ONNX model in the wheel)
 - [ ] `autochord` — Simple chord recognition
 - [ ] `madmom_chords` — CNN+CRF chord recognition (BSD/CC-NC)
 - [ ] `madmom_beats` — RNN+DBN beat tracking
-- [ ] `beat_this` — SOTA beat tracking (MIT)
+- [x] `beat_this` — SOTA beat and downbeat tracking (MIT)
 - [x] `torchaudio_hdemucs` — Source separation via torchaudio's Hybrid Demucs bundle (no `demucs` package needed)
 - [ ] `demucs` — Source separation with the `demucs` package's newer models (htdemucs)
+- [x] `weights_license` + `commercial_use` on every backend, `denote.backend_table()`
 
 ## Phase 4: Advanced Features (v0.0.4)
 

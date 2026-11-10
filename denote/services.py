@@ -45,6 +45,9 @@ class ServiceHandle:
             "display_name": c.get("display_name", c["name"]),
             "tasks": c.get("tasks", []),
             "license": c.get("license", "unknown"),
+            "weights_license": c.get("weights_license"),
+            "weights_license_note": c.get("weights_license_note"),
+            "commercial_use": c.get("commercial_use"),
             "pip_install": c.get("pip_install", ""),
         }
 

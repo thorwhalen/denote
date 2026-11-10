@@ -14,6 +14,11 @@ BACKEND_CONFIG = {
     "pip_install": "librosa>=0.10",
     "import_name": "librosa",
     "license": "ISC",
+    # No learned weights: published key profiles (Krumhansl-Kessler, Temperley)
+    # over librosa chroma (https://github.com/librosa/librosa/blob/main/LICENSE.md)
+    "weights_license": "none",
+    "weights_license_note": "no learned weights (published key profiles)",
+    "commercial_use": "yes",
     "tasks": ["key"],
     "default_for": ["key"],
     "supports_realtime": False,
