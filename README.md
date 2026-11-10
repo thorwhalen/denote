@@ -90,10 +90,28 @@ denote.services.basic_pitch.adapter
 | librosa beats | Beat tracking | ISC | no weights (yes) | (included) |
 | librosa key (Krumhansl-Schmuckler) | Key estimation | ISC | no weights (yes) | (included) |
 | Hybrid Demucs (torchaudio) | Source separation | BSD 2-Clause | unstated; author says research use (unclear) | `pip install denote[torchaudio_hdemucs]` |
+| HTDemucs on MLX (`demucs_mlx`) | Source separation (Apple silicon) | MIT | unstated; converted from the same Demucs checkpoints (unclear) | own environment: `python -m denote.isolated build demucs_mlx` |
+| RoFormer via audio-separator (`roformer`) | Source separation | MIT | default checkpoint MIT (yes); other community checkpoints unstated (unclear) | own environment: `python -m denote.isolated build roformer` |
 
 `denote.backend_table()` gives the same columns from the backends' configs, where each licence's source is cited.
 
-More backends coming: madmom, autochord, newer separators.
+More backends coming: madmom, autochord.
+
+### Backends in their own environment
+
+Some models pin dependencies that cannot share denote's environment (`demucs-mlx` pins its MLX, `audio-separator` needs torch>=2.13 on Apple silicon). Those backends run their model in a separate Python environment that denote builds with [uv](https://docs.astral.sh/uv/) from pinned requirements (through [`ps.isolated`](https://github.com/thorwhalen/ps)), and talk to it through a long-lived worker process, so the model loads once:
+
+```bash
+python -m denote.isolated build demucs_mlx   # one-time
+python -m denote.isolated status             # which are built, and where
+```
+
+```python
+stems = denote.separate("song.wav", backend="demucs_mlx")          # htdemucs on MLX
+vocals = denote.separate("song.wav", backend="roformer").vocals     # Mel-Band RoFormer
+```
+
+Environments live in `~/.local/share/denote/envs/<backend>` (set `DENOTE_DATA_DIR` to move them). A missing one raises `denote.isolated.EnvNotBuilt` with the build command; pass `build_env=True` to build it on first use instead. Building needs `uv` on the `PATH`.
 
 ## Plugin System
 

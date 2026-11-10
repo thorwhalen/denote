@@ -32,6 +32,8 @@ def test_every_backend_declares_weights_license_and_commercial_use(name):
         ("basic_pitch", "Apache-2.0", "yes"),
         ("torchcrepe", "MIT", "yes"),
         ("torchaudio_hdemucs", "unstated", "unclear"),  # research use per the author
+        ("demucs_mlx", "unstated", "unclear"),  # converted from the same checkpoints
+        ("roformer", "MIT", "yes"),  # the default checkpoint's card
     ],
 )
 def test_known_licences(name, weights_license, commercial_use):
@@ -45,6 +47,7 @@ def test_backend_table_lists_every_backend_with_its_licence_fields():
     assert [r["name"] for r in rows] == list_backends()
     assert all(tuple(r) == denote.BACKEND_TABLE_FIELDS for r in rows)
     assert {"beat_this", "swift_f0", "pesto"} <= {r["name"] for r in rows}
+    assert {"demucs_mlx", "roformer"} <= {r["name"] for r in rows}
 
 
 def test_backend_table_filters_by_task_and_selects_fields():
