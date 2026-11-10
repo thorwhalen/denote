@@ -158,6 +158,9 @@ that take bounded lengths (<code class="docutils literal notranslate"><span clas
 <tr class="row-even"><td><p><a class="reference internal" href="#denote.util.load_audio" title="denote.util.load_audio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_audio</span></code></a>(audio, *[, sr, mono, target_sr])</p></td>
 <td><p>Load audio from a file path or validate an existing array.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.util.peak_normalize" title="denote.util.peak_normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">peak_normalize</span></code></a>(y, *[, peak])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">y</span></code> scaled so its largest absolute sample is <code class="docutils literal notranslate"><span class="pre">peak</span></code> (a new float32 array).</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py data">
@@ -293,6 +296,18 @@ If it’s an array, write to a temporary WAV file and return the path.</p>
 </dd>
 </dl>
 </dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="denote.util.peak_normalize">
+<span class="sig-prename descclassname"><span class="pre">denote.util.</span></span><span class="sig-name descname"><span class="pre">peak_normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/util.html#peak_normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.util.peak_normalize" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.util.peak_normalize'">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">y</span></code> scaled so its largest absolute sample is <code class="docutils literal notranslate"><span class="pre">peak</span></code> (a new float32 array).</p>
+<p>For models whose voicing decisions depend on input level. All-zero audio is
+returned unscaled (as a copy): there is nothing to normalise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
 </section>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
@@ -305,6 +320,7 @@ If it’s an array, write to a temporary WAV file and return the path.</p>
 <li><a :data-current="activeSection === '#denote.util.cqt_chroma'" class="reference internal" href="#denote.util.cqt_chroma"><code class="docutils literal notranslate"><span class="pre">cqt_chroma()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.util.ensure_file_path'" class="reference internal" href="#denote.util.ensure_file_path"><code class="docutils literal notranslate"><span class="pre">ensure_file_path()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.util.load_audio'" class="reference internal" href="#denote.util.load_audio"><code class="docutils literal notranslate"><span class="pre">load_audio()</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.util.peak_normalize'" class="reference internal" href="#denote.util.peak_normalize"><code class="docutils literal notranslate"><span class="pre">peak_normalize()</span></code></a></li>
 </ul>
 </div>
 </aside>
@@ -318,7 +334,7 @@ If it’s an array, write to a temporary WAV file and return the path.</p>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=a83ce22a"></script>
+<script src="../_static/documentation_options.js?v=0c446633"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

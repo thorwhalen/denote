@@ -18,6 +18,7 @@ that take bounded lengths (`chunked_apply`).
 | [`cqt_chroma`](#denote.util.cqt_chroma)(y, sr, \*[, hop_length])          | Constant-Q chroma `(12, frames)` of a mono signal, as librosa returns it.                                                                   |
 | [`ensure_file_path`](#denote.util.ensure_file_path)(audio, \*[, sr])            | Ensure audio is available as a file path.                                                                                                   |
 | [`load_audio`](#denote.util.load_audio)(audio, \*[, sr, mono, target_sr]) | Load audio from a file path or validate an existing array.                                                                                  |
+| [`peak_normalize`](#denote.util.peak_normalize)(y, \*[, peak])                | `y` scaled so its largest absolute sample is `peak` (a new float32 array).                                                                  |
 
 ### denote.util.DFLT_AUDIO_SR *= 22050*
 
@@ -127,3 +128,13 @@ Load audio from a file path or validate an existing array.
 * **Raises:**
   * [**ValueError**](https://docs.python.org/3/builtins/exceptions.html#ValueError) – If audio is an array and sr is not provided.
   * [**FileNotFoundError**](https://docs.python.org/3/builtins/exceptions.html#FileNotFoundError) – If audio is a path that doesn’t exist.
+
+### denote.util.peak_normalize(y, , peak=1.0)
+
+`y` scaled so its largest absolute sample is `peak` (a new float32 array).
+
+For models whose voicing decisions depend on input level. All-zero audio is
+returned unscaled (as a copy): there is nothing to normalise.
+
+* **Return type:**
+  `ndarray`

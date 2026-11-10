@@ -135,6 +135,7 @@
 </span><span id="line-8">
 </span><span id="line-9"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">()</span>                          <span class="c1"># see what's available</span>
 </span><span id="line-10"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">(</span><span class="s1">'pitch'</span><span class="p">)</span>                   <span class="c1"># backends for a task</span>
+</span><span id="line-11"><span class="n">denote</span><span class="o">.</span><span class="n">backend_table</span><span class="p">()</span>                          <span class="c1"># tasks + weights licence per backend</span>
 </span></code></pre></div>
 </div>
 <p>Service-level access:</p>
@@ -146,29 +147,70 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">denote</span><span class="o">.</span><span class="n">services</span><span class="o">.</span><span class="n">basic_pitch</span><span class="o">.</span><span class="n">adapter</span>  <span class="c1"># raw adapter instance</span>
 </span></code></pre></div>
 </div>
+<p class="rubric">Module Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.BACKEND_TABLE_FIELDS" title="denote.BACKEND_TABLE_FIELDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BACKEND_TABLE_FIELDS</span></code></a></p></td>
+<td><p>The config fields <a class="reference internal" href="#denote.backend_table" title="denote.backend_table"><code class="xref py py-func docutils literal notranslate"><span class="pre">backend_table()</span></code></a> reports, in column order.</p></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.get_beats" title="denote.get_beats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_beats</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.backend_table" title="denote.backend_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">backend_table</span></code></a>([task, fields])</p></td>
+<td><p>One row per backend: its tasks, code licence, weights licence and commercial use.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.get_beats" title="denote.get_beats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_beats</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Track beats in audio.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.get_chords" title="denote.get_chords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_chords</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.get_chords" title="denote.get_chords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_chords</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Recognize chords from audio.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.get_key" title="denote.get_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.get_key" title="denote.get_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Estimate the key (tonic + mode) of a recording.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.get_pitch" title="denote.get_pitch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pitch</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.get_pitch" title="denote.get_pitch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pitch</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Estimate pitch/F0 from audio.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.separate" title="denote.separate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">separate</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.separate" title="denote.separate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">separate</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Separate a mix into stems (drums, bass, other, vocals, ...).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.transcribe" title="denote.transcribe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transcribe</span></code></a>(audio, *[, sr, backend])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.transcribe" title="denote.transcribe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transcribe</span></code></a>(audio, *[, sr, backend])</p></td>
 <td><p>Transcribe audio to MIDI.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py data">
+<dt class="sig sig-object py" id="denote.BACKEND_TABLE_FIELDS">
+<span class="sig-prename descclassname"><span class="pre">denote.</span></span><span class="sig-name descname"><span class="pre">BACKEND_TABLE_FIELDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('name',</span> <span class="pre">'tasks',</span> <span class="pre">'license',</span> <span class="pre">'weights_license',</span> <span class="pre">'commercial_use')</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.BACKEND_TABLE_FIELDS" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.BACKEND_TABLE_FIELDS'">¶</a></dt>
+<dd><p>The config fields <a class="reference internal" href="#denote.backend_table" title="denote.backend_table"><code class="xref py py-func docutils literal notranslate"><span class="pre">backend_table()</span></code></a> reports, in column order.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="denote.backend_table">
+<span class="sig-prename descclassname"><span class="pre">denote.</span></span><span class="sig-name descname"><span class="pre">backend_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('name',</span> <span class="pre">'tasks',</span> <span class="pre">'license',</span> <span class="pre">'weights_license',</span> <span class="pre">'commercial_use')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote.html#backend_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.backend_table" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.backend_table'">¶</a></dt>
+<dd><p>One row per backend: its tasks, code licence, weights licence and commercial use.</p>
+<p>Reads the backends’ configs only, so no adapter (and no optional dependency)
+is loaded. <code class="docutils literal notranslate"><span class="pre">commercial_use</span></code> is one of <code class="xref py py-data docutils literal notranslate"><span class="pre">COMMERCIAL_USE_VALUES</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> – If set, only backends for this task (‘pitch’, ‘beats’, …).</p></li>
+<li><p><strong>fields</strong> – The config keys each row carries (a missing key reads <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of dicts, one per backend (sorted by name), keyed by <code class="docutils literal notranslate"><span class="pre">fields</span></code>.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">free</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">denote</span><span class="o">.</span><span class="n">backend_table</span><span class="p">(</span><span class="s2">"pitch"</span><span class="p">)</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"commercial_use"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"yes"</span><span class="p">]</span>
+</span></code></pre></div>
+</div>
+</dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="denote.get_beats">
 <span class="sig-prename descclassname"><span class="pre">denote.</span></span><span class="sig-name descname"><span class="pre">get_beats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">audio</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote.html#get_beats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.get_beats" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.get_beats'">¶</a></dt>
@@ -333,6 +375,8 @@ bundle, sources).</p></li>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
+<li><a :data-current="activeSection === '#denote.BACKEND_TABLE_FIELDS'" class="reference internal" href="#denote.BACKEND_TABLE_FIELDS"><code class="docutils literal notranslate"><span class="pre">BACKEND_TABLE_FIELDS</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.backend_table'" class="reference internal" href="#denote.backend_table"><code class="docutils literal notranslate"><span class="pre">backend_table()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.get_beats'" class="reference internal" href="#denote.get_beats"><code class="docutils literal notranslate"><span class="pre">get_beats()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.get_chords'" class="reference internal" href="#denote.get_chords"><code class="docutils literal notranslate"><span class="pre">get_chords()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.get_key'" class="reference internal" href="#denote.get_key"><code class="docutils literal notranslate"><span class="pre">get_key()</span></code></a></li>
@@ -352,7 +396,7 @@ bundle, sources).</p></li>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=a83ce22a"></script>
+<script src="../_static/documentation_options.js?v=0c446633"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

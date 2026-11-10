@@ -1,0 +1,6 @@
+denote.backends.swift\_f0.config
+================================
+
+.. automodule:: denote.backends.swift_f0.config
+
+   

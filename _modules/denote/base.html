@@ -341,6 +341,18 @@
 </span><span id="line-142">    <span class="s2">"separate"</span><span class="p">:</span> <span class="s2">"Source separation"</span><span class="p">,</span>
 </span><span id="line-143">    <span class="s2">"key"</span><span class="p">:</span> <span class="s2">"Key (tonic + mode) estimation"</span><span class="p">,</span>
 </span><span id="line-144"><span class="p">}</span>
+</span><span id="line-145">
+</span><span id="line-146"><span class="c1">#: What a backend's ``commercial_use`` config field may say, about using its</span>
+</span><span id="line-147"><span class="c1">#: OUTPUTS (what the model produces) commercially: the terms allow it (``"yes"``),</span>
+</span><span id="line-148"><span class="c1">#: forbid it (``"no"``), allow it under conditions such as a revenue cap or a use</span>
+</span><span id="line-149"><span class="c1">#: restriction (``"conditional"``), the terms are not settled: the licence is</span>
+</span><span id="line-150"><span class="c1">#: unstated, disputed or withdrawn, or the training-data chain is doubtful</span>
+</span><span id="line-151"><span class="c1">#: ("unclear"), or the weights are not public and a hosted service's own terms</span>
+</span><span id="line-152"><span class="c1">#: decide (``"provider terms"``, kept for a future hosted backend). The field is</span>
+</span><span id="line-153"><span class="c1">#: about using outputs commercially; obligations on redistributing the weights</span>
+</span><span id="line-154"><span class="c1">#: themselves (LGPL and the like) belong in ``weights_license`` (with prose in</span>
+</span><span id="line-155"><span class="c1">#: ``weights_license_note``). The same tuple as arioso's.</span>
+</span><span id="line-156"><span class="n">COMMERCIAL_USE_VALUES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"no"</span><span class="p">,</span> <span class="s2">"conditional"</span><span class="p">,</span> <span class="s2">"unclear"</span><span class="p">,</span> <span class="s2">"provider terms"</span><span class="p">)</span>
 </span></code></pre></div>
     </div></div>
           </main>
@@ -354,7 +366,7 @@
 </footer>
     </div>
     
-    <script src="../../_static/documentation_options.js?v=a83ce22a"></script>
+    <script src="../../_static/documentation_options.js?v=0c446633"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

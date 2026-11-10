@@ -1,0 +1,14 @@
+denote.backends.beat\_this
+==========================
+
+.. automodule:: denote.backends.beat_this
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapter
+   config

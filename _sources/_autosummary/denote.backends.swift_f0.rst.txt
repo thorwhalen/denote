@@ -1,0 +1,14 @@
+denote.backends.swift\_f0
+=========================
+
+.. automodule:: denote.backends.swift_f0
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapter
+   config

@@ -1,0 +1,18 @@
+denote.backends.swift\_f0.adapter
+=================================
+
+.. automodule:: denote.backends.swift_f0.adapter
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      SWIFT_F0_SR
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

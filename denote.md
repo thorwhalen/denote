@@ -1,4 +1,4 @@
-> built 2026-11-10 09:57 UTC from 4cdc03d (main) · denote 0.0.10. Details: build_info.json
+> built 2026-11-10 10:34 UTC from 1aabce7 (main) · denote 0.0.11. Details: build_info.json
 
 # index.html.md
 
@@ -59,7 +59,12 @@ key.ranked[:3]  # all 24 keys, best first; key.relative names the relative key
 ```python
 # See what's available
 denote.list_backends()  # all registered backends
-denote.list_backends("pitch")  # ['librosa_pyin', 'torchcrepe']
+denote.list_backends("pitch")  # ['librosa_pyin', 'pesto', 'swift_f0', 'torchcrepe']
+
+# Each backend's tasks, code licence, weights licence and commercial use
+# of the outputs ('yes', 'no', 'conditional', 'unclear' or 'provider terms'), read from
+# configs: nothing is loaded
+denote.backend_table("pitch")
 
 # Specify a backend explicitly
 pitch = denote.get_pitch("vocal.wav", backend="librosa_pyin")
@@ -80,15 +85,21 @@ denote.services.basic_pitch.adapter
 
 ## Supported Backends
 
-| Backend                            | Task               | License    | Install                           |
-|------------------------------------|--------------------|------------|-----------------------------------|
-| Basic Pitch (Spotify)              | MIDI transcription | Apache 2.0 | `pip install denote[basic_pitch]` |
-| torchcrepe                         | Pitch estimation   | MIT        | `pip install denote[torchcrepe]`  |
-| librosa pYIN                       | Pitch estimation   | ISC        | (included)                        |
-| librosa beats                      | Beat tracking      | ISC        | (included)                        |
-| librosa key (Krumhansl-Schmuckler) | Key estimation     | ISC        | (included)                        |
+| Backend                            | Task               | Code licence   | Weights licence (commercial use)                              | Install                                  |
+|------------------------------------|--------------------|----------------|---------------------------------------------------------------|------------------------------------------|
+| Basic Pitch (Spotify)              | MIDI transcription | Apache 2.0     | Apache 2.0 (yes)                                              | `pip install denote[basic_pitch]`        |
+| torchcrepe                         | Pitch estimation   | MIT            | MIT (yes)                                                     | `pip install denote[torchcrepe]`         |
+| SwiftF0                            | Pitch estimation   | MIT            | MIT (yes)                                                     | `pip install denote[swift_f0]`           |
+| PESTO                              | Pitch estimation   | LGPL 3.0       | LGPL 3.0 (yes; redistributing the weights carries LGPL terms) | `pip install denote[pesto]`              |
+| librosa pYIN                       | Pitch estimation   | ISC            | no weights (yes)                                              | (included)                               |
+| Beat This!                         | Beats + downbeats  | MIT            | MIT (yes)                                                     | `pip install denote[beat_this]`          |
+| librosa beats                      | Beat tracking      | ISC            | no weights (yes)                                              | (included)                               |
+| librosa key (Krumhansl-Schmuckler) | Key estimation     | ISC            | no weights (yes)                                              | (included)                               |
+| Hybrid Demucs (torchaudio)         | Source separation  | BSD 2-Clause   | unstated; author says research use (unclear)                  | `pip install denote[torchaudio_hdemucs]` |
 
-More backends coming: pesto-pitch, madmom, autochord, beat-this, demucs.
+`denote.backend_table()` gives the same columns from the backends’ configs, where each licence’s source is cited.
+
+More backends coming: madmom, autochord, newer separators.
 
 ## Plugin System
 
@@ -502,6 +513,77 @@ Configuration for the Basic Pitch (Spotify) backend.
 | [`config`](_autosummary/denote.backends.basic_pitch.config.html.md#module-denote.backends.basic_pitch.config)     | Configuration for the Basic Pitch (Spotify) backend.                   |
 
 
+# _autosummary/denote.backends.beat_this.adapter.html.md
+
+# denote.backends.beat_this.adapter
+
+Adapter for Beat This! — transformer beat and downbeat tracking.
+
+### Module Attributes
+
+| [`BEAT_THIS_SR`](_autosummary/denote.backends.beat_this.adapter.html.md#denote.backends.beat_this.adapter.BEAT_THIS_SR)   | The rate Beat This! computes its spectrogram at; audio is resampled to it here.   |
+|-----------------------------------------------------------------|-----------------------------------------------------------------------------------|
+
+### Functions
+
+| [`tempo_from_beats`](_autosummary/denote.backends.beat_this.adapter.html.md#denote.backends.beat_this.adapter.tempo_from_beats)(beats)   | BPM from the median inter-beat interval, or `None` with fewer than 2 beats.   |
+|----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+
+### Classes
+
+| [`Adapter`](_autosummary/denote.backends.beat_this.adapter.html.md#denote.backends.beat_this.adapter.Adapter)(config)   | Beat This! adapter: beats and downbeats in seconds.   |
+|--------------------------------------------------------------------|-------------------------------------------------------|
+
+### *class* denote.backends.beat_this.adapter.Adapter(config)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Beat This! adapter: beats and downbeats in seconds.
+
+#### get_beats(audio, , sr=None, \*\*kwargs)
+
+Track beats and downbeats with Beat This!.
+
+* **Parameters:**
+  * **audio** – File path, numpy array or torch tensor.
+  * **sr** – Sample rate (required if audio is an array).
+  * **\*\*kwargs** – Normalized parameters: `model` (checkpoint name, path or
+    URL; default ‘final0’), `device`, `dbn` (madmom DBN
+    post-processing), `float16`.
+* **Returns:**
+  BeatResult with .beats, .downbeats (seconds) and .tempo (BPM from the
+  median inter-beat interval; None with fewer than two beats).
+
+### denote.backends.beat_this.adapter.BEAT_THIS_SR *= 22050*
+
+The rate Beat This! computes its spectrogram at; audio is resampled to it here.
+
+### denote.backends.beat_this.adapter.tempo_from_beats(beats)
+
+BPM from the median inter-beat interval, or `None` with fewer than 2 beats.
+
+* **Return type:**
+  [`float`](https://docs.python.org/3/builtins/functions.html#float) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+
+# _autosummary/denote.backends.beat_this.config.html.md
+
+# denote.backends.beat_this.config
+
+Configuration for the Beat This! beat and downbeat tracking backend.
+
+
+# _autosummary/denote.backends.beat_this.html.md
+
+# denote.backends.beat_this
+
+### Modules
+
+| [`adapter`](_autosummary/denote.backends.beat_this.adapter.html.md#module-denote.backends.beat_this.adapter)   | Adapter for Beat This! — transformer beat and downbeat tracking.     |
+|-----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| [`config`](_autosummary/denote.backends.beat_this.config.html.md#module-denote.backends.beat_this.config)     | Configuration for the Beat This! beat and downbeat tracking backend. |
+
+
 # _autosummary/denote.backends.html.md
 
 # denote.backends
@@ -512,9 +594,12 @@ Backend packages for denote. Each subpackage provides a config.py and adapter.py
 
 | [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)               |                                                                            |
 |---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| [`beat_this`](_autosummary/denote.backends.beat_this.html.md#module-denote.backends.beat_this)                   |                                                                            |
 | [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats)           |                                                                            |
 | [`librosa_key`](_autosummary/denote.backends.librosa_key.html.md#module-denote.backends.librosa_key)               | librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma. |
 | [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)             |                                                                            |
+| [`pesto`](_autosummary/denote.backends.pesto.html.md#module-denote.backends.pesto)                           |                                                                            |
+| [`swift_f0`](_autosummary/denote.backends.swift_f0.html.md#module-denote.backends.swift_f0)                     |                                                                            |
 | [`torchaudio_hdemucs`](_autosummary/denote.backends.torchaudio_hdemucs.html.md#module-denote.backends.torchaudio_hdemucs) | torchaudio Hybrid Demucs source separation backend.                        |
 | [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)                 |                                                                            |
 
@@ -710,6 +795,138 @@ Configuration for the librosa pYIN backend.
 | [`config`](_autosummary/denote.backends.librosa_pyin.config.html.md#module-denote.backends.librosa_pyin.config)     | Configuration for the librosa pYIN backend.                  |
 
 
+# _autosummary/denote.backends.pesto.adapter.html.md
+
+# denote.backends.pesto.adapter
+
+Adapter for PESTO — self-supervised pitch estimation (Sony CSL).
+
+### Functions
+
+| [`frame_period`](_autosummary/denote.backends.pesto.adapter.html.md#denote.backends.pesto.adapter.frame_period)(step_size_ms, sr)   | Seconds between PESTO's frames for a `step_size_ms` step at `sr`.   |
+|-----------------------------------------------------------------------------------|---------------------------------------------------------------------|
+
+### Classes
+
+| [`Adapter`](_autosummary/denote.backends.pesto.adapter.html.md#denote.backends.pesto.adapter.Adapter)(config)   | PESTO adapter for monophonic pitch/F0 estimation.   |
+|--------------------------------------------------------------------|-----------------------------------------------------|
+
+### *class* denote.backends.pesto.adapter.Adapter(config)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+PESTO adapter for monophonic pitch/F0 estimation.
+
+#### get_pitch(audio, , sr=None, \*\*kwargs)
+
+Estimate pitch from audio with PESTO.
+
+* **Parameters:**
+  * **audio** – File path, numpy array or torch tensor.
+  * **sr** – Sample rate (required if audio is an array).
+  * **\*\*kwargs** – Normalized parameters: `step_size_ms` (default 10),
+    `model` (checkpoint name or path), `reduction`, `device`,
+    `confidence_threshold` (default 0.5), `normalize` (default
+    True: peak-normalise first, since PESTO’s confidence falls with
+    level and no frame is voiced at -30 dBFS; False passes the level
+    through).
+* **Returns:**
+  PitchResult with .times, .frequencies (NaN where unvoiced) and
+  .confidence; `.raw` holds the pitch, volume and activations.
+
+### denote.backends.pesto.adapter.frame_period(step_size_ms, sr)
+
+Seconds between PESTO’s frames for a `step_size_ms` step at `sr`.
+
+PESTO rounds the step to whole samples (`int(step * sr / 1000 + 0.5)`), so
+the true period is that hop over `sr`, not `step_size_ms / 1000`: at
+22050 Hz a 10 ms step is 221 samples (10.023 ms), and times built from the
+nominal step drift 0.23 % (0.7 s at 5 minutes).
+
+* **Return type:**
+  [`float`](https://docs.python.org/3/builtins/functions.html#float)
+
+
+# _autosummary/denote.backends.pesto.config.html.md
+
+# denote.backends.pesto.config
+
+Configuration for the PESTO pitch backend.
+
+
+# _autosummary/denote.backends.pesto.html.md
+
+# denote.backends.pesto
+
+### Modules
+
+| [`adapter`](_autosummary/denote.backends.pesto.adapter.html.md#module-denote.backends.pesto.adapter)   | Adapter for PESTO — self-supervised pitch estimation (Sony CSL).   |
+|-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| [`config`](_autosummary/denote.backends.pesto.config.html.md#module-denote.backends.pesto.config)     | Configuration for the PESTO pitch backend.                         |
+
+
+# _autosummary/denote.backends.swift_f0.adapter.html.md
+
+# denote.backends.swift_f0.adapter
+
+Adapter for SwiftF0 — fast CNN pitch estimation on CPU (ONNX).
+
+### Module Attributes
+
+| [`SWIFT_F0_SR`](_autosummary/denote.backends.swift_f0.adapter.html.md#denote.backends.swift_f0.adapter.SWIFT_F0_SR)   | SwiftF0's model rate; audio is resampled to it here (so no soxr is needed).   |
+|----------------------------------------------------------------|-------------------------------------------------------------------------------|
+
+### Classes
+
+| [`Adapter`](_autosummary/denote.backends.swift_f0.adapter.html.md#denote.backends.swift_f0.adapter.Adapter)(config)   | SwiftF0 adapter for monophonic pitch/F0 estimation.   |
+|--------------------------------------------------------------------|-------------------------------------------------------|
+
+### *class* denote.backends.swift_f0.adapter.Adapter(config)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+SwiftF0 adapter for monophonic pitch/F0 estimation.
+
+#### get_pitch(audio, , sr=None, \*\*kwargs)
+
+Estimate pitch from audio with SwiftF0.
+
+* **Parameters:**
+  * **audio** – File path, numpy array or torch tensor.
+  * **sr** – Sample rate (required if audio is an array).
+  * **\*\*kwargs** – Normalized parameters: `min_frequency`, `max_frequency`
+    (clipped to the model’s 46.875-2093.75 Hz), `confidence_threshold`
+    (default 0.5, SwiftF0’s calibrated voicing threshold), `threads`,
+    `normalize` (default True: peak-normalise first, since SwiftF0
+    calls quiet input unvoiced; frames peaking below 1e-3 are forced
+    unvoiced. False passes the level through).
+* **Returns:**
+  PitchResult with .times, .frequencies (NaN where unvoiced) and
+  .confidence; `.raw` is SwiftF0’s own result (with loudness_db).
+
+### denote.backends.swift_f0.adapter.SWIFT_F0_SR *= 16000*
+
+SwiftF0’s model rate; audio is resampled to it here (so no soxr is needed).
+
+
+# _autosummary/denote.backends.swift_f0.config.html.md
+
+# denote.backends.swift_f0.config
+
+Configuration for the SwiftF0 pitch backend.
+
+
+# _autosummary/denote.backends.swift_f0.html.md
+
+# denote.backends.swift_f0
+
+### Modules
+
+| [`adapter`](_autosummary/denote.backends.swift_f0.adapter.html.md#module-denote.backends.swift_f0.adapter)   | Adapter for SwiftF0 — fast CNN pitch estimation on CPU (ONNX).   |
+|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| [`config`](_autosummary/denote.backends.swift_f0.config.html.md#module-denote.backends.swift_f0.config)     | Configuration for the SwiftF0 pitch backend.                     |
+
+
 # _autosummary/denote.backends.torchaudio_hdemucs.adapter.html.md
 
 # denote.backends.torchaudio_hdemucs.adapter
@@ -875,6 +1092,11 @@ Configuration for the torchcrepe backend.
 
 Core types and result dataclasses for denote.
 
+### Module Attributes
+
+| [`COMMERCIAL_USE_VALUES`](_autosummary/denote.base.html.md#denote.base.COMMERCIAL_USE_VALUES)   | What a backend's `commercial_use` config field may say, about using its OUTPUTS (what the model produces) commercially: the terms allow it (`"yes"`), forbid it (`"no"`), allow it under conditions such as a revenue cap or a use restriction (`"conditional"`), the terms are not settled: the licence is unstated, disputed or withdrawn, or the training-data chain is doubtful ("unclear"), or the weights are not public and a hosted service's own terms decide (`"provider terms"`, kept for a future hosted backend).   |
+|--------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
 ### Classes
 
 | [`BeatResult`](_autosummary/denote.base.html.md#denote.base.BeatResult)(beats[, downbeats, tempo, raw, ...])   | Result of beat/downbeat tracking.                                              |
@@ -891,6 +1113,19 @@ Core types and result dataclasses for denote.
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of beat/downbeat tracking.
+
+### denote.base.COMMERCIAL_USE_VALUES *= ('yes', 'no', 'conditional', 'unclear', 'provider terms')*
+
+What a backend’s `commercial_use` config field may say, about using its
+OUTPUTS (what the model produces) commercially: the terms allow it (`"yes"`),
+forbid it (`"no"`), allow it under conditions such as a revenue cap or a use
+restriction (`"conditional"`), the terms are not settled: the licence is
+unstated, disputed or withdrawn, or the training-data chain is doubtful
+(“unclear”), or the weights are not public and a hosted service’s own terms
+decide (`"provider terms"`, kept for a future hosted backend). The field is
+about using outputs commercially; obligations on redistributing the weights
+themselves (LGPL and the like) belong in `weights_license` (with prose in
+`weights_license_note`). The same tuple as arioso’s.
 
 ### *class* denote.base.ChordResult(intervals, labels=list(), raw=None, backend='')
 
@@ -1119,6 +1354,7 @@ sync = denote.align_score("song.mid", "song.wav")  # score <-> recording time ma
 
 denote.list_backends()                          # see what's available
 denote.list_backends('pitch')                   # backends for a task
+denote.backend_table()                          # tasks + weights licence per backend
 ```
 
 Service-level access:
@@ -1134,15 +1370,46 @@ Native adapter access:
 denote.services.basic_pitch.adapter  # raw adapter instance
 ```
 
+### Module Attributes
+
+| [`BACKEND_TABLE_FIELDS`](_autosummary/denote.html.md#denote.BACKEND_TABLE_FIELDS)   | The config fields [`backend_table()`](_autosummary/denote.html.md#denote.backend_table) reports, in column order.   |
+|-------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+
 ### Functions
 
-| [`get_beats`](_autosummary/denote.html.md#denote.get_beats)(audio, \*[, sr, backend])   | Track beats in audio.                                        |
-|----------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| [`get_chords`](_autosummary/denote.html.md#denote.get_chords)(audio, \*[, sr, backend])  | Recognize chords from audio.                                 |
-| [`get_key`](_autosummary/denote.html.md#denote.get_key)(audio, \*[, sr, backend])     | Estimate the key (tonic + mode) of a recording.              |
-| [`get_pitch`](_autosummary/denote.html.md#denote.get_pitch)(audio, \*[, sr, backend])   | Estimate pitch/F0 from audio.                                |
-| [`separate`](_autosummary/denote.html.md#denote.separate)(audio, \*[, sr, backend])    | Separate a mix into stems (drums, bass, other, vocals, ...). |
-| [`transcribe`](_autosummary/denote.html.md#denote.transcribe)(audio, \*[, sr, backend])  | Transcribe audio to MIDI.                                    |
+| [`backend_table`](_autosummary/denote.html.md#denote.backend_table)([task, fields])        | One row per backend: its tasks, code licence, weights licence and commercial use.   |
+|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [`get_beats`](_autosummary/denote.html.md#denote.get_beats)(audio, \*[, sr, backend])  | Track beats in audio.                                                               |
+| [`get_chords`](_autosummary/denote.html.md#denote.get_chords)(audio, \*[, sr, backend]) | Recognize chords from audio.                                                        |
+| [`get_key`](_autosummary/denote.html.md#denote.get_key)(audio, \*[, sr, backend])    | Estimate the key (tonic + mode) of a recording.                                     |
+| [`get_pitch`](_autosummary/denote.html.md#denote.get_pitch)(audio, \*[, sr, backend])  | Estimate pitch/F0 from audio.                                                       |
+| [`separate`](_autosummary/denote.html.md#denote.separate)(audio, \*[, sr, backend])   | Separate a mix into stems (drums, bass, other, vocals, ...).                        |
+| [`transcribe`](_autosummary/denote.html.md#denote.transcribe)(audio, \*[, sr, backend]) | Transcribe audio to MIDI.                                                           |
+
+### denote.BACKEND_TABLE_FIELDS *= ('name', 'tasks', 'license', 'weights_license', 'commercial_use')*
+
+The config fields [`backend_table()`](_autosummary/denote.html.md#denote.backend_table) reports, in column order.
+
+### denote.backend_table(task=None, , fields=('name', 'tasks', 'license', 'weights_license', 'commercial_use'))
+
+One row per backend: its tasks, code licence, weights licence and commercial use.
+
+Reads the backends’ configs only, so no adapter (and no optional dependency)
+is loaded. `commercial_use` is one of `COMMERCIAL_USE_VALUES`.
+
+* **Parameters:**
+  * **task** – If set, only backends for this task (‘pitch’, ‘beats’, …).
+  * **fields** – The config keys each row carries (a missing key reads `None`).
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
+* **Returns:**
+  A list of dicts, one per backend (sorted by name), keyed by `fields`.
+
+Example:
+
+```default
+free = [r["name"] for r in denote.backend_table("pitch") if r["commercial_use"] == "yes"]
+```
 
 ### denote.get_beats(audio, , sr=None, backend=None, \*\*kwargs)
 
@@ -1488,16 +1755,21 @@ Register a backend (for third-party plugins).
 
 * **Parameters:**
   * **name** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Unique backend identifier.
-  * **config** ([`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)) – BACKEND_CONFIG dict with at minimum ‘name’ and ‘tasks’.
+  * **config** ([`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)) – BACKEND_CONFIG dict with at minimum ‘name’ and ‘tasks’. Its
+    `commercial_use` must be one of `denote.base.COMMERCIAL_USE_VALUES`;
+    a config without one is registered as `"unclear"` (the caller’s
+    dict is not modified).
   * **adapter** ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any)) – Optional pre-instantiated adapter. If None, will be loaded
     lazily from the module path if available.
+* **Raises:**
+  [**ValueError**](https://docs.python.org/3/builtins/exceptions.html#ValueError) – If `commercial_use` is not a known value.
 
 
 # _autosummary/denote.services.html.md
 
 # denote.services
 
-### denote.services *= <ServiceCollection backends=['basic_pitch', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'torchaudio_hdemucs', 'torchcrepe']>*
+### denote.services *= <ServiceCollection backends=['basic_pitch', 'beat_this', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'pesto', 'swift_f0', 'torchaudio_hdemucs', 'torchcrepe']>*
 
 Lazy mapping of backend names → ServiceHandle instances.
 
@@ -1573,6 +1845,7 @@ that take bounded lengths (`chunked_apply`).
 | [`cqt_chroma`](_autosummary/denote.util.html.md#denote.util.cqt_chroma)(y, sr, \*[, hop_length])          | Constant-Q chroma `(12, frames)` of a mono signal, as librosa returns it.                                                                   |
 | [`ensure_file_path`](_autosummary/denote.util.html.md#denote.util.ensure_file_path)(audio, \*[, sr])            | Ensure audio is available as a file path.                                                                                                   |
 | [`load_audio`](_autosummary/denote.util.html.md#denote.util.load_audio)(audio, \*[, sr, mono, target_sr]) | Load audio from a file path or validate an existing array.                                                                                  |
+| [`peak_normalize`](_autosummary/denote.util.html.md#denote.util.peak_normalize)(y, \*[, peak])                | `y` scaled so its largest absolute sample is `peak` (a new float32 array).                                                                  |
 
 ### denote.util.DFLT_AUDIO_SR *= 22050*
 
@@ -1683,6 +1956,16 @@ Load audio from a file path or validate an existing array.
   * [**ValueError**](https://docs.python.org/3/builtins/exceptions.html#ValueError) – If audio is an array and sr is not provided.
   * [**FileNotFoundError**](https://docs.python.org/3/builtins/exceptions.html#FileNotFoundError) – If audio is a path that doesn’t exist.
 
+### denote.util.peak_normalize(y, , peak=1.0)
+
+`y` scaled so its largest absolute sample is `peak` (a new float32 array).
+
+For models whose voicing decisions depend on input level. All-zero audio is
+returned unscaled (as a copy): there is nothing to normalise.
+
+* **Return type:**
+  `ndarray`
+
 
 # about-this-build.html.md
 
@@ -1690,7 +1973,7 @@ Load audio from a file path or validate an existing array.
 
 # About this build
 
-This documentation was built on **2026-11-10 09:57 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/4cdc03d59d8564fec279e29c6705bd1ffd443c23"><code>4cdc03d</code></a> on branch <code>main</code>, for **denote 0.0.10** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-10 10:34 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/1aabce7b18e5149ba27c5707bb186461bc30b2fd"><code>1aabce7</code></a> on branch <code>main</code>, for **denote 0.0.11** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -1699,9 +1982,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/4cdc03d59d8564fec279e29c6705bd1ffd443c23"><code>4cdc03d59d8564fec279e29c6705bd1ffd443c23</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/1aabce7b18e5149ba27c5707bb186461bc30b2fd"><code>1aabce7b18e5149ba27c5707bb186461bc30b2fd</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.10</code>                                                                                                                                      |
+| Tags at this commit | <code>0.0.11</code>                                                                                                                                      |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -1710,9 +1993,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/42794669203">42794669203</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/42799883082">42799883082</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>4d10de0aecfe445ee198ea628d9430be877974fa</code> (in the history of the built commit) |
+| Event commit | <code>6111e7905f131721d32cf03331da12ca39723763</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1737,13 +2020,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.10/">0.0.10</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.11/">0.0.11</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 4cdc03d59d8564fec279e29c6705bd1ffd443c23
+git checkout 1aabce7b18e5149ba27c5707bb186461bc30b2fd
 pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

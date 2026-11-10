@@ -11,8 +11,11 @@ denote.backends
    :recursive:
 
    basic_pitch
+   beat_this
    librosa_beats
    librosa_key
    librosa_pyin
+   pesto
+   swift_f0
    torchaudio_hdemucs
    torchcrepe

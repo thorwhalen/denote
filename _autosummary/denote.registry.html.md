@@ -60,6 +60,11 @@ Register a backend (for third-party plugins).
 
 * **Parameters:**
   * **name** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Unique backend identifier.
-  * **config** ([`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)) – BACKEND_CONFIG dict with at minimum ‘name’ and ‘tasks’.
+  * **config** ([`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)) – BACKEND_CONFIG dict with at minimum ‘name’ and ‘tasks’. Its
+    `commercial_use` must be one of `denote.base.COMMERCIAL_USE_VALUES`;
+    a config without one is registered as `"unclear"` (the caller’s
+    dict is not modified).
   * **adapter** ([`Any`](https://docs.python.org/3/library/typing.html#typing.Any)) – Optional pre-instantiated adapter. If None, will be loaded
     lazily from the module path if available.
+* **Raises:**
+  [**ValueError**](https://docs.python.org/3/builtins/exceptions.html#ValueError) – If `commercial_use` is not a known value.

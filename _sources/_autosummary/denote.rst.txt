@@ -4,10 +4,17 @@
 .. automodule:: denote
 
    
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      BACKEND_TABLE_FIELDS
+   
    .. rubric:: Functions
 
    .. autosummary::
    
+      backend_table
       get_beats
       get_chords
       get_key

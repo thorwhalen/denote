@@ -1,6 +1,6 @@
 # denote.services
 
-### denote.services *= <ServiceCollection backends=['basic_pitch', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'torchaudio_hdemucs', 'torchcrepe']>*
+### denote.services *= <ServiceCollection backends=['basic_pitch', 'beat_this', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'pesto', 'swift_f0', 'torchaudio_hdemucs', 'torchcrepe']>*
 
 Lazy mapping of backend names → ServiceHandle instances.
 

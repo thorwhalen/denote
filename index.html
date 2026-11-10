@@ -163,10 +163,15 @@ Each backend is an optional dependency — install only what you need.</p>
 <h2>Choose Your Backend<a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#choose-your-backend" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#choose-your-backend'">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="c1"># See what's available</span>
 </span><span id="line-2"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">()</span>  <span class="c1"># all registered backends</span>
-</span><span id="line-3"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">(</span><span class="s2">"pitch"</span><span class="p">)</span>  <span class="c1"># ['librosa_pyin', 'torchcrepe']</span>
+</span><span id="line-3"><span class="n">denote</span><span class="o">.</span><span class="n">list_backends</span><span class="p">(</span><span class="s2">"pitch"</span><span class="p">)</span>  <span class="c1"># ['librosa_pyin', 'pesto', 'swift_f0', 'torchcrepe']</span>
 </span><span id="line-4">
-</span><span id="line-5"><span class="c1"># Specify a backend explicitly</span>
-</span><span id="line-6"><span class="n">pitch</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_pitch</span><span class="p">(</span><span class="s2">"vocal.wav"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"librosa_pyin"</span><span class="p">)</span>
+</span><span id="line-5"><span class="c1"># Each backend's tasks, code licence, weights licence and commercial use</span>
+</span><span id="line-6"><span class="c1"># of the outputs ('yes', 'no', 'conditional', 'unclear' or 'provider terms'), read from</span>
+</span><span id="line-7"><span class="c1"># configs: nothing is loaded</span>
+</span><span id="line-8"><span class="n">denote</span><span class="o">.</span><span class="n">backend_table</span><span class="p">(</span><span class="s2">"pitch"</span><span class="p">)</span>
+</span><span id="line-9">
+</span><span id="line-10"><span class="c1"># Specify a backend explicitly</span>
+</span><span id="line-11"><span class="n">pitch</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_pitch</span><span class="p">(</span><span class="s2">"vocal.wav"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"librosa_pyin"</span><span class="p">)</span>
 </span></code></pre></div>
 </div>
 </section>
@@ -188,7 +193,8 @@ Each backend is an optional dependency — install only what you need.</p>
 <thead>
 <tr class="row-odd"><th class="head"><p>Backend</p></th>
 <th class="head"><p>Task</p></th>
-<th class="head"><p>License</p></th>
+<th class="head"><p>Code licence</p></th>
+<th class="head"><p>Weights licence (commercial use)</p></th>
 <th class="head"><p>Install</p></th>
 </tr>
 </thead>
@@ -196,31 +202,61 @@ Each backend is an optional dependency — install only what you need.</p>
 <tr class="row-even"><td><p>Basic Pitch (Spotify)</p></td>
 <td><p>MIDI transcription</p></td>
 <td><p>Apache 2.0</p></td>
+<td><p>Apache 2.0 (yes)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">denote[basic_pitch]</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>torchcrepe</p></td>
 <td><p>Pitch estimation</p></td>
 <td><p>MIT</p></td>
+<td><p>MIT (yes)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">denote[torchcrepe]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>SwiftF0</p></td>
+<td><p>Pitch estimation</p></td>
+<td><p>MIT</p></td>
+<td><p>MIT (yes)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">denote[swift_f0]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>PESTO</p></td>
+<td><p>Pitch estimation</p></td>
+<td><p>LGPL 3.0</p></td>
+<td><p>LGPL 3.0 (yes; redistributing the weights carries LGPL terms)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">denote[pesto]</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>librosa pYIN</p></td>
 <td><p>Pitch estimation</p></td>
 <td><p>ISC</p></td>
+<td><p>no weights (yes)</p></td>
 <td><p>(included)</p></td>
 </tr>
-<tr class="row-odd"><td><p>librosa beats</p></td>
+<tr class="row-odd"><td><p>Beat This!</p></td>
+<td><p>Beats + downbeats</p></td>
+<td><p>MIT</p></td>
+<td><p>MIT (yes)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">denote[beat_this]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>librosa beats</p></td>
 <td><p>Beat tracking</p></td>
 <td><p>ISC</p></td>
+<td><p>no weights (yes)</p></td>
 <td><p>(included)</p></td>
 </tr>
-<tr class="row-even"><td><p>librosa key (Krumhansl-Schmuckler)</p></td>
+<tr class="row-odd"><td><p>librosa key (Krumhansl-Schmuckler)</p></td>
 <td><p>Key estimation</p></td>
 <td><p>ISC</p></td>
+<td><p>no weights (yes)</p></td>
 <td><p>(included)</p></td>
+</tr>
+<tr class="row-even"><td><p>Hybrid Demucs (torchaudio)</p></td>
+<td><p>Source separation</p></td>
+<td><p>BSD 2-Clause</p></td>
+<td><p>unstated; author says research use (unclear)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">denote[torchaudio_hdemucs]</span></code></p></td>
 </tr>
 </tbody>
 </table>
-<p>More backends coming: pesto-pitch, madmom, autochord, beat-this, demucs.</p>
+<p><code class="docutils literal notranslate"><span class="pre">denote.backend_table()</span></code> gives the same columns from the backends’ configs, where each licence’s source is cited.</p>
+<p>More backends coming: madmom, autochord, newer separators.</p>
 </section>
 <section id="plugin-system">
 <h2>Plugin System<a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#plugin-system" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#plugin-system'">¶</a></h2>
@@ -242,7 +278,7 @@ Each backend is an optional dependency — install only what you need.</p>
 
 </section>
 </section>
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-10 09:57 UTC from <a href="https://github.com/thorwhalen/denote/commit/4cdc03d59d8564fec279e29c6705bd1ffd443c23">4cdc03d</a> (main) · denote 0.0.10 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-10 10:34 UTC from <a href="https://github.com/thorwhalen/denote/commit/1aabce7b18e5149ba27c5707bb186461bc30b2fd">1aabce7</a> (main) · denote 0.0.11 · <a href="about-this-build.html">about this build</a></p>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
@@ -265,7 +301,7 @@ Each backend is an optional dependency — install only what you need.</p>
 </div>
 </footer>
 </div>
-<script src="_static/documentation_options.js?v=a83ce22a"></script>
+<script src="_static/documentation_options.js?v=0c446633"></script>
 <script src="_static/doctools.js?v=fd6eb6e6"></script>
 <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="_static/clipboard.min.js?v=a7894cd8"></script>

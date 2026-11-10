@@ -125,6 +125,14 @@
 <section id="module-denote.base">
 <span id="denote-base"></span><h1>denote.base<a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#module-denote.base">¶</a></h1>
 <p>Core types and result dataclasses for denote.</p>
+<p class="rubric">Module Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.base.COMMERCIAL_USE_VALUES" title="denote.base.COMMERCIAL_USE_VALUES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">COMMERCIAL_USE_VALUES</span></code></a></p></td>
+<td><p>What a backend's <code class="docutils literal notranslate"><span class="pre">commercial_use</span></code> config field may say, about using its OUTPUTS (what the model produces) commercially: the terms allow it (<code class="docutils literal notranslate"><span class="pre">"yes"</span></code>), forbid it (<code class="docutils literal notranslate"><span class="pre">"no"</span></code>), allow it under conditions such as a revenue cap or a use restriction (<code class="docutils literal notranslate"><span class="pre">"conditional"</span></code>), the terms are not settled: the licence is unstated, disputed or withdrawn, or the training-data chain is doubtful ("unclear"), or the weights are not public and a hosted service's own terms decide (<code class="docutils literal notranslate"><span class="pre">"provider</span> <span class="pre">terms"</span></code>, kept for a future hosted backend).</p></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -158,6 +166,20 @@
 <p>Result of beat/downbeat tracking.</p>
 <dl class="field-list simple">
 </dl>
+</dd></dl>
+<dl class="py data">
+<dt class="sig sig-object py" id="denote.base.COMMERCIAL_USE_VALUES">
+<span class="sig-prename descclassname"><span class="pre">denote.base.</span></span><span class="sig-name descname"><span class="pre">COMMERCIAL_USE_VALUES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('yes',</span> <span class="pre">'no',</span> <span class="pre">'conditional',</span> <span class="pre">'unclear',</span> <span class="pre">'provider</span> <span class="pre">terms')</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.base.COMMERCIAL_USE_VALUES" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.base.COMMERCIAL_USE_VALUES'">¶</a></dt>
+<dd><p>What a backend’s <code class="docutils literal notranslate"><span class="pre">commercial_use</span></code> config field may say, about using its
+OUTPUTS (what the model produces) commercially: the terms allow it (<code class="docutils literal notranslate"><span class="pre">"yes"</span></code>),
+forbid it (<code class="docutils literal notranslate"><span class="pre">"no"</span></code>), allow it under conditions such as a revenue cap or a use
+restriction (<code class="docutils literal notranslate"><span class="pre">"conditional"</span></code>), the terms are not settled: the licence is
+unstated, disputed or withdrawn, or the training-data chain is doubtful
+(“unclear”), or the weights are not public and a hosted service’s own terms
+decide (<code class="docutils literal notranslate"><span class="pre">"provider</span> <span class="pre">terms"</span></code>, kept for a future hosted backend). The field is
+about using outputs commercially; obligations on redistributing the weights
+themselves (LGPL and the like) belong in <code class="docutils literal notranslate"><span class="pre">weights_license</span></code> (with prose in
+<code class="docutils literal notranslate"><span class="pre">weights_license_note</span></code>). The same tuple as arioso’s.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="denote.base.ChordResult">
@@ -256,6 +278,7 @@ mode (dorian, …) gets <code class="docutils literal notranslate"><span class="
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
 <li><a :data-current="activeSection === '#denote.base.BeatResult'" class="reference internal" href="#denote.base.BeatResult"><code class="docutils literal notranslate"><span class="pre">BeatResult</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.base.COMMERCIAL_USE_VALUES'" class="reference internal" href="#denote.base.COMMERCIAL_USE_VALUES"><code class="docutils literal notranslate"><span class="pre">COMMERCIAL_USE_VALUES</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.base.ChordResult'" class="reference internal" href="#denote.base.ChordResult"><code class="docutils literal notranslate"><span class="pre">ChordResult</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.base.KeyResult'" class="reference internal" href="#denote.base.KeyResult"><code class="docutils literal notranslate"><span class="pre">KeyResult</span></code></a><ul>
 <li><a :data-current="activeSection === '#denote.base.KeyResult.ranked'" class="reference internal" href="#denote.base.KeyResult.ranked"><code class="docutils literal notranslate"><span class="pre">KeyResult.ranked</span></code></a></li>
@@ -284,7 +307,7 @@ mode (dorian, …) gets <code class="docutils literal notranslate"><span class="
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=a83ce22a"></script>
+<script src="../_static/documentation_options.js?v=0c446633"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

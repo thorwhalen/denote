@@ -21,4 +21,5 @@ denote.util
       cqt_chroma
       ensure_file_path
       load_audio
+      peak_normalize
    

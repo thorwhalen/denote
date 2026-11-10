@@ -12,6 +12,9 @@
 - [denote.backends.basic_pitch.adapter](denote.backends.basic_pitch.adapter.html.md): Adapter for Basic Pitch (Spotify) — audio to MIDI transcription.
 - [denote.backends.basic_pitch.compat](denote.backends.basic_pitch.compat.html.md): Make basic-pitch importable and runnable against today’s dependencies.
 - [denote.backends.basic_pitch.config](denote.backends.basic_pitch.config.html.md): Configuration for the Basic Pitch (Spotify) backend.
+- [denote.backends.beat_this](denote.backends.beat_this.html.md): | &#96;adapter&#96;   | Adapter for Beat This! — transformer beat and downbeat tracking.     |
+- [denote.backends.beat_this.adapter](denote.backends.beat_this.adapter.html.md): Adapter for Beat This! — transformer beat and downbeat tracking.
+- [denote.backends.beat_this.config](denote.backends.beat_this.config.html.md): Configuration for the Beat This! beat and downbeat tracking backend.
 - [denote.backends.librosa_beats](denote.backends.librosa_beats.html.md): | &#96;adapter&#96;   | Adapter for librosa beat tracking.                   |
 - [denote.backends.librosa_beats.adapter](denote.backends.librosa_beats.adapter.html.md): Adapter for librosa beat tracking.
 - [denote.backends.librosa_beats.config](denote.backends.librosa_beats.config.html.md): Configuration for the librosa beat tracking backend.
@@ -21,6 +24,12 @@
 - [denote.backends.librosa_pyin](denote.backends.librosa_pyin.html.md): | &#96;adapter&#96;   | Adapter for librosa pYIN — probabilistic pitch estimation.   |
 - [denote.backends.librosa_pyin.adapter](denote.backends.librosa_pyin.adapter.html.md): Adapter for librosa pYIN — probabilistic pitch estimation.
 - [denote.backends.librosa_pyin.config](denote.backends.librosa_pyin.config.html.md): Configuration for the librosa pYIN backend.
+- [denote.backends.pesto](denote.backends.pesto.html.md): | &#96;adapter&#96;   | Adapter for PESTO — self-supervised pitch estimation (Sony CSL).   |
+- [denote.backends.pesto.adapter](denote.backends.pesto.adapter.html.md): Adapter for PESTO — self-supervised pitch estimation (Sony CSL).
+- [denote.backends.pesto.config](denote.backends.pesto.config.html.md): Configuration for the PESTO pitch backend.
+- [denote.backends.swift_f0](denote.backends.swift_f0.html.md): | &#96;adapter&#96;   | Adapter for SwiftF0 — fast CNN pitch estimation on CPU (ONNX).   |
+- [denote.backends.swift_f0.adapter](denote.backends.swift_f0.adapter.html.md): Adapter for SwiftF0 — fast CNN pitch estimation on CPU (ONNX).
+- [denote.backends.swift_f0.config](denote.backends.swift_f0.config.html.md): Configuration for the SwiftF0 pitch backend.
 - [denote.backends.torchaudio_hdemucs](denote.backends.torchaudio_hdemucs.html.md): torchaudio Hybrid Demucs source separation backend.
 - [denote.backends.torchaudio_hdemucs.adapter](denote.backends.torchaudio_hdemucs.adapter.html.md): Adapter for torchaudio’s Hybrid Demucs bundles (&#96;HDEMUCS_HIGH_MUSDB_PLUS&#96; by default).
 - [denote.backends.torchaudio_hdemucs.config](denote.backends.torchaudio_hdemucs.config.html.md): Configuration for the torchaudio Hybrid Demucs separation backend.

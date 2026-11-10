@@ -1,0 +1,6 @@
+denote.backends.beat\_this.config
+=================================
+
+.. automodule:: denote.backends.beat_this.config
+
+   

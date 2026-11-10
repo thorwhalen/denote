@@ -1,0 +1,18 @@
+denote.backends.pesto.adapter
+=============================
+
+.. automodule:: denote.backends.pesto.adapter
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      frame_period
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

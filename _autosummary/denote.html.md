@@ -15,6 +15,7 @@ sync = denote.align_score("song.mid", "song.wav")  # score <-> recording time ma
 
 denote.list_backends()                          # see what's available
 denote.list_backends('pitch')                   # backends for a task
+denote.backend_table()                          # tasks + weights licence per backend
 ```
 
 Service-level access:
@@ -30,15 +31,46 @@ Native adapter access:
 denote.services.basic_pitch.adapter  # raw adapter instance
 ```
 
+### Module Attributes
+
+| [`BACKEND_TABLE_FIELDS`](#denote.BACKEND_TABLE_FIELDS)   | The config fields [`backend_table()`](#denote.backend_table) reports, in column order.   |
+|-------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+
 ### Functions
 
-| [`get_beats`](#denote.get_beats)(audio, \*[, sr, backend])   | Track beats in audio.                                        |
-|----------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| [`get_chords`](#denote.get_chords)(audio, \*[, sr, backend])  | Recognize chords from audio.                                 |
-| [`get_key`](#denote.get_key)(audio, \*[, sr, backend])     | Estimate the key (tonic + mode) of a recording.              |
-| [`get_pitch`](#denote.get_pitch)(audio, \*[, sr, backend])   | Estimate pitch/F0 from audio.                                |
-| [`separate`](#denote.separate)(audio, \*[, sr, backend])    | Separate a mix into stems (drums, bass, other, vocals, ...). |
-| [`transcribe`](#denote.transcribe)(audio, \*[, sr, backend])  | Transcribe audio to MIDI.                                    |
+| [`backend_table`](#denote.backend_table)([task, fields])        | One row per backend: its tasks, code licence, weights licence and commercial use.   |
+|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [`get_beats`](#denote.get_beats)(audio, \*[, sr, backend])  | Track beats in audio.                                                               |
+| [`get_chords`](#denote.get_chords)(audio, \*[, sr, backend]) | Recognize chords from audio.                                                        |
+| [`get_key`](#denote.get_key)(audio, \*[, sr, backend])    | Estimate the key (tonic + mode) of a recording.                                     |
+| [`get_pitch`](#denote.get_pitch)(audio, \*[, sr, backend])  | Estimate pitch/F0 from audio.                                                       |
+| [`separate`](#denote.separate)(audio, \*[, sr, backend])   | Separate a mix into stems (drums, bass, other, vocals, ...).                        |
+| [`transcribe`](#denote.transcribe)(audio, \*[, sr, backend]) | Transcribe audio to MIDI.                                                           |
+
+### denote.BACKEND_TABLE_FIELDS *= ('name', 'tasks', 'license', 'weights_license', 'commercial_use')*
+
+The config fields [`backend_table()`](#denote.backend_table) reports, in column order.
+
+### denote.backend_table(task=None, , fields=('name', 'tasks', 'license', 'weights_license', 'commercial_use'))
+
+One row per backend: its tasks, code licence, weights licence and commercial use.
+
+Reads the backends’ configs only, so no adapter (and no optional dependency)
+is loaded. `commercial_use` is one of `COMMERCIAL_USE_VALUES`.
+
+* **Parameters:**
+  * **task** – If set, only backends for this task (‘pitch’, ‘beats’, …).
+  * **fields** – The config keys each row carries (a missing key reads `None`).
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
+* **Returns:**
+  A list of dicts, one per backend (sorted by name), keyed by `fields`.
+
+Example:
+
+```default
+free = [r["name"] for r in denote.backend_table("pitch") if r["commercial_use"] == "yes"]
+```
 
 ### denote.get_beats(audio, , sr=None, backend=None, \*\*kwargs)
 

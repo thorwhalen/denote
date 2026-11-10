@@ -1,0 +1,14 @@
+denote.backends.pesto
+=====================
+
+.. automodule:: denote.backends.pesto
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapter
+   config

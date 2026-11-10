@@ -2,6 +2,11 @@
 
 Core types and result dataclasses for denote.
 
+### Module Attributes
+
+| [`COMMERCIAL_USE_VALUES`](#denote.base.COMMERCIAL_USE_VALUES)   | What a backend's `commercial_use` config field may say, about using its OUTPUTS (what the model produces) commercially: the terms allow it (`"yes"`), forbid it (`"no"`), allow it under conditions such as a revenue cap or a use restriction (`"conditional"`), the terms are not settled: the licence is unstated, disputed or withdrawn, or the training-data chain is doubtful ("unclear"), or the weights are not public and a hosted service's own terms decide (`"provider terms"`, kept for a future hosted backend).   |
+|--------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
 ### Classes
 
 | [`BeatResult`](#denote.base.BeatResult)(beats[, downbeats, tempo, raw, ...])   | Result of beat/downbeat tracking.                                              |
@@ -18,6 +23,19 @@ Core types and result dataclasses for denote.
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of beat/downbeat tracking.
+
+### denote.base.COMMERCIAL_USE_VALUES *= ('yes', 'no', 'conditional', 'unclear', 'provider terms')*
+
+What a backend’s `commercial_use` config field may say, about using its
+OUTPUTS (what the model produces) commercially: the terms allow it (`"yes"`),
+forbid it (`"no"`), allow it under conditions such as a revenue cap or a use
+restriction (`"conditional"`), the terms are not settled: the licence is
+unstated, disputed or withdrawn, or the training-data chain is doubtful
+(“unclear”), or the weights are not public and a hosted service’s own terms
+decide (`"provider terms"`, kept for a future hosted backend). The field is
+about using outputs commercially; obligations on redistributing the weights
+themselves (LGPL and the like) belong in `weights_license` (with prose in
+`weights_license_note`). The same tuple as arioso’s.
 
 ### *class* denote.base.ChordResult(intervals, labels=list(), raw=None, backend='')
 

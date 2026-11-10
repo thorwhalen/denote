@@ -1,0 +1,24 @@
+denote.backends.beat\_this.adapter
+==================================
+
+.. automodule:: denote.backends.beat_this.adapter
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      BEAT_THIS_SR
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      tempo_from_beats
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   
