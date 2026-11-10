@@ -293,7 +293,7 @@ class IsolatedSeparator:
 
 
 def _main(argv=None) -> int:
-    """``python -m denote.isolated build <backend> | lock <backend> | status``."""
+    """``python -m denote.isolated build <backend> ... | lock <backend> ... | status``."""
     from ps import isolated as ps_isolated
 
     from denote.registry import get_config, list_backends
