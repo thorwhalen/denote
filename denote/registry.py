@@ -5,6 +5,8 @@ import pkgutil
 import warnings
 from typing import Dict, List, Optional, Any
 
+from denote.base import COMMERCIAL_USE_VALUES
+
 # Module-level registry: backend_name -> {config, adapter (lazy), tasks}
 _registry: Dict[str, Dict[str, Any]] = {}
 
@@ -81,10 +83,23 @@ def register_backend(
 
     Args:
         name: Unique backend identifier.
-        config: BACKEND_CONFIG dict with at minimum 'name' and 'tasks'.
+        config: BACKEND_CONFIG dict with at minimum 'name' and 'tasks'. Its
+            ``commercial_use`` must be one of ``denote.base.COMMERCIAL_USE_VALUES``;
+            a config without one is registered as ``"unclear"`` (the caller's
+            dict is not modified).
         adapter: Optional pre-instantiated adapter. If None, will be loaded
             lazily from the module path if available.
+
+    Raises:
+        ValueError: If ``commercial_use`` is not a known value.
     """
+    commercial_use = config.get("commercial_use", "unclear")
+    if commercial_use not in COMMERCIAL_USE_VALUES:
+        raise ValueError(
+            f"Backend '{name}': commercial_use={commercial_use!r} is not one of "
+            f"{COMMERCIAL_USE_VALUES}"
+        )
+    config = {**config, "commercial_use": commercial_use}
     _registry[name] = {
         "config": config,
         "adapter": adapter,

@@ -42,12 +42,21 @@ def fake_detector(monkeypatch):
 def test_low_confidence_frames_read_nan(fake_detector):
     result = denote.get_pitch(np.zeros(16000), sr=16000, backend="swift_f0")
     assert isinstance(result, PitchResult) and result.backend == "swift_f0"
+    assert np.array_equal(result.times, np.arange(4) * 0.016)
     assert np.array_equal(np.isnan(result.frequencies), [False, True, False, True])
     assert np.allclose(result.confidence, [0.9, 0.2, 0.5, 0.49])
     strict = denote.get_pitch(
         np.zeros(16000), sr=16000, backend="swift_f0", confidence_threshold=0.95
     )
     assert np.isnan(strict.frequencies).all()
+
+
+def test_input_is_peak_normalised_unless_told_not_to(fake_detector):
+    quiet = 0.03 * np.sin(np.linspace(0, 200, 16000)).astype(np.float32)
+    denote.get_pitch(quiet, sr=16000, backend="swift_f0")
+    assert np.max(np.abs(fake_detector.calls[-1][0])) == pytest.approx(1.0)
+    denote.get_pitch(quiet, sr=16000, backend="swift_f0", normalize=False)
+    assert np.max(np.abs(fake_detector.calls[-1][0])) == pytest.approx(0.03, rel=1e-3)
 
 
 def test_audio_reaches_the_model_mono_at_16k_with_the_frequency_range(fake_detector):
@@ -69,6 +78,18 @@ def test_swift_f0_tracks_known_pitches():
     assert voiced.sum() > 0.9 * keep.sum()
     err = cents_error(result.frequencies[voiced], f0_at(result.times[voiced]))
     assert np.median(err) < 20 and np.percentile(err, 95) < 50
+
+
+def test_swift_f0_voices_a_quiet_tone_at_minus_30_dbfs():
+    pytest.importorskip("swift_f0")
+    y, sr, f0_at = harmonic_tone()
+    y = y * (10 ** (-30 / 20) / np.max(np.abs(y)))
+    result = denote.get_pitch(y, sr=sr, backend="swift_f0")
+    keep = away_from_changes(result.times, end=len(y) / sr)
+    voiced = keep & ~np.isnan(result.frequencies)
+    assert voiced.sum() > 0.9 * keep.sum()
+    err = cents_error(result.frequencies[voiced], f0_at(result.times[voiced]))
+    assert np.median(err) < 20
 
 
 def test_swift_f0_calls_silence_unvoiced():

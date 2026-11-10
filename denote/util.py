@@ -93,6 +93,19 @@ def load_audio(
     )
 
 
+def peak_normalize(y: np.ndarray, *, peak: float = 1.0) -> np.ndarray:
+    """``y`` scaled so its largest absolute sample is ``peak`` (a new float32 array).
+
+    For models whose voicing decisions depend on input level. All-zero audio is
+    returned unscaled (as a copy): there is nothing to normalise.
+    """
+    y = np.asarray(y, dtype=np.float32)
+    top = float(np.max(np.abs(y))) if y.size else 0.0
+    if top == 0.0:
+        return y.copy()
+    return (y * (peak / top)).astype(np.float32)
+
+
 def channels_first(y: np.ndarray) -> np.ndarray:
     """A multichannel array as ``(channels, frames)``, whichever way it came.
 

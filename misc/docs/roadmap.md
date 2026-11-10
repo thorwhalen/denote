@@ -22,7 +22,7 @@ Priority backends (permissive licenses, pip-installable, well-maintained):
 
 ## Phase 3: Expand Backends (v0.0.3)
 
-- [x] `pesto` — Lightweight pitch estimation (LGPL-3.0 code and weights, about 130K params)
+- [x] `pesto` — Lightweight pitch estimation (LGPL-3.0 code and weights, outputs unrestricted; about 130K params)
 - [x] `swift_f0` — Tiny CNN pitch estimation on CPU (MIT, ONNX model in the wheel)
 - [ ] `autochord` — Simple chord recognition
 - [ ] `madmom_chords` — CNN+CRF chord recognition (BSD/CC-NC)

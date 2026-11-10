@@ -10,6 +10,7 @@ BACKEND_CONFIG = {
     # https://github.com/maxrmorrison/torchcrepe/blob/master/LICENSE
     # https://github.com/marl/crepe/blob/master/LICENSE
     "weights_license": "MIT",
+    "weights_license_note": "converted from CREPE's weights (MIT)",
     "commercial_use": "yes",
     "tasks": ["pitch"],
     "default_for": ["pitch"],

@@ -143,11 +143,12 @@ TASKS = {
     "key": "Key (tonic + mode) estimation",
 }
 
-#: What a backend's ``commercial_use`` config field may say, about using its model
-#: weights (and so its output) commercially: the weights' licence allows it
-#: (``"yes"``), forbids it (``"no"``), allows it with obligations beyond attribution,
-#: such as LGPL copyleft on redistributed weights or a use restriction
-#: (``"conditional"``), or the terms are not settled (``"unclear"``: the sources
-#: disagree or say nothing). A backend with no learned weights reads ``"yes"`` when
-#: its code licence is permissive. Its ``weights_license`` field names the licence.
-COMMERCIAL_USE_VALUES = ("yes", "no", "conditional", "unclear")
+#: What a backend's ``commercial_use`` config field may say, about using its
+#: OUTPUTS (what the model produces) commercially: the terms allow it (``"yes"``),
+#: forbid it (``"no"``), allow it under conditions such as a revenue cap or a use
+#: restriction (``"conditional"``), are not settled (``"unclear"``: the sources
+#: disagree or say nothing), or the weights are not public and a hosted service's
+#: own terms decide (``"provider terms"``). Obligations on redistributing the
+#: weights themselves (LGPL and the like) are not output terms: they belong in
+#: ``weights_license`` / ``weights_license_note``. The same tuple as arioso's.
+COMMERCIAL_USE_VALUES = ("yes", "no", "conditional", "unclear", "provider terms")

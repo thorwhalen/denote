@@ -7,7 +7,8 @@ BACKEND_CONFIG = {
     "import_name": "librosa",
     "license": "ISC",
     # No learned weights: pYIN is DSP (https://github.com/librosa/librosa/blob/main/LICENSE.md)
-    "weights_license": "none (no learned weights)",
+    "weights_license": "none",
+    "weights_license_note": "no learned weights (DSP)",
     "commercial_use": "yes",
     "tasks": ["pitch"],
     "default_for": [],  # torchcrepe is default; pyin is a no-GPU fallback

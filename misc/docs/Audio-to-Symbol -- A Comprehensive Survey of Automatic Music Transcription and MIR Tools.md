@@ -57,7 +57,7 @@ The most recent entrant is **SwiftF0** [14] (2025), which achieves 90.2% harmoni
 |---|---|---|---|---|---|---|
 | **CREPE** | 22.2M | 96.7% | ~1× RT (CPU) | MIT | `pip install crepe` | No |
 | **torchcrepe** | 22.2M | 96.7% | GPU-accelerated | MIT | `pip install torchcrepe` | Near |
-| **PESTO** | <30K | ~96.1% (MIR-1K) | 12× RT (CPU) | MIT | `pip install pesto-pitch` | Yes |
+| **PESTO** | <30K | ~96.1% (MIR-1K) | 12× RT (CPU) | LGPL-3.0 | `pip install pesto-pitch` | Yes |
 | **PENN** | ~CREPE | SOTA cross-domain | 408× RT (GPU) | MIT | `pip install penn` | Yes |
 | **SwiftF0** | 95.8K | 90.2% (8-dataset avg) | 42× CREPE (CPU) | — | Research | Yes |
 | **RMVPE** | Large | 87.2% (vocal) | Moderate | — | GitHub | No |
@@ -152,7 +152,7 @@ For **phoneme-level forced alignment**, the **Montreal Forced Aligner** (MFA) [4
 
 **PANNs** [44] (Pretrained Audio Neural Networks) provide 527-class audio tagging including many instrument categories, achieving **mAP 0.439** on AudioSet with the CNN14 architecture. They serve as the workhorse for instrument classification in production pipelines. **CLAP** [45] (Contrastive Language-Audio Pretraining) enables **zero-shot instrument classification** via text queries like "acoustic guitar playing" — trained on 4.6M audio-text pairs, it achieves SOTA across 26 downstream tasks without task-specific fine-tuning. **MERT** [46] (Music Understanding Model) provides general-purpose music embeddings via a BERT-style transformer pre-trained with dual acoustic and musical teachers, achieving SOTA on 14 music understanding tasks including instrument classification. Available on HuggingFace (`m-a-p/MERT-v1-330M`), it represents the most versatile foundation model for MIR.
 
-**Source separation** is a critical preprocessing step for most MIR tasks. **Demucs v4/HTDemucs** [47] (Meta, MIT license) achieves **9.20 dB SDR** on MUSDB-HQ using a hybrid time-frequency U-Net with cross-domain transformer attention, and supports 4-stem (vocals/drums/bass/other) or 6-stem separation. **Spleeter** [48] (Deezer, MIT) runs **100× real-time** on GPU but with lower quality (bandwidth limited to 11–16 kHz). **BSRNN** [49] and its transformer variant BS-RoFormer won the SDX23 Challenge but lack official open-source implementations.
+**Source separation** is a critical preprocessing step for most MIR tasks. **Demucs v4/HTDemucs** [47] (Meta; code MIT, pretrained weights not MIT: research use per the author, see `denote.backend_table()`) achieves **9.20 dB SDR** on MUSDB-HQ using a hybrid time-frequency U-Net with cross-domain transformer attention, and supports 4-stem (vocals/drums/bass/other) or 6-stem separation. **Spleeter** [48] (Deezer, MIT) runs **100× real-time** on GPU but with lower quality (bandwidth limited to 11–16 kHz). **BSRNN** [49] and its transformer variant BS-RoFormer won the SDX23 Challenge but lack official open-source implementations.
 
 ---
 
@@ -225,7 +225,7 @@ The fundamental barrier is that different representations operate at different t
 
 **Q9. Existing Python façade patterns?** No comprehensive unified AMT library exists. Omnizart is closest (multi-task CLI/API, separate models). torchaudio.pipelines provides the best design precedent (Bundle pattern with lazy model loading and metadata). mirdata and mir_eval provide unified interfaces for data and evaluation respectively.
 
-**Q10. Licensing landmines?** Critical: **aubio** (GPL-3.0, importing makes your package GPL), **Essentia** (AGPL-3.0, even SaaS triggers copyleft), **madmom model weights** (CC-BY-NC-SA, non-commercial only), **Essentia model weights** (CC BY-NC-ND 4.0, non-commercial, no derivatives). Safe core: librosa (ISC), Basic Pitch (Apache 2.0), Demucs (MIT), pretty_midi (MIT), mir_eval (MIT), torchaudio (BSD), Beat This! (MIT), torchcrepe (MIT), PESTO (MIT), PENN (MIT).
+**Q10. Licensing landmines?** Critical: **aubio** (GPL-3.0, importing makes your package GPL), **Essentia** (AGPL-3.0, even SaaS triggers copyleft), **madmom model weights** (CC-BY-NC-SA, non-commercial only), **Essentia model weights** (CC BY-NC-ND 4.0, non-commercial, no derivatives). Safe core: librosa (ISC), Basic Pitch (Apache 2.0), pretty_midi (MIT), mir_eval (MIT), torchaudio (BSD), Beat This! (MIT), torchcrepe (MIT), PESTO (LGPL-3.0 code and weights; outputs unrestricted), PENN (MIT). Not commercially safe as stated here: Demucs pretrained weights (code MIT, weights research use per the author). The checked, cited licences of denote's backends are in `denote.backend_table()`.
 
 ---
 
@@ -268,7 +268,7 @@ pip install piano_transcription_inference  # MIT, piano SOTA
 
 # Pitch / F0
 pip install torchcrepe    # MIT, GPU-accelerated CREPE
-pip install pesto-pitch   # MIT, lightweight, real-time
+pip install pesto-pitch   # LGPL-3.0, lightweight, real-time
 pip install penn          # MIT, fastest on GPU
 
 # Beat / tempo / structure
@@ -276,7 +276,7 @@ pip install beat_this     # MIT, offline SOTA (from GitHub)
 pip install allin1        # MIT, beat+downbeat+structure+labels
 
 # Source separation (preprocessing)
-pip install demucs        # MIT, SOTA quality
+pip install demucs        # code MIT; weights research use per the author
 
 # Lyrics
 pip install whisperx      # BSD-4, word-level alignment

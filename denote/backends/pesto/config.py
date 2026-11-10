@@ -8,10 +8,14 @@ BACKEND_CONFIG = {
     "license": "LGPL-3.0",
     # The checkpoints (pesto/weights/*.ckpt) ship inside the LGPL-3.0 repository and
     # wheel with no separate licence: https://github.com/SonyCSLParis/pesto/blob/master/LICENSE.md
-    # Commercial use is allowed; redistributing the weights or a modified copy
-    # carries LGPL-3.0's obligations, hence "conditional".
+    # LGPL-3.0 puts no restriction on using the outputs; its obligations apply to
+    # redistributing the weights or a modified copy.
     "weights_license": "LGPL-3.0",
-    "commercial_use": "conditional",
+    "weights_license_note": (
+        "checkpoints ship in the LGPL-3.0 repository and wheel with no separate "
+        "licence; redistributing them or a modified copy carries LGPL-3.0's terms"
+    ),
+    "commercial_use": "yes",
     "tasks": ["pitch"],
     "default_for": [],  # torchcrepe stays the default
     "supports_realtime": True,
@@ -30,6 +34,8 @@ BACKEND_CONFIG = {
         # how activations become a pitch: 'alwa' (default), 'argmax' or 'mean'
         "reduction": {"native_name": "reduction", "default": "alwa"},
         "device": {"native_name": "device", "default": "cpu"},
+        # peak-normalise the input first: the model's voicing depends on level
+        "normalize": {"native_name": "normalize", "default": True},
         # frames whose confidence is below this read NaN
         "confidence_threshold": {"native_name": "confidence_threshold", "default": 0.5},
         # Not supported

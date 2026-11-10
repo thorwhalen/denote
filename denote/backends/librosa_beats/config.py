@@ -7,7 +7,8 @@ BACKEND_CONFIG = {
     "import_name": "librosa",
     "license": "ISC",
     # No learned weights: a dynamic-programming tracker (https://github.com/librosa/librosa/blob/main/LICENSE.md)
-    "weights_license": "none (no learned weights)",
+    "weights_license": "none",
+    "weights_license_note": "no learned weights (dynamic programming)",
     "commercial_use": "yes",
     "tasks": ["beats"],
     "default_for": ["beats"],

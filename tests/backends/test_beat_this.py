@@ -67,6 +67,20 @@ def test_options_translate_to_the_checkpoint_and_device(fake_tracker):
     ]
 
 
+def test_tempo_uses_the_median_interval_so_an_outlier_gap_does_not_drag_it(
+    monkeypatch,
+):
+    # 0.5 s intervals with jitter, then one 1.5 s gap (a missed beat): the mean
+    # interval (0.7 s) would read 86 BPM; the median reads 120.
+    beats = np.array([0.0, 0.49, 0.99, 1.5, 2.0, 3.5])
+    monkeypatch.setattr(bt, "_load", lambda *a: _FakeTracker(beats, beats[:1]))
+    result = denote.get_beats(
+        np.zeros(22050, np.float32), sr=22050, backend="beat_this"
+    )
+    assert result.tempo == pytest.approx(120.0)
+    assert 60 / np.mean(np.diff(beats)) == pytest.approx(85.7, abs=0.1)
+
+
 def test_tempo_is_none_with_fewer_than_two_beats():
     assert bt.tempo_from_beats(np.array([1.0])) is None
     assert bt.tempo_from_beats(np.array([0.0, 0.25, 0.5])) == pytest.approx(240.0)

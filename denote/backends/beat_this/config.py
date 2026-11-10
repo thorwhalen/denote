@@ -10,6 +10,10 @@ BACKEND_CONFIG = {
     # (https://github.com/CPJKU/beat_this, README). The same README notes that some
     # training files are copyrighted or under limited Creative Commons licences.
     "weights_license": "MIT",
+    "weights_license_note": (
+        "per the README, some training files are copyrighted or under limited "
+        "Creative Commons licences"
+    ),
     "commercial_use": "yes",
     "tasks": ["beats"],
     "default_for": [],  # librosa_beats stays the dependency-free default

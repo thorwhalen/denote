@@ -5,7 +5,7 @@ from functools import lru_cache
 import numpy as np
 
 from denote.base import PitchResult
-from denote.util import load_audio
+from denote.util import load_audio, peak_normalize
 from denote.translation import make_kwargs_translator
 
 #: SwiftF0's model rate; audio is resampled to it here (so no soxr is needed).
@@ -35,7 +35,10 @@ class Adapter:
             sr: Sample rate (required if audio is an array).
             **kwargs: Normalized parameters: ``min_frequency``, ``max_frequency``
                 (clipped to the model's 46.875-2093.75 Hz), ``confidence_threshold``
-                (default 0.5, SwiftF0's calibrated voicing threshold), ``threads``.
+                (default 0.5, SwiftF0's calibrated voicing threshold), ``threads``,
+                ``normalize`` (default True: peak-normalise first, since SwiftF0
+                calls quiet input unvoiced; frames peaking below 1e-3 are forced
+                unvoiced. False passes the level through).
 
         Returns:
             PitchResult with .times, .frequencies (NaN where unvoiced) and
@@ -45,8 +48,9 @@ class Adapter:
         opts = self._translate(**kwargs)
         threshold = opts.pop("confidence_threshold")
         detector = _load(opts.pop("threads"))
+        y = peak_normalize(y) if opts.pop("normalize") else np.asarray(y, np.float32)
         result = detector.detect(
-            np.asarray(y, dtype=np.float32),
+            y,
             actual_sr,
             fmin=opts.get("fmin"),
             fmax=opts.get("fmax"),

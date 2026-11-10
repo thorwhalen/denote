@@ -25,6 +25,8 @@ BACKEND_CONFIG = {
         "max_frequency": {"native_name": "fmax"},
         # frames whose confidence is below this read NaN (SwiftF0 calibrates 0.5)
         "confidence_threshold": {"native_name": "confidence_threshold", "default": 0.5},
+        # peak-normalise the input first: the model's voicing depends on level
+        "normalize": {"native_name": "normalize", "default": True},
         # ONNX Runtime threads; None lets it pick the physical core count
         "threads": {"native_name": "threads", "default": None},
         # Not supported

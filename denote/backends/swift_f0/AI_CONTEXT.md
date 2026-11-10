@@ -14,7 +14,8 @@ r.timestamps, r.pitch_hz, r.confidence, r.loudness_db
 
 ## Key gotchas
 - Confidence is calibrated so a frame is voiced at >= 0.5; the adapter sets frames below `confidence_threshold` (default 0.5) to NaN.
-- Trained for harmonic sources: a pure sine reads lower confidence (median about 0.5) than a tone with harmonics.
+- A pure sine can read lower confidence than a tone with harmonics (median 0.54 measured on one 1 s, 220 Hz sine at -6 dBFS; not a general figure).
+- Voicing depends on input level (frames peaking below 1e-3 are forced unvoiced), so the adapter peak-normalises by default (`normalize=True`).
 - The adapter resamples to 16 kHz with librosa, so swift-f0's optional soxr is not needed.
 - The model ships in the wheel: no download.
 

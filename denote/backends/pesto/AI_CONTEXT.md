@@ -18,7 +18,9 @@ model = load_model(
 ## Key gotchas
 - PESTO rounds the step to whole samples, so the adapter builds times from `int(step * sr / 1000 + 0.5) / sr`, not the nominal step (see `frame_period`).
 - No frequency-range arguments.
+- Confidence depends on input level (no frame is voiced at -30 dBFS), so the adapter peak-normalises by default (`normalize=True`).
+- The adapter caches one model per (checkpoint, step, sr, reduction, device), so a cached model is never mutated.
 - The checkpoints ship in the wheel: no download. Needs torch and torchaudio.
 
 ## License
-LGPL-3.0, code and the checkpoints shipped in the repository (https://github.com/SonyCSLParis/pesto). Commercial use is allowed; redistributing the weights or a modified copy carries LGPL-3.0's obligations.
+LGPL-3.0, code and the checkpoints shipped in the repository (https://github.com/SonyCSLParis/pesto). Using the outputs commercially is unrestricted (`commercial_use: yes`); redistributing the weights or a modified copy carries LGPL-3.0's obligations.

@@ -56,7 +56,8 @@ denote.list_backends()  # all registered backends
 denote.list_backends("pitch")  # ['librosa_pyin', 'pesto', 'swift_f0', 'torchcrepe']
 
 # Each backend's tasks, code licence, weights licence and commercial use
-# ('yes', 'no', 'conditional' or 'unclear'), read from configs: nothing is loaded
+# of the outputs ('yes', 'no', 'conditional', 'unclear' or 'provider terms'), read from
+# configs: nothing is loaded
 denote.backend_table("pitch")
 
 # Specify a backend explicitly
@@ -83,12 +84,12 @@ denote.services.basic_pitch.adapter
 | Basic Pitch (Spotify) | MIDI transcription | Apache 2.0 | Apache 2.0 (yes) | `pip install denote[basic_pitch]` |
 | torchcrepe | Pitch estimation | MIT | MIT (yes) | `pip install denote[torchcrepe]` |
 | SwiftF0 | Pitch estimation | MIT | MIT (yes) | `pip install denote[swift_f0]` |
-| PESTO | Pitch estimation | LGPL 3.0 | LGPL 3.0 (conditional) | `pip install denote[pesto]` |
+| PESTO | Pitch estimation | LGPL 3.0 | LGPL 3.0 (yes; redistributing the weights carries LGPL terms) | `pip install denote[pesto]` |
 | librosa pYIN | Pitch estimation | ISC | no weights (yes) | (included) |
 | Beat This! | Beats + downbeats | MIT | MIT (yes) | `pip install denote[beat_this]` |
 | librosa beats | Beat tracking | ISC | no weights (yes) | (included) |
 | librosa key (Krumhansl-Schmuckler) | Key estimation | ISC | no weights (yes) | (included) |
-| Hybrid Demucs (torchaudio) | Source separation | BSD 2-Clause | unstated (unclear) | `pip install denote[torchaudio_hdemucs]` |
+| Hybrid Demucs (torchaudio) | Source separation | BSD 2-Clause | unstated; author says research use (unclear) | `pip install denote[torchaudio_hdemucs]` |
 
 `denote.backend_table()` gives the same columns from the backends' configs, where each licence's source is cited.
 
