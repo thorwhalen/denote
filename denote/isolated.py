@@ -57,8 +57,6 @@ DFLT_ENV_PYTHON = "3.12"
 WORKERS_DIR = Path(__file__).parent / "workers"
 #: The file a worker reads its input from, in the request's folder.
 MIX_FILE = "mix.npy"
-#: uv settings holding the host's pins, cleared when resolving a lock.
-HOST_UV_VARS = ("UV_CONSTRAINT", "UV_OVERRIDE", "UV_BUILD_CONSTRAINT")
 
 
 class EnvNotBuilt(RuntimeError):
@@ -72,13 +70,14 @@ def data_dir(*parts: str) -> Path:
 
 
 def lock_requirements(text: str) -> tuple:
-    """The requirement lines of a lock (``uv pip compile`` output), comments dropped.
+    """The requirement lines of a lock (``uv pip compile`` output): :func:`ps.isolated.lock_requirements`.
 
     >>> lock_requirements("# header\\nnumpy==2.1.0\\n    # via x\\ntorch==2.15.0 ; sys_platform == 'darwin'\\n")
     ('numpy==2.1.0', "torch==2.15.0 ; sys_platform == 'darwin'")
     """
-    lines = (line.split(" #")[0].strip() for line in text.splitlines())
-    return tuple(line for line in lines if line and not line.startswith(("#", "-")))
+    from ps.isolated import lock_requirements as from_ps
+
+    return from_ps(text)
 
 
 def env_spec(config: dict):
@@ -102,40 +101,23 @@ def env_spec(config: dict):
     )
 
 
-def lock_command(config: dict) -> list:
-    """The ``uv pip compile`` command that resolves a config's lock (requirements on stdin)."""
-    env = config["isolated_env"]
-    return [
-        "uv",
-        "pip",
-        "compile",
-        "-",
-        "--universal",
-        "--python-version",
-        env.get("python", DFLT_ENV_PYTHON),
-        "--output-file",
-        str(env["lock"]),
-        "--custom-compile-command",
-        f"python -m denote.isolated lock {config['name']}",
-    ]
-
-
 def compile_lock(name: str, *, run: Callable = None) -> Path:
     """Re-resolve backend ``name``'s lock from its top-level requirements; the lock's path."""
     import subprocess
 
+    from ps import isolated as ps_isolated
+
     from denote.registry import get_config
 
-    config = get_config(name)
-    command = lock_command(config)
-    (run or subprocess.run)(
-        command,
-        input="\n".join(config["isolated_env"]["requirements"]) + "\n",
-        text=True,
-        check=True,
-        env={**os.environ, **{var: "" for var in HOST_UV_VARS}},
+    env = get_config(name)["isolated_env"]
+    return ps_isolated.compile_lock(
+        env["requirements"],
+        env["lock"],
+        python=env.get("python", DFLT_ENV_PYTHON),
+        torch_backend=env.get("torch_backend"),
+        custom_command=f"python -m denote.isolated lock {name}",
+        run=run or subprocess.run,
     )
-    return Path(config["isolated_env"]["lock"])
 
 
 def env_dir(name: str) -> Path:
@@ -312,28 +294,18 @@ class IsolatedSeparator:
 
 def _main(argv=None) -> int:
     """``python -m denote.isolated build <backend> | lock <backend> | status``."""
-    import argparse
+    from ps import isolated as ps_isolated
 
     from denote.registry import get_config, list_backends
 
     isolated = [n for n in list_backends() if "isolated_env" in get_config(n)]
-    parser = argparse.ArgumentParser(prog="python -m denote.isolated")
-    sub = parser.add_subparsers(dest="command", required=True)
-    build = sub.add_parser("build", help="build a backend's environment")
-    build.add_argument("backend", choices=isolated)
-    lock = sub.add_parser("lock", help="re-resolve a backend's lock (needs uv)")
-    lock.add_argument("backend", choices=isolated)
-    sub.add_parser("status", help="where each isolated environment is, and if built")
-    args = parser.parse_args(argv)
-    if args.command == "build":
-        print(build_env(args.backend))
-    elif args.command == "lock":
-        print(compile_lock(args.backend))
-    else:
-        for name in isolated:
-            state = "built" if is_env_ready(get_config(name)) else "not built"
-            print(f"{name}: {state} ({env_dir(name)})")
-    return 0
+    return ps_isolated.cli(
+        {n: (lambda n=n: env_spec(get_config(n))) for n in isolated},
+        env_dir=env_dir,
+        locks={n: (lambda n=n: compile_lock(n)) for n in isolated},
+        prog="python -m denote.isolated",
+        argv=argv,
+    )
 
 
 if __name__ == "__main__":
