@@ -92,6 +92,10 @@ def _fresh_adapters(monkeypatch, names=("demucs_mlx", "roformer")):
 # --- fake upstream libraries -------------------------------------------------------
 
 
+#: Model names whose next load fails once (a download error, say).
+FAIL_ONCE = set()
+
+
 def _fake_demucs_mlx(built):
     class Model:
         def __init__(self, name):
@@ -101,12 +105,18 @@ def _fake_demucs_mlx(built):
 
     class Separator:
         def __init__(self, model="htdemucs", stem=None, **_):
+            if model in FAIL_ONCE:
+                FAIL_ONCE.discard(model)
+                raise ImportError(f"could not download {model}")
             built.append((model, stem))
             self.model, self.stem, self.samplerate = Model(model), stem, SR
-            self.params = {}
+            self.shifts, self.overlap, self.segment, self.seed = 1, 0.25, None, None
+            self.seen = []  # (shifts, overlap, segment, seed) of each separation
 
-        def update_parameter(self, **kw):
-            self.params = kw
+        def update_parameter(self, *, shifts=None, overlap=None, **_):
+            # like demucs-mlx: None leaves a value as it was
+            self.shifts = self.shifts if shifts is None else shifts
+            self.overlap = self.overlap if overlap is None else overlap
 
         def separate_tensor(self, wav):
             wav = np.asarray(wav)
@@ -114,6 +124,7 @@ def _fake_demucs_mlx(built):
             assert abs(wav.mean()) < 1e-5  # normalized by the worker
             gains = dict(zip(self.model.sources, GAINS + (0.0, 0.0)))
             names = [self.stem] if self.stem else self.model.sources
+            self.seen.append((self.shifts, self.overlap, self.segment, self.seed))
             return wav, {n: gains[n] * wav for n in names}
 
     return types.SimpleNamespace(Separator=Separator)
@@ -140,14 +151,19 @@ def _fake_audio_separator(loaded):
             assert normalization_threshold == 1.0 and kw["use_soundfile"]
 
         def load_model(self, model_filename):
+            if model_filename in FAIL_ONCE:
+                FAIL_ONCE.discard(model_filename)
+                raise RuntimeError(f"could not download {model_filename}")
             loaded.append(model_filename)
             self.model = model_filename
+            self.model_instance = types.SimpleNamespace(primary_stem_name="Vocals")
 
         def separate(self, path):
             mix, rate = soundfile.read(path, dtype="float32", always_2d=True)
             assert soundfile.info(path).subtype == "FLOAT"
             names = []
-            for stem, gain in (("Vocals", 0.25), ("Other", 0.75)):
+            # audio-separator 0.48 writes the secondary stem first
+            for stem, gain in (("Other", 0.75), ("Vocals", 0.25)):
                 name = f"mix_({stem})_{self.model.split('.')[0]}.wav"
                 soundfile.write(
                     os.path.join(self.output_dir, name),
@@ -274,7 +290,16 @@ def test_roformer_separates_through_its_worker(
     )
     (worker,) = in_process
     assert worker.init == {"model_file_dir": str(tmp_path / "models" / "roformer")}
-    assert os.listdir(worker.state["scratch"]) == []  # wavs removed after each call
+    assert os.listdir(worker.state["outputs"]) == []  # wavs removed after each call
+
+
+def test_roformer_honours_audio_separators_own_model_dir(
+    in_process, fake_audio_separator, tmp_path, monkeypatch
+):
+    monkeypatch.setenv(isolated.DATA_DIR_ENVVAR, str(tmp_path / "data"))
+    monkeypatch.setenv("AUDIO_SEPARATOR_MODEL_DIR", str(tmp_path / "theirs"))
+    denote.separate(_mix(0.1, offset=0.0), sr=SR, backend="roformer")
+    assert in_process[0].init == {"model_file_dir": str(tmp_path / "theirs")}
 
 
 def test_roformer_other_checkpoints_are_unclear_and_load_on_demand(
@@ -343,9 +368,63 @@ def test_build_env_builds_with_the_pinned_spec_under_the_data_dir(
     python = isolated.build_env("demucs_mlx")
     ((spec, path),) = built
     assert path == tmp_path / "envs" / "demucs_mlx" and python.parent.parent == path
-    assert spec.requirements[0] == "demucs-mlx==1.6.1" and spec.python == "3.12"
+    assert spec.python == "3.12"
+    # installed from the lock: every package pinned, the lock's content in the digest
+    assert "demucs-mlx==1.6.1" in spec.requirements
+    assert all("==" in line for line in spec.requirements)
+    pinned = {line.split("==")[0] for line in spec.requirements}
+    assert {"mlx", "certifi", "numpy"} <= pinned
     roformer = isolated.env_spec(get_config("roformer")).requirements
-    assert roformer[0] == "audio-separator[cpu]==0.48.0"
+    assert "audio-separator==0.48.0" in roformer  # the [cpu] extra resolved below
+    assert {"torch", "onnx-weekly", "onnxruntime", "audioread", "certifi"} <= {
+        line.split("==")[0] for line in roformer
+    }
+
+
+@pytest.mark.parametrize("name", ["demucs_mlx", "roformer"])
+def test_each_lock_resolves_the_top_level_requirements(name):
+    env = get_config(name)["isolated_env"]
+    locked = {
+        line.split(" ;")[0] for line in isolated.env_spec(get_config(name)).requirements
+    }
+    for requirement in env["requirements"]:
+        package = requirement.split("[")[0].split("=")[0].split(">")[0]
+        assert any(line.startswith(package + "==") for line in locked), requirement
+    assert f"python -m denote.isolated lock {name}" in open(env["lock"]).read()
+
+
+def test_a_changed_lock_changes_the_spec_digest(tmp_path):
+    lock = tmp_path / "env.lock"
+    config = {
+        "name": "toy",
+        "isolated_env": {"requirements": ["numpy"], "lock": str(lock)},
+    }
+    lock.write_text("numpy==2.1.0\n    # via toy\n")
+    before = isolated.env_spec(config)
+    lock.write_text("numpy==2.1.1\n")
+    after = isolated.env_spec(config)
+    assert (
+        before.requirements == ("numpy==2.1.0",) and before.digest() != after.digest()
+    )
+
+
+def test_compile_lock_runs_uv_pip_compile_universal_with_the_requirements(monkeypatch):
+    monkeypatch.setenv("UV_CONSTRAINT", "/host/pins.txt")
+    calls = []
+
+    def run(command, **kw):
+        calls.append((command, kw))
+
+    path = isolated.compile_lock("roformer", run=run)
+    ((command, kw),) = calls
+    assert command[:5] == ["uv", "pip", "compile", "-", "--universal"]
+    assert command[command.index("--output-file") + 1] == str(path)
+    assert path.name == "env.lock" and path.parent.name == "roformer"
+    assert (
+        kw["input"].splitlines()
+        == get_config("roformer")["isolated_env"]["requirements"]
+    )
+    assert kw["env"]["UV_CONSTRAINT"] == ""  # the host's pins stay out
 
 
 def test_status_command_lists_the_isolated_backends(tmp_path, monkeypatch, capsys):
@@ -431,4 +510,102 @@ def test_real_environment_separates_a_synthetic_mix(name):
     assert result.sr == SR and all(s.shape == mix.shape for s in result.stems.values())
     assert _sdr(mix, sum(result.stems.values())) > 20
     if name == "demucs_mlx":
+        assert list(result.stems) == ["drums", "bass", "other", "vocals"]
         assert _sdr(bass, result.stems["bass"].mean(axis=0)) > 10
+    else:
+        assert list(result.stems) == ["vocals", "other"]  # target stem first
+
+
+# --- worker behaviour the facade tests do not reach ---------------------------------
+
+
+def _worker(name):
+    return _load_worker_module(isolated.worker_file(name))
+
+
+def _request_folder(tmp_path, mix):
+    np.save(tmp_path / "mix.npy", mix)
+    return {"mix": str(tmp_path / "mix.npy"), "out_dir": str(tmp_path)}
+
+
+def test_demucs_worker_retries_a_load_that_failed(fake_demucs, tmp_path):
+    worker = _worker("demucs_mlx")
+    state = worker.load()
+    request = _request_folder(tmp_path, _mix(0.1))
+    FAIL_ONCE.add("htdemucs")
+    with pytest.raises(ImportError, match="could not download"):
+        worker.separate(state, sr=SR, **request)
+    assert state == {"key": None, "separator": None}  # nothing stale left
+    reply = worker.separate(state, sr=SR, **request)
+    assert reply["model"] == "htdemucs" and fake_demucs == [("htdemucs", None)]
+
+
+def test_roformer_worker_retries_a_load_that_failed(fake_audio_separator, tmp_path):
+    worker = _worker("roformer")
+    state = worker.load(model_file_dir=str(tmp_path / "models"))
+    request = _request_folder(tmp_path, _mix(0.1, offset=0.0))
+    FAIL_ONCE.add("vocals_mel_band_roformer.ckpt")
+    with pytest.raises(RuntimeError, match="could not download"):
+        worker.separate(state, sr=SR, model="vocals_mel_band_roformer.ckpt", **request)
+    assert state["model"] is None and state["separator"] is None
+    reply = worker.separate(
+        state, sr=SR, model="vocals_mel_band_roformer.ckpt", **request
+    )
+    assert list(reply["stems"]) == ["vocals", "other"]
+
+
+def test_demucs_worker_passes_each_requests_options_and_none_resets(
+    fake_demucs, tmp_path
+):
+    worker = _worker("demucs_mlx")
+    state = worker.load()
+    request = _request_folder(tmp_path, _mix(0.1))
+    worker.separate(state, sr=SR, shifts=2, overlap=0.5, segment=7.0, seed=3, **request)
+    worker.separate(state, sr=SR, **request)  # defaults: no segment, no seed
+    assert state["separator"].seen == [(2, 0.5, 7.0, 3), (1, 0.25, None, None)]
+
+
+def test_demucs_worker_writes_only_the_sources_asked_for_in_that_order(
+    fake_demucs, tmp_path
+):
+    worker = _worker("demucs_mlx")
+    request = _request_folder(tmp_path, _mix(0.1))
+    reply = worker.separate(
+        worker.load(), sr=SR, sources=["vocals", "drums"], **request
+    )
+    assert list(reply["stems"]) == ["vocals", "drums"]
+    assert sorted(os.listdir(tmp_path)) == ["drums.npy", "mix.npy", "vocals.npy"]
+
+
+@pytest.mark.parametrize("name", ["demucs_mlx", "roformer"])
+def test_workers_refuse_a_mix_at_another_rate(
+    name, fake_demucs, fake_audio_separator, tmp_path
+):
+    worker = _worker(name)
+    init = {"model_file_dir": str(tmp_path)} if name == "roformer" else {}
+    request = _request_folder(tmp_path, _mix(0.1))
+    with pytest.raises(ValueError, match="44100"):
+        worker.separate(worker.load(**init), sr=22050, model="m", **request)
+
+
+def test_demucs_worker_points_ssl_at_certifi_only_when_unset(monkeypatch):
+    certifi = types.SimpleNamespace(where=lambda: "/certifi/cacert.pem")
+    monkeypatch.setitem(sys.modules, "certifi", certifi)
+    monkeypatch.setenv("SSL_CERT_FILE", "placeholder")
+    monkeypatch.delenv("SSL_CERT_FILE")  # restored by monkeypatch afterwards
+    _worker("demucs_mlx").load()
+    assert os.environ["SSL_CERT_FILE"] == "/certifi/cacert.pem"
+    monkeypatch.setenv("SSL_CERT_FILE", "/the/hosts.pem")
+    _worker("demucs_mlx").load()
+    assert os.environ["SSL_CERT_FILE"] == "/the/hosts.pem"
+
+
+def test_close_stops_the_worker_and_the_next_call_starts_a_fresh_one(
+    in_process, fake_demucs
+):
+    mix = _mix(0.1)
+    denote.separate(mix, sr=SR, backend="demucs_mlx")
+    denote.services["demucs_mlx"].close()
+    denote.separate(mix, sr=SR, backend="demucs_mlx")
+    first, second = in_process
+    assert first.closed and not second.closed and len(second.requests) == 1

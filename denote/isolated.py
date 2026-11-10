@@ -2,8 +2,9 @@
 
 Some models cannot share an environment with denote (or with each other):
 ``demucs-mlx`` pins its own MLX, ``audio-separator`` needs a recent torch. Their
-backends declare an ``isolated_env`` in ``BACKEND_CONFIG`` (the pinned requirements and
-the Python version) and keep the model code in a **worker file**
+backends declare an ``isolated_env`` in ``BACKEND_CONFIG`` (top-level requirements, a
+lock file resolved from them, and the Python version) and keep the model code in a
+**worker file**
 (``denote/workers/<backend>_worker.py``): a plain module, importing nothing from
 denote, that ``ps.isolated.Worker`` runs with the environment's interpreter. Requests
 and replies are JSON lines; audio crosses as ``.npy`` files in a temporary folder.
@@ -18,6 +19,15 @@ Where things live (``DENOTE_DATA_DIR`` replaces the root)::
 Nothing is built implicitly: a missing environment raises :class:`EnvNotBuilt`, whose
 message is the command that builds it (``python -m denote.isolated build <backend>``),
 unless the caller passes ``build_env=True``.
+
+An environment is installed from its backend's **lock** (``env.lock`` next to its
+config: every package pinned, with platform markers, as ``uv pip compile --universal``
+resolves the top-level requirements), so it is the same wherever and whenever it is
+built, and changing the lock changes the spec's digest (the next build starts afresh).
+``python -m denote.isolated lock <backend>`` re-resolves it.
+
+A worker keeps its model in memory (several GB for these models) until it is closed
+(``denote.services[<backend>].close()``) or the host process exits.
 
 >>> spec = env_spec({"name": "toy", "isolated_env": {"requirements": ["numpy==2.1.0"]}})
 >>> spec.name, spec.requirements
@@ -47,6 +57,8 @@ DFLT_ENV_PYTHON = "3.12"
 WORKERS_DIR = Path(__file__).parent / "workers"
 #: The file a worker reads its input from, in the request's folder.
 MIX_FILE = "mix.npy"
+#: uv settings holding the host's pins, cleared when resolving a lock.
+HOST_UV_VARS = ("UV_CONSTRAINT", "UV_OVERRIDE", "UV_BUILD_CONSTRAINT")
 
 
 class EnvNotBuilt(RuntimeError):
@@ -59,17 +71,71 @@ def data_dir(*parts: str) -> Path:
     return Path(root).expanduser().joinpath(*parts)
 
 
+def lock_requirements(text: str) -> tuple:
+    """The requirement lines of a lock (``uv pip compile`` output), comments dropped.
+
+    >>> lock_requirements("# header\\nnumpy==2.1.0\\n    # via x\\ntorch==2.15.0 ; sys_platform == 'darwin'\\n")
+    ('numpy==2.1.0', "torch==2.15.0 ; sys_platform == 'darwin'")
+    """
+    lines = (line.split(" #")[0].strip() for line in text.splitlines())
+    return tuple(line for line in lines if line and not line.startswith(("#", "-")))
+
+
 def env_spec(config: dict):
-    """The ``ps.isolated.EnvSpec`` of a backend config's ``isolated_env``."""
+    """The ``ps.isolated.EnvSpec`` of a backend config's ``isolated_env``.
+
+    Its requirements are the lock's pinned lines when the config names a ``lock``
+    (so the lock's content is in the digest), else the top-level ``requirements``.
+    """
     from ps.isolated import EnvSpec
 
     env = config["isolated_env"]
+    lock = env.get("lock")
+    requirements = (
+        lock_requirements(Path(lock).read_text()) if lock else env["requirements"]
+    )
     return EnvSpec(
         config["name"],
-        tuple(env["requirements"]),
+        tuple(requirements),
         python=env.get("python", DFLT_ENV_PYTHON),
         torch_backend=env.get("torch_backend"),
     )
+
+
+def lock_command(config: dict) -> list:
+    """The ``uv pip compile`` command that resolves a config's lock (requirements on stdin)."""
+    env = config["isolated_env"]
+    return [
+        "uv",
+        "pip",
+        "compile",
+        "-",
+        "--universal",
+        "--python-version",
+        env.get("python", DFLT_ENV_PYTHON),
+        "--output-file",
+        str(env["lock"]),
+        "--custom-compile-command",
+        f"python -m denote.isolated lock {config['name']}",
+    ]
+
+
+def compile_lock(name: str, *, run: Callable = None) -> Path:
+    """Re-resolve backend ``name``'s lock from its top-level requirements; the lock's path."""
+    import subprocess
+
+    from denote.registry import get_config
+
+    config = get_config(name)
+    command = lock_command(config)
+    (run or subprocess.run)(
+        command,
+        input="\n".join(config["isolated_env"]["requirements"]) + "\n",
+        text=True,
+        check=True,
+        env={**os.environ, **{var: "" for var in HOST_UV_VARS}},
+    )
+    return Path(config["isolated_env"]["lock"])
 
 
 def env_dir(name: str) -> Path:
@@ -159,17 +225,6 @@ def separate_in_worker(
     return stems, reply
 
 
-def keep_sources(stems: dict, sources) -> dict:
-    """``stems`` restricted to ``sources`` (all when None), in that order."""
-    if sources is None:
-        return stems
-    if unknown := set(sources) - set(stems):
-        raise ValueError(
-            f"unknown sources {sorted(unknown)}; this model has {list(stems)}"
-        )
-    return {name: stems[name] for name in sources}
-
-
 class IsolatedSeparator:
     """Host side of a separation backend whose model runs in a worker (see module doc).
 
@@ -242,7 +297,7 @@ class IsolatedSeparator:
             worker.call, x, sr=self.MODEL_SR, **self.request(opts)
         )
         return SeparationResult(
-            stems=keep_sources(stems, opts["sources"]),
+            stems=stems,  # the worker keeps only ``sources``, in that order
             sr=reply["sr"],
             raw={k: v for k, v in reply.items() if k != "stems"},
             backend=self._config["name"],
@@ -256,7 +311,7 @@ class IsolatedSeparator:
 
 
 def _main(argv=None) -> int:
-    """``python -m denote.isolated build <backend> | status``."""
+    """``python -m denote.isolated build <backend> | lock <backend> | status``."""
     import argparse
 
     from denote.registry import get_config, list_backends
@@ -266,10 +321,14 @@ def _main(argv=None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     build = sub.add_parser("build", help="build a backend's environment")
     build.add_argument("backend", choices=isolated)
+    lock = sub.add_parser("lock", help="re-resolve a backend's lock (needs uv)")
+    lock.add_argument("backend", choices=isolated)
     sub.add_parser("status", help="where each isolated environment is, and if built")
     args = parser.parse_args(argv)
     if args.command == "build":
         print(build_env(args.backend))
+    elif args.command == "lock":
+        print(compile_lock(args.backend))
     else:
         for name in isolated:
             state = "built" if is_env_ready(get_config(name)) else "not built"

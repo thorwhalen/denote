@@ -34,6 +34,8 @@ _, stems = sep.separate_tensor(
 - demucs-mlx does not normalize its input; the worker does as Demucs's CLI does (minus the mono reference's mean, over its std) and undoes it, adding `mean / n_sources` back to each stem so the stems sum to the mix.
 - `sources=("vocals",)` with `htdemucs_ft` runs only the vocals sub-model.
 - `model` and `sources` are checked on the host, before any environment or weights are touched.
+- The environment is installed from `env.lock` (every package pinned, mlx 0.32.4).
+- The worker keeps the model loaded (about 6 GB peak footprint with htdemucs, MLX unified memory) until `denote.services["demucs_mlx"].close()` or exit.
 
 ## License
 Code MIT (demucs-mlx, Meta's Demucs). Weights: converted from Meta's official checkpoints (https://huggingface.co/ssmall256/demucs-mlx, whose card says MIT); the Demucs author has said those weights were provided for research use (https://huggingface.co/adefossez/HTDemucs/discussions/1). Recorded as `unstated` / `unclear` until settled.

@@ -30,7 +30,9 @@ files = sep.separate(
 ## Key gotchas
 - A missing (or stale) environment raises `denote.isolated.EnvNotBuilt` with the build command; `build_env=True` builds it instead.
 - Checkpoints download on first use into `$DENOTE_DATA_DIR/models/roformer` (default `~/.local/share/denote/models/roformer`; audio-separator's own default is a folder under `/tmp`). `$AUDIO_SEPARATOR_MODEL_DIR` wins when set (it must exist).
-- Stem names come from the output file names, lower-cased (`Vocals` -> `vocals`).
+- Stem names come from the output file names, lower-cased (`Vocals` -> `vocals`). audio-separator writes the secondary stem first; the worker puts the checkpoint's target stem (`model_instance.primary_stem_name`) first, so the default checkpoint gives `vocals`, `other`.
+- The environment is installed from `env.lock` (every package pinned, universal markers). On Linux PyPI's torch brings CUDA libraries (several GB).
+- The worker keeps the checkpoint loaded (about 4.5 GB peak on Apple silicon) until `denote.services["roformer"].close()` or exit.
 - Output WAVs keep the input's float subtype; audio-separator scales a stem down only if its peak exceeds 1.0 (`normalization_threshold`, its maximum).
 - audio-separator picks the device (MPS on Apple silicon) itself.
 

@@ -1,5 +1,10 @@
 """Configuration for the demucs-mlx (HTDemucs on MLX) separation backend."""
 
+from pathlib import Path
+
+#: Every package of the environment, pinned (``python -m denote.isolated lock demucs_mlx``).
+ENV_LOCK = Path(__file__).with_name("env.lock")
+
 _FOUR_STEMS = ("drums", "bass", "other", "vocals")
 
 #: The models this backend runs, with their stems (in the model's order).
@@ -30,12 +35,14 @@ BACKEND_CONFIG = {
     "supports_realtime": False,
     "platforms": ["macOS arm64"],  # MLX
     "isolated_env": {
-        # demucs-mlx pins mlx>=0.32.3,<0.33. It downloads its weights with urllib,
-        # which needs a CA bundle the environment's Python may lack: certifi's
-        # (unpinned, so it stays current) is used when SSL_CERT_FILE is not set.
+        # Top-level requirements; the environment is installed from the lock resolved
+        # from them (ENV_LOCK). demucs-mlx pins mlx>=0.32.3,<0.33. It downloads its
+        # weights with urllib, which needs a CA bundle the environment's Python may
+        # lack: certifi's is used when SSL_CERT_FILE is not set.
         "requirements": ["demucs-mlx==1.6.1", "certifi"],
+        "lock": str(ENV_LOCK),
         "python": "3.12",
-        "size_hint": "200 MB, plus 105-640 MB of weights per model",
+        "size_hint": "200 MB (macOS arm64), plus 105-640 MB of weights per model",
     },
     "description": (
         "Hybrid Transformer Demucs (v4) on Apple's MLX: four stems (htdemucs, "

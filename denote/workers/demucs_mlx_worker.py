@@ -2,7 +2,8 @@
 
 Loaded standalone by ``ps.isolated.Worker`` (it imports nothing from denote). The
 mix arrives as a ``(channels, frames)`` float32 ``.npy`` file at the model's rate
-(44.1 kHz); each stem is written back as ``<stem>.npy`` in the request's folder.
+(44.1 kHz); each requested stem is written back as ``<stem>.npy`` in the request's
+folder, in the order requested (the model's order by default).
 
 Normalization is Demucs's own (``demucs.separate``): the mix minus the mean of its
 mono reference, divided by that reference's std, and undone on the way out; the
@@ -15,6 +16,8 @@ Weights download on first use into demucs-mlx's cache (``~/.cache/demucs-mlx``, 
 NORM_EPS = 1e-8
 #: The model that has one specialist sub-model per stem (single-stem runs are faster).
 SINGLE_STEM_MODEL = "htdemucs_ft"
+#: The rate every demucs model runs at.
+SAMPLE_RATE = 44100
 
 
 def load(**_):
@@ -37,14 +40,18 @@ def load(**_):
 
 
 def _separator(state, model, stem):
-    """The cached separator for ``(model, stem)``, replacing (and freeing) any other."""
+    """The cached separator for ``(model, stem)``, replacing (and freeing) any other.
+
+    The state names a separator only once it is built: a failed load leaves no
+    stale key behind, so the next request tries again.
+    """
     from demucs_mlx import Separator
 
     key = (model, stem)
     if state["key"] != key:
-        state["separator"] = None  # free the previous model's weights first
-        state["separator"] = Separator(model=model, stem=stem)
-        state["key"] = key
+        state["key"] = state["separator"] = None  # free the previous model first
+        separator = Separator(model=model, stem=stem)
+        state["key"], state["separator"] = key, separator
     return state["separator"]
 
 
@@ -64,13 +71,15 @@ def separate(
     """Separate the mix in ``mix`` (a ``.npy`` path); write ``<stem>.npy`` into ``out_dir``.
 
     Returns:
-        ``{"stems": {name: path}, "sr": rate, "sources": the model's stems, "model": model}``; only
-        ``sources`` (default: all) are written.
+        ``{"stems": {name: path}, "sr": rate, "sources": the model's stems,
+        "model": model}``; only ``sources`` (default: all) are written, in that order.
     """
     import os
 
     import numpy as np
 
+    if sr != SAMPLE_RATE:
+        raise ValueError(f"the mix must be at {SAMPLE_RATE} Hz, not {sr}")
     stem = (
         sources[0]
         if model == SINGLE_STEM_MODEL and sources is not None and len(sources) == 1
@@ -81,9 +90,11 @@ def separate(
         raise ValueError(
             f"{model} runs at {separator.samplerate} Hz; the mix is at {sr}"
         )
-    separator.update_parameter(
-        shifts=shifts, overlap=overlap, segment=segment, seed=seed
-    )
+    separator.update_parameter(shifts=shifts, overlap=overlap)
+    # update_parameter ignores None: set these directly, so a None here does not
+    # keep the previous request's value
+    separator.segment = None if segment is None else float(segment)
+    separator.seed = None if seed is None else int(seed)
     names = list(separator.model.sources)
     keep = names if sources is None else list(sources)
     if unknown := set(keep) - set(names):
@@ -96,10 +107,8 @@ def separate(
     paths = {}
     for name in keep:
         path = os.path.join(out_dir, f"{name}.npy")
-        stem_audio = np.asarray(stems[name], dtype=np.float32) * scale + offset / len(
-            names
-        )
-        np.save(path, stem_audio)
+        stem_audio = np.asarray(stems[name], dtype=np.float32) * scale
+        np.save(path, stem_audio + offset / len(names))
         paths[name] = path
     return {
         "stems": paths,

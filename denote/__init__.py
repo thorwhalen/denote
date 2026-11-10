@@ -136,9 +136,16 @@ def separate(audio, *, sr=None, backend=None, **kwargs):
     Args:
         audio: File path (str/Path) or numpy array.
         sr: Sample rate (required when audio is an array).
-        backend: Backend name. Defaults to 'torchaudio_hdemucs'.
-        **kwargs: Backend-specific parameters (segment_s, overlap_s, device,
-            bundle, sources).
+        backend: Backend name. Defaults to 'torchaudio_hdemucs'. 'demucs_mlx' and
+            'roformer' run in their own environment (see ``denote.isolated``).
+        **kwargs: Backend-specific parameters. All take ``sources`` (stem names
+            to keep, in that order). torchaudio_hdemucs: segment_s, overlap_s,
+            device, bundle. demucs_mlx: model ('htdemucs', 'htdemucs_ft',
+            'htdemucs_6s'), shifts, overlap, seed, build_env. roformer: model (a
+            checkpoint file name), build_env. ``build_env=True`` builds a missing
+            environment instead of raising ``denote.isolated.EnvNotBuilt``; the
+            worker then keeps the model in memory until
+            ``denote.services[backend].close()`` or exit.
 
     Returns:
         SeparationResult with .stems ({name: (channels, frames)}), .sr, and
