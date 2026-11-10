@@ -32,6 +32,8 @@ denote/
 ├── base.py                  # Result dataclasses, AudioInput type, task enums
 ├── keys.py                  # Key profiles + key_from_chroma (Krumhansl-Schmuckler)
 ├── registry.py              # Backend discovery, registration, lazy loading
+├── isolated.py              # Backends in their own environment (ps.isolated)
+├── workers/                 # Worker files run inside those environments
 ├── services.py              # ServiceCollection, ServiceHandle, SliceMapping
 ├── translation.py           # Parameter normalization and validation
 ├── util.py                  # Audio loading, format conversion helpers
@@ -198,6 +200,27 @@ BACKEND_CONFIG = {
     },
 }
 ```
+
+## Backends in Their Own Environment (isolated.py, workers/)
+
+A backend whose dependencies cannot share denote's environment (a pinned MLX, a newer torch) runs its model in a separate Python environment, through `ps.isolated`:
+
+- Its `BACKEND_CONFIG` adds `isolated_env`: `requirements` (pinned, `uv pip install` arguments), `python`, and a `size_hint` for messages. `denote.isolated.env_spec(config)` turns it into a `ps.isolated.EnvSpec`; a changed spec makes the environment stale (rebuilt from scratch by the next build).
+- Environments live in `$DENOTE_DATA_DIR/envs/<backend>` (default `~/.local/share/denote/envs/<backend>`). Building is explicit: `python -m denote.isolated build <backend>`, `denote.isolated.build_env(name)`, or `build_env=True` on a call. A missing or stale environment raises `EnvNotBuilt`, whose message is the build command.
+- The model code is a worker file, `denote/workers/<backend>_worker.py`: a plain module importing nothing from denote, with `load(**init) -> state` and `separate(state, **request) -> dict`. `ps.isolated.Worker` runs it with the environment's interpreter and keeps it alive (the model loads once); requests and replies are JSON lines.
+- Audio crosses as `.npy` files in a temporary folder (`separate_in_worker`), removed after each call.
+- The host side is `IsolatedSeparator`: it translates parameters, checks them before any environment is touched (`check`), resamples and makes stereo, and builds the `SeparationResult`. A backend's `adapter.py` subclasses it.
+
+```python
+BACKEND_CONFIG = {
+    "name": "demucs_mlx",
+    "isolated_env": {"requirements": ["demucs-mlx==1.6.1", "certifi"], "python": "3.12"},
+    "param_map": {..., "build_env": {"native_name": "build_env", "default": False}},
+    ...
+}
+```
+
+Tests load the worker files in-process against fake upstream modules (no environment, no weights); one test runs a worker file in a real `ps.isolated.Worker` subprocess with a fake library on its path.
 
 ## Service Layer (services.py)
 

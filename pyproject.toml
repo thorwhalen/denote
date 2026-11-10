@@ -25,6 +25,8 @@ dependencies = [
     # The floor forces a numba wheel that actually installs, letting the resolver
     # pick a compatible (slightly older) numpy instead.
     "numba>=0.59",
+    # denote.isolated: backends that run in their own environment (stdlib only)
+    "ps>=0.1.15",
 ]
 
 [project.urls]

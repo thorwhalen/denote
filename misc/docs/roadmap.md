@@ -29,7 +29,8 @@ Priority backends (permissive licenses, pip-installable, well-maintained):
 - [ ] `madmom_beats` — RNN+DBN beat tracking
 - [x] `beat_this` — SOTA beat and downbeat tracking (MIT)
 - [x] `torchaudio_hdemucs` — Source separation via torchaudio's Hybrid Demucs bundle (no `demucs` package needed)
-- [ ] `demucs` — Source separation with the `demucs` package's newer models (htdemucs)
+- [x] `demucs_mlx` — HTDemucs (htdemucs, htdemucs_ft, htdemucs_6s) on MLX, in its own environment (`denote.isolated`)
+- [x] `roformer` — RoFormer checkpoints via audio-separator, in its own environment
 - [x] `weights_license` + `commercial_use` on every backend, `denote.backend_table()`
 
 ## Phase 4: Advanced Features (v0.0.4)

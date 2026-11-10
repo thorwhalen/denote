@@ -4,7 +4,7 @@ Portal and facade for audio-to-symbol tools (MIDI, chords, pitch from audio).
 
 ## Project Overview
 
-Denote wraps audio analysis backends (shipped today: Basic Pitch, torchcrepe, SwiftF0, PESTO, librosa pyin/beats/key, Beat This!, torchaudio Hybrid Demucs; more planned - see the roadmap in misc/docs)
+Denote wraps audio analysis backends (shipped today: Basic Pitch, torchcrepe, SwiftF0, PESTO, librosa pyin/beats/key, Beat This!, torchaudio Hybrid Demucs, and demucs-mlx and RoFormer (audio-separator) in their own environments; more planned - see the roadmap in misc/docs)
 behind a unified Python facade. Each backend is an optional dependency; only
 `numpy` and `librosa` are required. The architecture follows arioso's pattern:
 registry → services → adapters, with task-first organization.
@@ -33,7 +33,9 @@ See `misc/docs/docs_guide.md` for the full docs index. Key docs:
 - `denote/services.py` — ServiceCollection, ServiceHandle (3-tier access)
 - `denote/translation.py` — Parameter normalization and validation
 - `denote/util.py` — Audio loading, format conversion
-- `denote/backends/` — One subpackage per backend (config.py + adapter.py + AI_CONTEXT.md)
+- `denote/isolated.py` — Backends that run in their own Python environment (`ps.isolated`): env location (`DENOTE_DATA_DIR`), `EnvNotBuilt`, `build_env()`, `python -m denote.isolated build <backend>`, `IsolatedSeparator` (host side)
+- `denote/workers/` — Worker files (`<backend>_worker.py`) loaded standalone in a backend's environment; they import nothing from denote
+- `denote/backends/` — One subpackage per backend (config.py + adapter.py + AI_CONTEXT.md); an isolated backend's config adds `isolated_env` (pinned requirements, Python)
 - `tests/` — Core tests + per-backend conditional tests
 
 ## Commands
@@ -52,7 +54,7 @@ pytest -k "not slow"  # skip integration tests
 - Result dataclasses always have a `.raw` field for backend-specific output
 - Backends are lazy-imported; never import a backend at module level
 - Each backend subpackage must have `config.py` with `BACKEND_CONFIG` dict, including `weights_license` and `commercial_use` (one of `denote.base.COMMERCIAL_USE_VALUES`), with the licence's source URL in a comment; `tests/test_backend_table.py` enforces both fields
-- Tests that require a backend use `pytest.importorskip()`
+- Tests that require a backend use `pytest.importorskip()`; isolated backends' worker files are tested in-process against fake upstream modules, and real-environment tests run only with `DENOTE_TEST_REAL_ENVS=1` and the environment built
 
 ## Architecture Patterns
 
