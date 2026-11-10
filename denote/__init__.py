@@ -12,6 +12,7 @@ Simple usage::
 
     denote.list_backends()                          # see what's available
     denote.list_backends('pitch')                   # backends for a task
+    denote.backend_table()                          # tasks + weights licence per backend
 
 Service-level access::
 
@@ -33,6 +34,7 @@ from denote.base import (
     SeparationResult,
     KeyResult,
     TASKS,
+    COMMERCIAL_USE_VALUES,
 )
 from denote.registry import (
     list_backends,
@@ -47,6 +49,32 @@ from denote.keys import key_from_chroma, KEY_PROFILES
 
 # Lazy singleton for service-level access
 services = ServiceCollection()
+
+#: The config fields :func:`backend_table` reports, in column order.
+BACKEND_TABLE_FIELDS = ("name", "tasks", "license", "weights_license", "commercial_use")
+
+
+def backend_table(task=None, *, fields=BACKEND_TABLE_FIELDS) -> list:
+    """One row per backend: its tasks, code licence, weights licence and commercial use.
+
+    Reads the backends' configs only, so no adapter (and no optional dependency)
+    is loaded. ``commercial_use`` is one of :data:`COMMERCIAL_USE_VALUES`.
+
+    Args:
+        task: If set, only backends for this task ('pitch', 'beats', ...).
+        fields: The config keys each row carries (a missing key reads ``None``).
+
+    Returns:
+        A list of dicts, one per backend (sorted by name), keyed by ``fields``.
+
+    Example::
+
+        free = [r["name"] for r in denote.backend_table("pitch") if r["commercial_use"] == "yes"]
+    """
+    return [
+        {field: get_config(name).get(field) for field in fields}
+        for name in list_backends(task)
+    ]
 
 
 def transcribe(audio, *, sr=None, backend=None, **kwargs):

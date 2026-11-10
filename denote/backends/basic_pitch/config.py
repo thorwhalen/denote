@@ -6,6 +6,10 @@ BACKEND_CONFIG = {
     "pip_install": "basic-pitch>=0.3 onnxruntime",
     "import_name": "basic_pitch",
     "license": "Apache-2.0",
+    # The model ships inside the package under the repo's licence:
+    # https://github.com/spotify/basic-pitch/blob/main/LICENSE
+    "weights_license": "Apache-2.0",
+    "commercial_use": "yes",
     "tasks": ["transcribe"],
     "default_for": ["transcribe"],
     "supports_realtime": False,

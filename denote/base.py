@@ -142,3 +142,12 @@ TASKS = {
     "separate": "Source separation",
     "key": "Key (tonic + mode) estimation",
 }
+
+#: What a backend's ``commercial_use`` config field may say, about using its model
+#: weights (and so its output) commercially: the weights' licence allows it
+#: (``"yes"``), forbids it (``"no"``), allows it with obligations beyond attribution,
+#: such as LGPL copyleft on redistributed weights or a use restriction
+#: (``"conditional"``), or the terms are not settled (``"unclear"``: the sources
+#: disagree or say nothing). A backend with no learned weights reads ``"yes"`` when
+#: its code licence is permissive. Its ``weights_license`` field names the licence.
+COMMERCIAL_USE_VALUES = ("yes", "no", "conditional", "unclear")

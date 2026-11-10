@@ -4,14 +4,14 @@ Portal and facade for audio-to-symbol tools (MIDI, chords, pitch from audio).
 
 ## Project Overview
 
-Denote wraps audio analysis backends (shipped today: Basic Pitch, torchcrepe, librosa pyin/beats/key, torchaudio Hybrid Demucs; more planned - see the roadmap in misc/docs)
+Denote wraps audio analysis backends (shipped today: Basic Pitch, torchcrepe, SwiftF0, PESTO, librosa pyin/beats/key, Beat This!, torchaudio Hybrid Demucs; more planned - see the roadmap in misc/docs)
 behind a unified Python facade. Each backend is an optional dependency; only
 `numpy` and `librosa` are required. The architecture follows arioso's pattern:
 registry → services → adapters, with task-first organization.
 
 ## Tech Stack
 
-Python, librosa, numpy. Optional: basic-pitch, torchcrepe, pesto-pitch, madmom,
+Python, librosa, numpy. Optional: basic-pitch, torchcrepe, swift-f0, pesto-pitch, madmom,
 autochord, beat-this, demucs, pretty-midi.
 
 ## Documentation
@@ -24,7 +24,7 @@ See `misc/docs/docs_guide.md` for the full docs index. Key docs:
 
 ## Module Map
 
-- `denote/__init__.py` — Top-level facade: `transcribe()`, `get_chords()`, `get_pitch()`, `get_beats()`, `separate()`, `get_key()`
+- `denote/__init__.py` — Top-level facade: `transcribe()`, `get_chords()`, `get_pitch()`, `get_beats()`, `separate()`, `get_key()`, `backend_table()` (licences per backend, configs only)
 - `denote/align.py` — `align_score()` / `align_audio()`: chroma DTW time maps; `align_chroma()` for precomputed features
 - `denote/compare.py` — `compare_audio()`: chroma + timbre distances on one alignment, metrics as a registry
 - `denote/keys.py` — Key profiles (Krumhansl-Kessler, Temperley), `key_from_chroma()` / `key_scores()` for precomputed chroma, key-name helpers
@@ -51,7 +51,7 @@ pytest -k "not slow"  # skip integration tests
 - All time values in **seconds** (never frames, ms, or samples)
 - Result dataclasses always have a `.raw` field for backend-specific output
 - Backends are lazy-imported; never import a backend at module level
-- Each backend subpackage must have `config.py` with `BACKEND_CONFIG` dict
+- Each backend subpackage must have `config.py` with `BACKEND_CONFIG` dict, including `weights_license` and `commercial_use` (one of `denote.base.COMMERCIAL_USE_VALUES`), with the licence's source URL in a comment; `tests/test_backend_table.py` enforces both fields
 - Tests that require a backend use `pytest.importorskip()`
 
 ## Architecture Patterns

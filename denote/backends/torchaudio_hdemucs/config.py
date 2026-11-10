@@ -5,7 +5,14 @@ BACKEND_CONFIG = {
     "display_name": "Hybrid Demucs (torchaudio)",
     "pip_install": "torch torchaudio",
     "import_name": "torchaudio",
-    "license": "BSD-2-Clause (torchaudio); check the pretrained weights' terms",
+    "license": "BSD-2-Clause (torchaudio)",
+    # torchaudio's bundle page states no licence for these weights
+    # (https://docs.pytorch.org/audio/stable/generated/torchaudio.pipelines.HDEMUCS_HIGH_MUSDB_PLUS.html);
+    # they were trained on MUSDB-HQ plus 150 songs of Meta's internal data, and
+    # statements about the Demucs-family weights conflict (MIT vs CC-BY-NC).
+    # Recorded as unclear until that is settled (thorwhalen/denote#13).
+    "weights_license": "unstated (Demucs-family weights: MIT and CC-BY-NC claims conflict)",
+    "commercial_use": "unclear",
     "tasks": ["separate"],
     "default_for": ["separate"],
     "supports_realtime": False,

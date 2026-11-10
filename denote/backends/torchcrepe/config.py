@@ -6,6 +6,11 @@ BACKEND_CONFIG = {
     "pip_install": "torchcrepe>=0.0.20",
     "import_name": "torchcrepe",
     "license": "MIT",
+    # The weights ship inside the package (MIT), converted from CREPE's (MIT):
+    # https://github.com/maxrmorrison/torchcrepe/blob/master/LICENSE
+    # https://github.com/marl/crepe/blob/master/LICENSE
+    "weights_license": "MIT",
+    "commercial_use": "yes",
     "tasks": ["pitch"],
     "default_for": ["pitch"],
     "supports_realtime": False,
