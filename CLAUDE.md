@@ -4,7 +4,7 @@ Portal and facade for audio-to-symbol tools (MIDI, chords, pitch from audio).
 
 ## Project Overview
 
-Denote wraps audio analysis backends (4 shipped today: Basic Pitch, torchcrepe, librosa pyin/beats; more planned - see the roadmap in misc/docs)
+Denote wraps audio analysis backends (shipped today: Basic Pitch, torchcrepe, librosa pyin/beats/key, torchaudio Hybrid Demucs; more planned - see the roadmap in misc/docs)
 behind a unified Python facade. Each backend is an optional dependency; only
 `numpy` and `librosa` are required. The architecture follows arioso's pattern:
 registry → services → adapters, with task-first organization.
@@ -24,10 +24,11 @@ See `misc/docs/docs_guide.md` for the full docs index. Key docs:
 
 ## Module Map
 
-- `denote/__init__.py` — Top-level facade: `transcribe()`, `get_chords()`, `get_pitch()`, `get_beats()`, `separate()`
+- `denote/__init__.py` — Top-level facade: `transcribe()`, `get_chords()`, `get_pitch()`, `get_beats()`, `separate()`, `get_key()`
 - `denote/align.py` — `align_score()` / `align_audio()`: chroma DTW time maps; `align_chroma()` for precomputed features
 - `denote/compare.py` — `compare_audio()`: chroma + timbre distances on one alignment, metrics as a registry
-- `denote/base.py` — Result dataclasses, AudioInput type, NoteEvent
+- `denote/keys.py` — Key profiles (Krumhansl-Kessler, Temperley), `key_from_chroma()` / `key_scores()` for precomputed chroma, key-name helpers
+- `denote/base.py` — Result dataclasses (incl. `KeyResult`), AudioInput type, NoteEvent
 - `denote/registry.py` — Backend discovery, registration, lazy loading
 - `denote/services.py` — ServiceCollection, ServiceHandle (3-tier access)
 - `denote/translation.py` — Parameter normalization and validation

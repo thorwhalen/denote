@@ -60,3 +60,4 @@ def test_tasks_dict():
     assert 'pitch' in TASKS
     assert 'chords' in TASKS
     assert 'beats' in TASKS
+    assert 'key' in TASKS

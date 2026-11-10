@@ -39,7 +39,8 @@ Priority backends (permissive licenses, pip-installable, well-maintained):
 
 ## Phase 5: Higher-Level Analysis (v0.1.0)
 
-- [ ] Key detection (via Essentia or madmom, optional)
+- [x] Key detection: `get_key` with the `librosa_key` backend (Krumhansl-Schmuckler over mean chroma, Krumhansl-Kessler or Temperley profiles)
+- [ ] Key detection with a learned model (e.g. a CNN key classifier) and local (windowed) keys
 - [ ] Structural segmentation (via allin1)
 - [ ] Lead sheet generation pipeline (melody + chords + lyrics)
 - [ ] Roman numeral analysis pipeline (chords + key → music21)

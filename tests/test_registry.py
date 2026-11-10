@@ -65,6 +65,12 @@ def test_get_default_backend_beats():
     assert default == 'librosa_beats'
 
 
+def test_get_default_backend_key():
+    _discover_backends()
+    assert 'librosa_key' in list_backends('key')
+    assert get_default_backend('key') == 'librosa_key'
+
+
 def test_get_config():
     _discover_backends()
     config = get_config('librosa_pyin')
