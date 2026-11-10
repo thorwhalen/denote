@@ -6,6 +6,25 @@ from pathlib import Path
 
 import numpy as np
 
+#: Sample rate audio is resampled to before chroma extraction. librosa's CQT chroma
+#: needs more than about 8.2 kHz (its top wavelets exceed Nyquist below that), so
+#: every chroma path in denote (align, compare, get_key) loads at this rate.
+DFLT_AUDIO_SR = 22050
+#: Hop between chroma frames, in samples (librosa's default).
+DFLT_CHROMA_HOP = 512
+
+
+def cqt_chroma(y: np.ndarray, sr: int, *, hop_length: int = DFLT_CHROMA_HOP):
+    """Constant-Q chroma ``(12, frames)`` of a mono signal, as librosa returns it.
+
+    The one CQT chroma call denote makes, shared by ``align`` and ``get_key``.
+    Load the audio at ``DFLT_AUDIO_SR`` first (``load_audio(..., target_sr=...)``):
+    below about 8.2 kHz librosa refuses the transform.
+    """
+    import librosa
+
+    return librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=hop_length)
+
 
 def load_audio(
     audio: Union[str, Path, np.ndarray],

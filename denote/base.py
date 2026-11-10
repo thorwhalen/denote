@@ -109,8 +109,8 @@ class KeyResult:
 
     @property
     def ranked(self) -> List[Tuple[str, float]]:
-        """``[(key, score), ...]`` for every candidate key, best first."""
-        return sorted(self.scores.items(), key=lambda kv: -kv[1])
+        """``[(key, score), ...]`` for every candidate key, best first (``scores``' order)."""
+        return list(self.scores.items())
 
     @property
     def runner_up(self) -> str:
@@ -120,10 +120,17 @@ class KeyResult:
 
     @property
     def relative(self) -> str:
-        """The relative key of the estimate (C major -> A minor), the usual confusion."""
+        """The relative key of the estimate (C major -> A minor); ``""`` if none applies.
+
+        Only major and minor have a relative key here; a backend reporting another
+        mode (dorian, ...) gets ``""``.
+        """
         from denote.keys import relative_key
 
-        return relative_key(self.key)
+        try:
+            return relative_key(self.key)
+        except ValueError:
+            return ""
 
 
 # Supported task identifiers

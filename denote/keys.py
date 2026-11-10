@@ -92,23 +92,40 @@ def key_name(tonic_pc: int, mode: str) -> str:
     return f"{TONIC_NAMES[mode][tonic_pc % 12]} {mode}"
 
 
-def parse_key(name: str) -> Tuple[int, str]:
-    """``(tonic_pc, mode)`` from a name like ``"Eb major"``, ``"c# minor"`` or ``"Am"``.
+_MODE_WORDS = {"major": "major", "maj": "major", "minor": "minor", "min": "minor"}
+_MODE_SUFFIXES = (("maj", "major"), ("min", "minor"), ("m", "minor"))
 
-    >>> parse_key("Eb major"), parse_key("c# minor"), parse_key("Am"), parse_key("Bb")
-    ((3, 'major'), (1, 'minor'), (9, 'minor'), (10, 'major'))
+
+def parse_key(name: str) -> Tuple[int, str]:
+    """``(tonic_pc, mode)`` from a key name.
+
+    Accepted: ``"Eb major"``, ``"c# minor"``, ``"A min"``, ``"Am"``, ``"Amin"``,
+    ``"Amaj"`` and a bare uppercase tonic (``"Bb"``, major). A bare *lowercase*
+    tonic (``"a"``) is rejected, because some conventions read it as minor; say
+    ``"a minor"`` or ``"am"``.
+
+    >>> parse_key("Eb major"), parse_key("Am"), parse_key("Bbmaj")
+    ((3, 'major'), (9, 'minor'), (10, 'major'))
     """
     text = name.strip()
     parts = text.split()
     if len(parts) == 2:
-        tonic, mode = parts[0], parts[1].lower()
-    elif len(parts) == 1 and text.endswith("m") and len(text) > 1:
-        tonic, mode = text[:-1], "minor"
+        tonic, mode = parts[0], _MODE_WORDS.get(parts[1].lower(), "")
     elif len(parts) == 1:
-        tonic, mode = text, "major"
+        tonic, mode = text, ""
+        for suffix, suffix_mode in _MODE_SUFFIXES:
+            if len(text) > len(suffix) and text.endswith(suffix):
+                tonic, mode = text[: -len(suffix)], suffix_mode
+                break
+        if not mode:
+            if not tonic[:1].isupper():
+                raise ValueError(
+                    f"ambiguous key name {name!r}: a bare lowercase tonic can mean "
+                    "minor; write e.g. 'a minor' or 'A major'"
+                )
+            mode = "major"
     else:
         raise ValueError(f"not a key name: {name!r}")
-    mode = {"maj": "major", "min": "minor"}.get(mode, mode)
     letter = tonic[:1].upper()
     if letter not in _LETTER_PC or mode not in MODES:
         raise ValueError(f"not a key name: {name!r}")
@@ -148,14 +165,39 @@ def resolve_profile(profile: ProfileSpec) -> KeyProfile:
 
 
 def _profile_label(profile: ProfileSpec) -> str:
-    return profile if isinstance(profile, str) else "custom"
+    """The name a profile is registered under, else its ``source``, else "custom"."""
+    if isinstance(profile, str):
+        return profile
+    for name, known in KEY_PROFILES.items():
+        if profile is known or (
+            isinstance(profile, KeyProfile) and tuple(profile[:2]) == tuple(known[:2])
+        ):
+            return name
+    return getattr(profile, "source", "") or "custom"
 
 
-def pitch_class_vector(chroma) -> np.ndarray:
-    """A ``(12,)`` vector: ``chroma`` itself, or its mean over frames if ``(12, frames)``."""
+#: A vector whose spread is below this fraction of its largest value is flat.
+FLAT_RTOL = 1e-6
+
+
+def pitch_class_vector(chroma, *, weights=None) -> np.ndarray:
+    """A ``(12,)`` vector: ``chroma`` itself, or its mean over frames if ``(12, frames)``.
+
+    ``weights`` (one non-negative number per frame) makes it a weighted mean, e.g.
+    by frame energy so quiet frames count less.
+    """
     chroma = np.asarray(chroma, dtype=float)
     if chroma.ndim == 2 and chroma.shape[0] == 12:
-        chroma = chroma.mean(axis=1)
+        if weights is None or np.sum(weights) <= 0:
+            chroma = chroma.mean(axis=1)
+        else:
+            weights = np.asarray(weights, dtype=float)
+            if weights.shape != (chroma.shape[1],):
+                raise ValueError(
+                    f"weights must have one value per frame ({chroma.shape[1]}), "
+                    f"got shape {weights.shape}"
+                )
+            chroma = chroma @ weights / weights.sum()
     if chroma.shape != (12,):
         raise ValueError(
             f"chroma must have shape (12,) or (12, frames), got {np.shape(chroma)}"
@@ -166,15 +208,18 @@ def pitch_class_vector(chroma) -> np.ndarray:
 def key_scores(chroma, *, profile: ProfileSpec = DEFAULT_PROFILE) -> Dict[str, float]:
     """``{key name: Pearson correlation}`` for all 24 keys, best first.
 
-    Raises ``ValueError`` when the vector is flat (silence, or no pitched content),
-    since a correlation with a constant is undefined.
-
-    >>> scores = key_scores(KEY_PROFILES["krumhansl"].minor)
-    >>> list(scores)[:2], len(scores)
-    (['C minor', 'Eb major'], 24)
+    Raises ``ValueError`` when the vector is flat to within ``FLAT_RTOL`` (silence,
+    or no pitched content), since a correlation with a constant is undefined.
+    Level gating (very quiet or very short audio) is the audio adapter's job:
+    per-frame chroma normalization makes even faint noise look pitched here.
     """
     vector = pitch_class_vector(chroma)
-    if not np.all(np.isfinite(vector)) or np.ptp(vector) == 0:
+    scale = np.max(np.abs(vector)) if vector.size else 0.0
+    if (
+        not np.all(np.isfinite(vector))
+        or scale == 0
+        or np.ptp(vector) <= FLAT_RTOL * scale
+    ):
         raise ValueError(
             "the pitch-class vector is flat (silence or no pitched content): "
             "no key can be estimated"
@@ -192,7 +237,11 @@ def key_scores(chroma, *, profile: ProfileSpec = DEFAULT_PROFILE) -> Dict[str, f
 
 
 def key_from_chroma(
-    chroma, *, profile: ProfileSpec = DEFAULT_PROFILE, backend: str = ""
+    chroma,
+    *,
+    profile: ProfileSpec = DEFAULT_PROFILE,
+    weights=None,
+    backend: str = "",
 ) -> KeyResult:
     """The best of the 24 keys for a chroma vector or chromagram.
 
@@ -201,6 +250,7 @@ def key_from_chroma(
             chromagram, averaged over frames.
         profile: A name in ``KEY_PROFILES`` (default ``"krumhansl"``), a
             ``KeyProfile``, or a ``(major, minor)`` pair of 12 weights each.
+        weights: Optional per-frame weights for the average (e.g. frame RMS).
         backend: Recorded on the result.
 
     Returns:
@@ -208,7 +258,7 @@ def key_from_chroma(
         gap to the runner-up, ``scores`` every key's correlation (best first), and
         ``raw["chroma"]`` the 12-bin vector correlated.
     """
-    vector = pitch_class_vector(chroma)
+    vector = pitch_class_vector(chroma, weights=weights)
     scores = key_scores(vector, profile=profile)
     (best, r1), (_, r2) = list(scores.items())[:2]
     tonic, mode = best.split(" ")

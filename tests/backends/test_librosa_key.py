@@ -110,21 +110,73 @@ def test_profile_and_chroma_seams():
     assert calls == [SR]
     assert result.profile == "temperley"
     assert result.key == "G major"
-    assert denote.get_key(y, sr=SR, chroma="stft").key == "G major"
 
 
-def test_unknown_chroma_name_raises():
+@pytest.mark.parametrize("chroma", ["stft", "cens"])
+def test_named_chroma_functions_are_really_used(chroma):
     import denote
 
+    y = render_progression(7, "major")
+    cqt = denote.get_key(y, sr=SR)
+    other = denote.get_key(y, sr=SR, chroma=chroma)
+    assert other.key == "G major"
+    assert not np.allclose(other.raw["chroma"], cqt.raw["chroma"])
+
+
+def test_unknown_names_raise():
+    import denote
+
+    y = render_progression(0, "major")
     with pytest.raises(ValueError, match="unknown chroma"):
-        denote.get_key(render_progression(0, "major"), sr=SR, chroma="nope")
+        denote.get_key(y, sr=SR, chroma="nope")
+    with pytest.raises(ValueError, match="weighting"):
+        denote.get_key(y, sr=SR, weighting="nope")
+
+
+def test_low_sample_rate_is_resampled():
+    """CQT chroma fails below ~8.2 kHz; the adapter resamples to audio_sr first."""
+    import denote
+
+    result = denote.get_key(render_progression(0, "major", sr=8000), sr=8000)
+    assert result.key == "C major"
+    assert result.raw["sr"] == 22050
 
 
 def test_silence_raises():
     import denote
 
-    with pytest.raises(ValueError, match="flat"):
-        denote.get_key(np.zeros(SR, dtype=np.float32), sr=SR)
+    with pytest.raises(ValueError, match="too quiet"):
+        denote.get_key(np.zeros(2 * SR, dtype=np.float32), sr=SR)
+
+
+def test_faint_noise_is_refused():
+    import denote
+
+    noise = 1e-6 * np.random.default_rng(0).standard_normal(3 * SR)
+    with pytest.raises(ValueError, match="min_rms"):
+        denote.get_key(noise.astype(np.float32), sr=SR)
+
+
+def test_too_short_is_refused():
+    import denote
+
+    y = render_progression(0, "major")
+    with pytest.raises(ValueError, match="min_duration_s"):
+        denote.get_key(y[:100], sr=SR)
+    # the thresholds are keywords: a caller can lower them knowingly
+    short = denote.get_key(y[: SR // 2], sr=SR, min_duration_s=0.25)
+    assert short.key == "C major"
+
+
+def test_energy_weighting_lets_loud_frames_dominate():
+    """A loud C major cadence, then a much longer quiet F# major one."""
+    import denote
+
+    loud = render_progression(0, "major")
+    quiet = 0.03 * np.concatenate([render_progression(6, "major")] * 4)
+    y = np.concatenate([loud, quiet])
+    assert denote.get_key(y, sr=SR).key == "C major"
+    assert denote.get_key(y, sr=SR, weighting="uniform").key == "Gb major"
 
 
 def test_get_key_from_file(tmp_path):
