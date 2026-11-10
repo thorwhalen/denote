@@ -29,12 +29,10 @@ from typing import Any, Optional, Union
 import numpy as np
 
 from denote.base import AudioInput
-from denote.util import load_audio
+from denote.util import DFLT_AUDIO_SR, cqt_chroma, load_audio
 
 #: Default analysis rate (frames per second) for both score and audio.
 DFLT_FRAME_RATE = 10.0
-#: Default sample rate the audio is resampled to before chroma extraction.
-DFLT_AUDIO_SR = 22050
 #: DTW steps (audio frames, score frames). Without (1, 0)/(0, 1) steps the path
 #: slope is bounded to [1/2, 2]: the performance may run at half to double the
 #: score's tempo (strictly inside that range at the end points), but cannot sit
@@ -146,11 +144,9 @@ def audio_chroma(
     audio_sr: int = DFLT_AUDIO_SR,
 ) -> np.ndarray:
     """L2-normalized 12 x frames constant-Q chroma of a recording."""
-    import librosa
-
     y, rate = load_audio(audio, sr=sr, mono=True, target_sr=audio_sr)
     hop = int(round(rate / frame_rate))
-    return _normalize(librosa.feature.chroma_cqt(y=y, sr=rate, hop_length=hop))
+    return _normalize(cqt_chroma(y, rate, hop_length=hop))
 
 
 def align_score(

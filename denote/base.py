@@ -84,6 +84,55 @@ class SeparationResult:
         return self.mono("vocals")
 
 
+@dataclass
+class KeyResult:
+    """Result of key estimation: tonic + mode, with every candidate key's score.
+
+    ``confidence`` is the winning key's score: for profile backends (``librosa_key``)
+    the Pearson correlation, in [-1, 1], between the recording's mean chroma and that
+    key's profile. It measures fit, and is not a probability. ``margin`` is the
+    winner's score minus the runner-up's; a small margin means two keys fit about
+    equally well, most often the relative key (C major / A minor share every pitch
+    class), the parallel key or a key a fifth away. Look at ``ranked`` before
+    trusting the winner when the margin is small.
+    """
+
+    key: str  # "C major", "F# minor"
+    tonic: str  # "C", "F#"
+    mode: str  # "major" or "minor"
+    confidence: float  # the winner's score (correlation for profile backends)
+    margin: float = 0.0  # winner's score minus runner-up's
+    scores: dict = field(default_factory=dict)  # key name -> score, best first
+    profile: str = ""  # key profile used, e.g. "krumhansl"
+    raw: Any = None
+    backend: str = ""
+
+    @property
+    def ranked(self) -> List[Tuple[str, float]]:
+        """``[(key, score), ...]`` for every candidate key, best first (``scores``' order)."""
+        return list(self.scores.items())
+
+    @property
+    def runner_up(self) -> str:
+        """The second-best key (``""`` when only one was scored)."""
+        ranked = self.ranked
+        return ranked[1][0] if len(ranked) > 1 else ""
+
+    @property
+    def relative(self) -> str:
+        """The relative key of the estimate (C major -> A minor); ``""`` if none applies.
+
+        Only major and minor have a relative key here; a backend reporting another
+        mode (dorian, ...) gets ``""``.
+        """
+        from denote.keys import relative_key
+
+        try:
+            return relative_key(self.key)
+        except ValueError:
+            return ""
+
+
 # Supported task identifiers
 TASKS = {
     "transcribe": "Audio to MIDI transcription",
@@ -91,4 +140,5 @@ TASKS = {
     "chords": "Chord recognition",
     "beats": "Beat and downbeat tracking",
     "separate": "Source separation",
+    "key": "Key (tonic + mode) estimation",
 }

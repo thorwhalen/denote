@@ -7,6 +7,7 @@ Simple usage::
     chords = denote.get_chords("song.wav")         # audio -> chord labels
     pitch = denote.get_pitch("vocal.wav")           # audio -> F0
     beats = denote.get_beats("song.wav")            # audio -> beat times
+    key = denote.get_key("song.wav")                # audio -> "A minor" + scores
     sync = denote.align_score("song.mid", "song.wav")  # score <-> recording time map
 
     denote.list_backends()                          # see what's available
@@ -30,6 +31,7 @@ from denote.base import (
     ChordResult,
     BeatResult,
     SeparationResult,
+    KeyResult,
     TASKS,
 )
 from denote.registry import (
@@ -41,6 +43,7 @@ from denote.registry import (
 from denote.services import ServiceCollection
 from denote.align import align_score, align_audio, align_chroma, ScoreAlignment
 from denote.compare import compare_audio, AudioComparison
+from denote.keys import key_from_chroma, KEY_PROFILES
 
 # Lazy singleton for service-level access
 services = ServiceCollection()
@@ -137,3 +140,29 @@ def get_beats(audio, *, sr=None, backend=None, **kwargs):
     backend = backend or get_default_backend("beats")
     handle = services[backend]
     return handle.get_beats(audio, sr=sr, **kwargs)
+
+
+def get_key(audio, *, sr=None, backend=None, **kwargs):
+    """Estimate the key (tonic + mode) of a recording.
+
+    Args:
+        audio: File path (str/Path) or numpy array.
+        sr: Sample rate (required when audio is an array).
+        backend: Backend name. Defaults to 'librosa_key'.
+        **kwargs: Backend-specific parameters (``profile``: 'krumhansl' default or
+            'temperley' or a (major, minor) pair; ``chroma``: 'cqt' default,
+            'stft', 'cens' or a callable (y, sr) -> (12, frames)).
+
+    Returns:
+        KeyResult with .key ("A minor"), .tonic, .mode, .confidence (the winner's
+        profile correlation, not a probability), .margin (lead over the runner-up),
+        .scores (all 24 keys, best first) and .relative.
+
+    Example::
+
+        k = denote.get_key("song.wav")
+        k.key, k.margin, k.ranked[:2]
+    """
+    backend = backend or get_default_backend("key")
+    handle = services[backend]
+    return handle.get_key(audio, sr=sr, **kwargs)

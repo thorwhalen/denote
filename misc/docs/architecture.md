@@ -30,6 +30,7 @@
 denote/
 ├── __init__.py              # Facade: transcribe(), get_chords(), get_pitch(), get_beats()
 ├── base.py                  # Result dataclasses, AudioInput type, task enums
+├── keys.py                  # Key profiles + key_from_chroma (Krumhansl-Schmuckler)
 ├── registry.py              # Backend discovery, registration, lazy loading
 ├── services.py              # ServiceCollection, ServiceHandle, SliceMapping
 ├── translation.py           # Parameter normalization and validation
@@ -51,6 +52,7 @@ denote/
 │   │   ├── ...
 │   ├── librosa_pyin/
 │   │   ├── ...
+│   ├── librosa_key/         # key: mean chroma x key profiles (denote/keys.py)
 │   ├── librosa_beats/
 │   │   ├── ...
 │   ├── pesto/
@@ -136,6 +138,7 @@ class Task:
     PITCH = "pitch"
     BEATS = "beats"
     SEPARATE = "separate"
+    KEY = "key"
 ```
 
 ## Registry System (registry.py)
