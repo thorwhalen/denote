@@ -1,0 +1,15 @@
+denote.backends.roformer.config
+===============================
+
+.. automodule:: denote.backends.roformer.config
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      ENV_LOCK
+      DFLT_CHECKPOINT
+      CHECKPOINTS
+      UNLISTED_CHECKPOINT
+   

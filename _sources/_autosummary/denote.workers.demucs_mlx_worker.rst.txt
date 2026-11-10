@@ -1,0 +1,21 @@
+denote.workers.demucs\_mlx\_worker
+==================================
+
+.. automodule:: denote.workers.demucs_mlx_worker
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      NORM_EPS
+      SINGLE_STEM_MODEL
+      SAMPLE_RATE
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      load
+      separate
+   

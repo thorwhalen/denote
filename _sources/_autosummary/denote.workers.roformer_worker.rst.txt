@@ -1,0 +1,24 @@
+denote.workers.roformer\_worker
+===============================
+
+.. automodule:: denote.workers.roformer_worker
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      STEM_IN_FILENAME
+      MIX_WAV
+      SAMPLE_RATE
+      NORMALIZATION_THRESHOLD
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      load
+      separate
+      stem_name
+      target_first
+   

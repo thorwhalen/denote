@@ -1,4 +1,4 @@
-> built 2026-11-10 10:34 UTC from 1aabce7 (main) · denote 0.0.11. Details: build_info.json
+> built 2026-11-10 11:33 UTC from 34460a9 (main) · denote 0.0.12. Details: build_info.json
 
 # index.html.md
 
@@ -85,21 +85,41 @@ denote.services.basic_pitch.adapter
 
 ## Supported Backends
 
-| Backend                            | Task               | Code licence   | Weights licence (commercial use)                              | Install                                  |
-|------------------------------------|--------------------|----------------|---------------------------------------------------------------|------------------------------------------|
-| Basic Pitch (Spotify)              | MIDI transcription | Apache 2.0     | Apache 2.0 (yes)                                              | `pip install denote[basic_pitch]`        |
-| torchcrepe                         | Pitch estimation   | MIT            | MIT (yes)                                                     | `pip install denote[torchcrepe]`         |
-| SwiftF0                            | Pitch estimation   | MIT            | MIT (yes)                                                     | `pip install denote[swift_f0]`           |
-| PESTO                              | Pitch estimation   | LGPL 3.0       | LGPL 3.0 (yes; redistributing the weights carries LGPL terms) | `pip install denote[pesto]`              |
-| librosa pYIN                       | Pitch estimation   | ISC            | no weights (yes)                                              | (included)                               |
-| Beat This!                         | Beats + downbeats  | MIT            | MIT (yes)                                                     | `pip install denote[beat_this]`          |
-| librosa beats                      | Beat tracking      | ISC            | no weights (yes)                                              | (included)                               |
-| librosa key (Krumhansl-Schmuckler) | Key estimation     | ISC            | no weights (yes)                                              | (included)                               |
-| Hybrid Demucs (torchaudio)         | Source separation  | BSD 2-Clause   | unstated; author says research use (unclear)                  | `pip install denote[torchaudio_hdemucs]` |
+| Backend                                   | Task                              | Code licence   | Weights licence (commercial use)                                             | Install                                                       |
+|-------------------------------------------|-----------------------------------|----------------|------------------------------------------------------------------------------|---------------------------------------------------------------|
+| Basic Pitch (Spotify)                     | MIDI transcription                | Apache 2.0     | Apache 2.0 (yes)                                                             | `pip install denote[basic_pitch]`                             |
+| torchcrepe                                | Pitch estimation                  | MIT            | MIT (yes)                                                                    | `pip install denote[torchcrepe]`                              |
+| SwiftF0                                   | Pitch estimation                  | MIT            | MIT (yes)                                                                    | `pip install denote[swift_f0]`                                |
+| PESTO                                     | Pitch estimation                  | LGPL 3.0       | LGPL 3.0 (yes; redistributing the weights carries LGPL terms)                | `pip install denote[pesto]`                                   |
+| librosa pYIN                              | Pitch estimation                  | ISC            | no weights (yes)                                                             | (included)                                                    |
+| Beat This!                                | Beats + downbeats                 | MIT            | MIT (yes)                                                                    | `pip install denote[beat_this]`                               |
+| librosa beats                             | Beat tracking                     | ISC            | no weights (yes)                                                             | (included)                                                    |
+| librosa key (Krumhansl-Schmuckler)        | Key estimation                    | ISC            | no weights (yes)                                                             | (included)                                                    |
+| Hybrid Demucs (torchaudio)                | Source separation                 | BSD 2-Clause   | unstated; author says research use (unclear)                                 | `pip install denote[torchaudio_hdemucs]`                      |
+| HTDemucs on MLX (`demucs_mlx`)            | Source separation (Apple silicon) | MIT            | unstated; converted from the same Demucs checkpoints (unclear)               | own environment: `python -m denote.isolated build demucs_mlx` |
+| RoFormer via audio-separator (`roformer`) | Source separation                 | MIT            | default checkpoint MIT (yes); other community checkpoints unstated (unclear) | own environment: `python -m denote.isolated build roformer`   |
 
 `denote.backend_table()` gives the same columns from the backends’ configs, where each licence’s source is cited.
 
-More backends coming: madmom, autochord, newer separators.
+More backends coming: madmom, autochord.
+
+### Backends in their own environment
+
+Some models pin dependencies that cannot share denote’s environment (`demucs-mlx` pins its MLX, `audio-separator` needs torch>=2.13 on Apple silicon). Those backends run their model in a separate Python environment that denote builds with [uv](https://docs.astral.sh/uv/) from pinned requirements (through [`ps.isolated`](https://github.com/thorwhalen/ps)), and talk to it through a long-lived worker process, so the model loads once:
+
+```bash
+python -m denote.isolated build demucs_mlx   # one-time
+python -m denote.isolated status             # which are built, and where
+```
+
+```python
+result = denote.separate("song.wav", backend="demucs_mlx")  # htdemucs on MLX
+result.stems  # {"drums", "bass", "other", "vocals"}
+vocals = denote.separate("song.wav", backend="roformer").vocals  # Mel-Band RoFormer
+denote.services["roformer"].close()  # free the worker's memory
+```
+
+Environments live in `~/.local/share/denote/envs/<backend>` (set `DENOTE_DATA_DIR` to move them). A missing one raises `denote.isolated.EnvNotBuilt` with the build command; pass `build_env=True` to build it on first use instead. Building needs `uv` on the `PATH`. Each environment is installed from a lock kept with its backend (`env.lock`, every package pinned), so it is reproducible; `python -m denote.isolated lock <backend>` re-resolves it. A backend’s worker keeps its model loaded (4.5 to 6 GB for these two) until `denote.services[<backend>].close()` or the end of the process.
 
 ## Plugin System
 
@@ -584,6 +604,66 @@ Configuration for the Beat This! beat and downbeat tracking backend.
 | [`config`](_autosummary/denote.backends.beat_this.config.html.md#module-denote.backends.beat_this.config)     | Configuration for the Beat This! beat and downbeat tracking backend. |
 
 
+# _autosummary/denote.backends.demucs_mlx.adapter.html.md
+
+# denote.backends.demucs_mlx.adapter
+
+Adapter for demucs-mlx: HTDemucs on MLX, in its own environment (`denote.isolated`).
+
+### Classes
+
+| [`Adapter`](_autosummary/denote.backends.demucs_mlx.adapter.html.md#denote.backends.demucs_mlx.adapter.Adapter)(config)   | HTDemucs (v4) on MLX: drums, bass, other, vocals (+ guitar, piano with htdemucs_6s).   |
+|--------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+
+### *class* denote.backends.demucs_mlx.adapter.Adapter(config)
+
+Bases: [`IsolatedSeparator`](_autosummary/denote.isolated.html.md#denote.isolated.IsolatedSeparator)
+
+HTDemucs (v4) on MLX: drums, bass, other, vocals (+ guitar, piano with htdemucs_6s).
+
+#### check(opts)
+
+Refuse bad options before any environment is touched (default: none).
+
+#### request(opts)
+
+The `separate` request’s options (besides `mix`, `out_dir`, `sr`).
+
+
+# _autosummary/denote.backends.demucs_mlx.config.html.md
+
+# denote.backends.demucs_mlx.config
+
+Configuration for the demucs-mlx (HTDemucs on MLX) separation backend.
+
+### Module Attributes
+
+| [`ENV_LOCK`](_autosummary/denote.backends.demucs_mlx.config.html.md#denote.backends.demucs_mlx.config.ENV_LOCK)   | Every package of the environment, pinned (`python -m denote.isolated lock demucs_mlx`).   |
+|-------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| [`MODELS`](_autosummary/denote.backends.demucs_mlx.config.html.md#denote.backends.demucs_mlx.config.MODELS)     | The models this backend runs, with their stems (in the model's order).                    |
+
+### denote.backends.demucs_mlx.config.ENV_LOCK *= PosixPath('/home/runner/work/denote/denote/denote/backends/demucs_mlx/env.lock')*
+
+Every package of the environment, pinned (`python -m denote.isolated lock demucs_mlx`).
+
+### denote.backends.demucs_mlx.config.MODELS *= {'htdemucs': ('drums', 'bass', 'other', 'vocals'), 'htdemucs_6s': ('drums', 'bass', 'other', 'vocals', 'guitar', 'piano'), 'htdemucs_ft': ('drums', 'bass', 'other', 'vocals')}*
+
+The models this backend runs, with their stems (in the model’s order).
+
+
+# _autosummary/denote.backends.demucs_mlx.html.md
+
+# denote.backends.demucs_mlx
+
+HTDemucs source separation on MLX (demucs-mlx), run in its own environment.
+
+### Modules
+
+| [`adapter`](_autosummary/denote.backends.demucs_mlx.adapter.html.md#module-denote.backends.demucs_mlx.adapter)   | Adapter for demucs-mlx: HTDemucs on MLX, in its own environment (`denote.isolated`).   |
+|------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| [`config`](_autosummary/denote.backends.demucs_mlx.config.html.md#module-denote.backends.demucs_mlx.config)     | Configuration for the demucs-mlx (HTDemucs on MLX) separation backend.                 |
+
+
 # _autosummary/denote.backends.html.md
 
 # denote.backends
@@ -592,16 +672,18 @@ Backend packages for denote. Each subpackage provides a config.py and adapter.py
 
 ### Modules
 
-| [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)               |                                                                            |
-|---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| [`beat_this`](_autosummary/denote.backends.beat_this.html.md#module-denote.backends.beat_this)                   |                                                                            |
-| [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats)           |                                                                            |
-| [`librosa_key`](_autosummary/denote.backends.librosa_key.html.md#module-denote.backends.librosa_key)               | librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma. |
-| [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)             |                                                                            |
-| [`pesto`](_autosummary/denote.backends.pesto.html.md#module-denote.backends.pesto)                           |                                                                            |
-| [`swift_f0`](_autosummary/denote.backends.swift_f0.html.md#module-denote.backends.swift_f0)                     |                                                                            |
-| [`torchaudio_hdemucs`](_autosummary/denote.backends.torchaudio_hdemucs.html.md#module-denote.backends.torchaudio_hdemucs) | torchaudio Hybrid Demucs source separation backend.                        |
-| [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)                 |                                                                            |
+| [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)               |                                                                             |
+|---------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| [`beat_this`](_autosummary/denote.backends.beat_this.html.md#module-denote.backends.beat_this)                   |                                                                             |
+| [`demucs_mlx`](_autosummary/denote.backends.demucs_mlx.html.md#module-denote.backends.demucs_mlx)                 | HTDemucs source separation on MLX (demucs-mlx), run in its own environment. |
+| [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats)           |                                                                             |
+| [`librosa_key`](_autosummary/denote.backends.librosa_key.html.md#module-denote.backends.librosa_key)               | librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma.  |
+| [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)             |                                                                             |
+| [`pesto`](_autosummary/denote.backends.pesto.html.md#module-denote.backends.pesto)                           |                                                                             |
+| [`roformer`](_autosummary/denote.backends.roformer.html.md#module-denote.backends.roformer)                     | RoFormer source separation (audio-separator), run in its own environment.   |
+| [`swift_f0`](_autosummary/denote.backends.swift_f0.html.md#module-denote.backends.swift_f0)                     |                                                                             |
+| [`torchaudio_hdemucs`](_autosummary/denote.backends.torchaudio_hdemucs.html.md#module-denote.backends.torchaudio_hdemucs) | torchaudio Hybrid Demucs source separation backend.                         |
+| [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)                 |                                                                             |
 
 
 # _autosummary/denote.backends.librosa_beats.adapter.html.md
@@ -863,6 +945,108 @@ Configuration for the PESTO pitch backend.
 | [`adapter`](_autosummary/denote.backends.pesto.adapter.html.md#module-denote.backends.pesto.adapter)   | Adapter for PESTO — self-supervised pitch estimation (Sony CSL).   |
 |-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
 | [`config`](_autosummary/denote.backends.pesto.config.html.md#module-denote.backends.pesto.config)     | Configuration for the PESTO pitch backend.                         |
+
+
+# _autosummary/denote.backends.roformer.adapter.html.md
+
+# denote.backends.roformer.adapter
+
+Adapter for RoFormer checkpoints via audio-separator, in its own environment.
+
+### Module Attributes
+
+| [`MODEL_DIR_ENVVAR`](_autosummary/denote.backends.roformer.adapter.html.md#denote.backends.roformer.adapter.MODEL_DIR_ENVVAR)   | audio-separator's own variable for its weights folder (it wins when set).   |
+|---------------------------------------------------------------------|-----------------------------------------------------------------------------|
+
+### Functions
+
+| [`checkpoint_license`](_autosummary/denote.backends.roformer.adapter.html.md#denote.backends.roformer.adapter.checkpoint_license)(model)   | `weights_license` and `commercial_use` of checkpoint `model`.   |
+|------------------------------------------------------------------------------|-----------------------------------------------------------------|
+
+### Classes
+
+| [`Adapter`](_autosummary/denote.backends.roformer.adapter.html.md#denote.backends.roformer.adapter.Adapter)(config)   | RoFormer separation: the default checkpoint gives 'vocals' and 'other'.   |
+|--------------------------------------------------------------------|---------------------------------------------------------------------------|
+
+### *class* denote.backends.roformer.adapter.Adapter(config)
+
+Bases: [`IsolatedSeparator`](_autosummary/denote.isolated.html.md#denote.isolated.IsolatedSeparator)
+
+RoFormer separation: the default checkpoint gives ‘vocals’ and ‘other’.
+
+#### separate(audio, , sr=None, \*\*kwargs)
+
+Separate a mix with a RoFormer checkpoint (see `IsolatedSeparator.separate`).
+
+`result.raw` carries the checkpoint’s `weights_license` and
+`commercial_use`: “unstated” / “unclear” for one whose card states none.
+
+#### worker_init()
+
+Keyword arguments of the worker’s `load`.
+
+### denote.backends.roformer.adapter.MODEL_DIR_ENVVAR *= 'AUDIO_SEPARATOR_MODEL_DIR'*
+
+audio-separator’s own variable for its weights folder (it wins when set).
+
+### denote.backends.roformer.adapter.checkpoint_license(model)
+
+`weights_license` and `commercial_use` of checkpoint `model`.
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+
+# _autosummary/denote.backends.roformer.config.html.md
+
+# denote.backends.roformer.config
+
+Configuration for the RoFormer separation backend (audio-separator).
+
+### Module Attributes
+
+| [`ENV_LOCK`](_autosummary/denote.backends.roformer.config.html.md#denote.backends.roformer.config.ENV_LOCK)            | Every package of the environment, pinned (`python -m denote.isolated lock roformer`).   |
+|----------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| [`DFLT_CHECKPOINT`](_autosummary/denote.backends.roformer.config.html.md#denote.backends.roformer.config.DFLT_CHECKPOINT)     | Kimberley Jensen's Mel-Band RoFormer vocals model.                                      |
+| [`CHECKPOINTS`](_autosummary/denote.backends.roformer.config.html.md#denote.backends.roformer.config.CHECKPOINTS)         | Weights licence per checkpoint, for checkpoints whose card states one.                  |
+| [`UNLISTED_CHECKPOINT`](_autosummary/denote.backends.roformer.config.html.md#denote.backends.roformer.config.UNLISTED_CHECKPOINT) | What is known of a community checkpoint whose card states no licence.                   |
+
+### denote.backends.roformer.config.CHECKPOINTS *= {'vocals_mel_band_roformer.ckpt': {'commercial_use': 'yes', 'sha256': '87201f4d31afb5bc79993230fc49446918425574db48c01c405e44f365c7559e', 'source': 'https://huggingface.co/KimberleyJSN/melbandroformer', 'weights_license': 'MIT'}}*
+
+Weights licence per checkpoint, for checkpoints whose card states one. Any other
+checkpoint is reported with `UNLISTED_CHECKPOINT`.
+
+### denote.backends.roformer.config.DFLT_CHECKPOINT *= 'vocals_mel_band_roformer.ckpt'*
+
+Kimberley Jensen’s Mel-Band RoFormer
+vocals model. audio-separator’s `vocals_mel_band_roformer.ckpt` is the file
+published at [https://huggingface.co/KimberleyJSN/melbandroformer](https://huggingface.co/KimberleyJSN/melbandroformer)
+(`MelBandRoformer.ckpt`, same SHA-256 below), whose model card states
+`license: mit`. (In UVR’s naming, “Kim Vocal 2” is a different, MDX-Net model.)
+
+* **Type:**
+  The checkpoint used when none is named
+
+### denote.backends.roformer.config.ENV_LOCK *= PosixPath('/home/runner/work/denote/denote/denote/backends/roformer/env.lock')*
+
+Every package of the environment, pinned (`python -m denote.isolated lock roformer`).
+
+### denote.backends.roformer.config.UNLISTED_CHECKPOINT *= {'commercial_use': 'unclear', 'weights_license': 'unstated'}*
+
+What is known of a community checkpoint whose card states no licence.
+
+
+# _autosummary/denote.backends.roformer.html.md
+
+# denote.backends.roformer
+
+RoFormer source separation (audio-separator), run in its own environment.
+
+### Modules
+
+| [`adapter`](_autosummary/denote.backends.roformer.adapter.html.md#module-denote.backends.roformer.adapter)   | Adapter for RoFormer checkpoints via audio-separator, in its own environment.   |
+|----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| [`config`](_autosummary/denote.backends.roformer.config.html.md#module-denote.backends.roformer.config)     | Configuration for the RoFormer separation backend (audio-separator).            |
 
 
 # _autosummary/denote.backends.swift_f0.adapter.html.md
@@ -1479,9 +1663,16 @@ Separate a mix into stems (drums, bass, other, vocals, …).
 * **Parameters:**
   * **audio** – File path (str/Path) or numpy array.
   * **sr** – Sample rate (required when audio is an array).
-  * **backend** – Backend name. Defaults to ‘torchaudio_hdemucs’.
-  * **\*\*kwargs** – Backend-specific parameters (segment_s, overlap_s, device,
-    bundle, sources).
+  * **backend** – Backend name. Defaults to ‘torchaudio_hdemucs’. ‘demucs_mlx’ and
+    ‘roformer’ run in their own environment (see `denote.isolated`).
+  * **\*\*kwargs** – Backend-specific parameters. All take `sources` (stem names
+    to keep, in that order). torchaudio_hdemucs: segment_s, overlap_s,
+    device, bundle. demucs_mlx: model (‘htdemucs’, ‘htdemucs_ft’,
+    ‘htdemucs_6s’), shifts, overlap, seed, build_env. roformer: model (a
+    checkpoint file name), build_env. `build_env=True` builds a missing
+    environment instead of raising `denote.isolated.EnvNotBuilt`; the
+    worker then keeps the model in memory until
+    `denote.services[backend].close()` or exit.
 * **Returns:**
   (channels, frames)}), .sr, and
   .vocals (mono).
@@ -1513,11 +1704,295 @@ Transcribe audio to MIDI.
 | [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
 | [`base`](_autosummary/denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
 | [`compare`](_autosummary/denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
+| [`isolated`](_autosummary/denote.isolated.html.md#module-denote.isolated)       | Backends that run in their own Python environment, through `ps.isolated`.                                                           |
 | [`keys`](_autosummary/denote.keys.html.md#module-denote.keys)               | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
 | [`registry`](_autosummary/denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                                                  |
 | [`services`](_autosummary/denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
 | [`translation`](_autosummary/denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                                                             |
 | [`util`](_autosummary/denote.util.html.md#module-denote.util)               | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |
+| [`workers`](_autosummary/denote.workers.html.md#module-denote.workers)         | Worker files: model code that runs in a backend's own environment (`denote.isolated`).                                              |
+
+
+# _autosummary/denote.isolated.html.md
+
+# denote.isolated
+
+Backends that run in their own Python environment, through `ps.isolated`.
+
+Some models cannot share an environment with denote (or with each other):
+`demucs-mlx` pins its own MLX, `audio-separator` needs a recent torch. Their
+backends declare an `isolated_env` in `BACKEND_CONFIG` (top-level requirements, a
+lock file resolved from them, and the Python version) and keep the model code in a
+**worker file**
+(`denote/workers/<backend>_worker.py`): a plain module, importing nothing from
+denote, that `ps.isolated.Worker` runs with the environment’s interpreter. Requests
+and replies are JSON lines; audio crosses as `.npy` files in a temporary folder.
+
+Where things live (`DENOTE_DATA_DIR` replaces the root):
+
+```default
+~/.local/share/denote/
+    envs/<backend>/      the backend's environment (built by uv)
+    models/<backend>/    weights a backend keeps itself (when its library has no
+                         cache of its own outside a temporary folder)
+```
+
+Nothing is built implicitly: a missing environment raises [`EnvNotBuilt`](_autosummary/denote.isolated.html.md#denote.isolated.EnvNotBuilt), whose
+message is the command that builds it (`python -m denote.isolated build <backend>`),
+unless the caller passes `build_env=True`.
+
+An environment is installed from its backend’s **lock** (`env.lock` next to its
+config: every package pinned, with platform markers, as `uv pip compile --universal`
+resolves the top-level requirements), so it is the same wherever and whenever it is
+built, and changing the lock changes the spec’s digest (the next build starts afresh).
+`python -m denote.isolated lock <backend>` re-resolves it.
+
+A worker keeps its model in memory (several GB for these models) until it is closed
+(`denote.services[<backend>].close()`) or the host process exits.
+
+```pycon
+>>> spec = env_spec({"name": "toy", "isolated_env": {"requirements": ["numpy==2.1.0"]}})
+>>> spec.name, spec.requirements
+('toy', ('numpy==2.1.0',))
+>>> build_command("toy")
+'python -m denote.isolated build toy'
+```
+
+### Module Attributes
+
+| [`DATA_DIR_ENVVAR`](_autosummary/denote.isolated.html.md#denote.isolated.DATA_DIR_ENVVAR)   | Environment variable naming denote's data root.                     |
+|--------------------------------------------------------------------|---------------------------------------------------------------------|
+| [`DFLT_DATA_DIR`](_autosummary/denote.isolated.html.md#denote.isolated.DFLT_DATA_DIR)     | The data root when `DENOTE_DATA_DIR` is not set.                    |
+| [`DFLT_ENV_PYTHON`](_autosummary/denote.isolated.html.md#denote.isolated.DFLT_ENV_PYTHON)   | Python of an isolated environment when its config names none.       |
+| [`WORKERS_DIR`](_autosummary/denote.isolated.html.md#denote.isolated.WORKERS_DIR)       | The folder holding the worker files.                                |
+| [`MIX_FILE`](_autosummary/denote.isolated.html.md#denote.isolated.MIX_FILE)          | The file a worker reads its input from, in the request's folder.    |
+| [`HOST_UV_VARS`](_autosummary/denote.isolated.html.md#denote.isolated.HOST_UV_VARS)      | uv settings holding the host's pins, cleared when resolving a lock. |
+
+### Functions
+
+| [`build_command`](_autosummary/denote.isolated.html.md#denote.isolated.build_command)(name)                        | The shell command that builds backend `name`'s environment.                         |
+|---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [`build_env`](_autosummary/denote.isolated.html.md#denote.isolated.build_env)(name, \*\*ensure_kwargs)         | Build backend `name`'s environment (no-op if built from this spec); its Python.     |
+| [`compile_lock`](_autosummary/denote.isolated.html.md#denote.isolated.compile_lock)(name, \*[, run])              | Re-resolve backend `name`'s lock from its top-level requirements; the lock's path.  |
+| [`data_dir`](_autosummary/denote.isolated.html.md#denote.isolated.data_dir)(\*parts)                          | `$DENOTE_DATA_DIR/<parts>` (default root `~/.local/share/denote`), not created.     |
+| [`env_dir`](_autosummary/denote.isolated.html.md#denote.isolated.env_dir)(name)                              | The folder of backend `name`'s environment (it may not exist).                      |
+| [`env_python`](_autosummary/denote.isolated.html.md#denote.isolated.env_python)(config, \*[, build])            | The interpreter of the backend's environment, building it only if `build`.          |
+| [`env_size_hint`](_autosummary/denote.isolated.html.md#denote.isolated.env_size_hint)(config)                      | The rough download size a config states for its environment.                        |
+| [`env_spec`](_autosummary/denote.isolated.html.md#denote.isolated.env_spec)(config)                           | The `ps.isolated.EnvSpec` of a backend config's `isolated_env`.                     |
+| [`is_env_ready`](_autosummary/denote.isolated.html.md#denote.isolated.is_env_ready)(config)                       | True if the backend's environment exists and was built from its current spec.       |
+| [`lock_command`](_autosummary/denote.isolated.html.md#denote.isolated.lock_command)(config)                       | The `uv pip compile` command that resolves a config's lock (requirements on stdin). |
+| [`lock_requirements`](_autosummary/denote.isolated.html.md#denote.isolated.lock_requirements)(text)                    | The requirement lines of a lock (`uv pip compile` output), comments dropped.        |
+| [`make_worker`](_autosummary/denote.isolated.html.md#denote.isolated.make_worker)(config, \*[, init, build])     | A `ps.isolated.Worker` running the backend's worker file in its environment.        |
+| [`separate_in_worker`](_autosummary/denote.isolated.html.md#denote.isolated.separate_in_worker)(call, mix, \*\*request) | Run a worker's `separate` on `mix` (`(channels, frames)`), return `(stems, reply)`. |
+| [`worker_file`](_autosummary/denote.isolated.html.md#denote.isolated.worker_file)(name)                          | The worker file of backend `name`.                                                  |
+
+### Classes
+
+| [`IsolatedSeparator`](_autosummary/denote.isolated.html.md#denote.isolated.IsolatedSeparator)(config)   | Host side of a separation backend whose model runs in a worker (see module doc).   |
+|------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+
+### Exceptions
+
+| [`EnvNotBuilt`](_autosummary/denote.isolated.html.md#denote.isolated.EnvNotBuilt)   | A backend's isolated environment is not built; the message says how to build it.   |
+|----------------------------------------------------------------|------------------------------------------------------------------------------------|
+
+### denote.isolated.DATA_DIR_ENVVAR *= 'DENOTE_DATA_DIR'*
+
+Environment variable naming denote’s data root.
+
+### denote.isolated.DFLT_DATA_DIR *= '~/.local/share/denote'*
+
+The data root when `DENOTE_DATA_DIR` is not set.
+
+### denote.isolated.DFLT_ENV_PYTHON *= '3.12'*
+
+Python of an isolated environment when its config names none.
+
+### *exception* denote.isolated.EnvNotBuilt
+
+Bases: [`RuntimeError`](https://docs.python.org/3/builtins/exceptions.html#RuntimeError)
+
+A backend’s isolated environment is not built; the message says how to build it.
+
+### denote.isolated.HOST_UV_VARS *= ('UV_CONSTRAINT', 'UV_OVERRIDE', 'UV_BUILD_CONSTRAINT')*
+
+uv settings holding the host’s pins, cleared when resolving a lock.
+
+### *class* denote.isolated.IsolatedSeparator(config)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Host side of a separation backend whose model runs in a worker (see module doc).
+
+Subclasses set [`MODEL_SR`](_autosummary/denote.isolated.html.md#denote.isolated.IsolatedSeparator.MODEL_SR) and may override [`worker_init()`](_autosummary/denote.isolated.html.md#denote.isolated.IsolatedSeparator.worker_init) (the
+worker’s `load` arguments) and [`request()`](_autosummary/denote.isolated.html.md#denote.isolated.IsolatedSeparator.request) (one `separate` call’s). The
+worker starts on the first call (the model loads once) and is reused; `close()`
+stops it. Config needs `param_map` with `model`, `sources` and `build_env`.
+
+#### CHANNELS *= 2*
+
+Channels the model takes (mono is duplicated, extra channels dropped).
+
+#### MODEL_SR *= 44100*
+
+The rate the model runs at; the mix is resampled to it on the host.
+
+#### check(opts)
+
+Refuse bad options before any environment is touched (default: none).
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+#### close()
+
+Stop the worker (the next call starts a fresh one).
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+#### request(opts)
+
+The `separate` request’s options (besides `mix`, `out_dir`, `sr`).
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+#### separate(audio, , sr=None, \*\*kwargs)
+
+Separate a mix into stems in the backend’s own environment.
+
+* **Parameters:**
+  * **audio** – File path or numpy array (mono, `(frames, channels)` or
+    `(channels, frames)`); mono is duplicated to stereo.
+  * **sr** – Sample rate (required if audio is an array).
+  * **\*\*kwargs** – Normalized parameters (see the backend’s `param_map`);
+    `build_env=True` builds a missing environment instead of raising.
+* **Returns:**
+  SeparationResult with `(2, frames)` float32 stems at the model’s rate.
+* **Raises:**
+  [**EnvNotBuilt**](_autosummary/denote.isolated.html.md#denote.isolated.EnvNotBuilt) – The environment is not built and `build_env` is false.
+
+#### worker_init()
+
+Keyword arguments of the worker’s `load`.
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+### denote.isolated.MIX_FILE *= 'mix.npy'*
+
+The file a worker reads its input from, in the request’s folder.
+
+### denote.isolated.WORKERS_DIR *= PosixPath('/home/runner/work/denote/denote/denote/workers')*
+
+The folder holding the worker files.
+
+### denote.isolated.build_command(name)
+
+The shell command that builds backend `name`’s environment.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### denote.isolated.build_env(name, \*\*ensure_kwargs)
+
+Build backend `name`’s environment (no-op if built from this spec); its Python.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### denote.isolated.compile_lock(name, , run=None)
+
+Re-resolve backend `name`’s lock from its top-level requirements; the lock’s path.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### denote.isolated.data_dir(\*parts)
+
+`$DENOTE_DATA_DIR/<parts>` (default root `~/.local/share/denote`), not created.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### denote.isolated.env_dir(name)
+
+The folder of backend `name`’s environment (it may not exist).
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### denote.isolated.env_python(config, , build=False, \*\*ensure_kwargs)
+
+The interpreter of the backend’s environment, building it only if `build`.
+
+* **Raises:**
+  [**EnvNotBuilt**](_autosummary/denote.isolated.html.md#denote.isolated.EnvNotBuilt) – The environment is missing or stale and `build` is false.
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### denote.isolated.env_size_hint(config)
+
+The rough download size a config states for its environment.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### denote.isolated.env_spec(config)
+
+The `ps.isolated.EnvSpec` of a backend config’s `isolated_env`.
+
+Its requirements are the lock’s pinned lines when the config names a `lock`
+(so the lock’s content is in the digest), else the top-level `requirements`.
+
+### denote.isolated.is_env_ready(config)
+
+True if the backend’s environment exists and was built from its current spec.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+### denote.isolated.lock_command(config)
+
+The `uv pip compile` command that resolves a config’s lock (requirements on stdin).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
+
+### denote.isolated.lock_requirements(text)
+
+The requirement lines of a lock (`uv pip compile` output), comments dropped.
+
+```pycon
+>>> lock_requirements("# header\nnumpy==2.1.0\n    # via x\ntorch==2.15.0 ; sys_platform == 'darwin'\n")
+('numpy==2.1.0', "torch==2.15.0 ; sys_platform == 'darwin'")
+```
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)
+
+### denote.isolated.make_worker(config, , init=None, build=False)
+
+A `ps.isolated.Worker` running the backend’s worker file in its environment.
+
+### denote.isolated.separate_in_worker(call, mix, \*\*request)
+
+Run a worker’s `separate` on `mix` (`(channels, frames)`), return `(stems, reply)`.
+
+The mix goes to the worker as `mix.npy` in a temporary folder; the worker writes
+one `.npy` per stem there and replies `{"stems": {name: path}, ...}`. The
+folder is removed before this returns.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict), [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]
+
+### denote.isolated.worker_file(name)
+
+The worker file of backend `name`.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
 
 
 # _autosummary/denote.keys.html.md
@@ -1769,7 +2244,7 @@ Register a backend (for third-party plugins).
 
 # denote.services
 
-### denote.services *= <ServiceCollection backends=['basic_pitch', 'beat_this', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'pesto', 'swift_f0', 'torchaudio_hdemucs', 'torchcrepe']>*
+### denote.services *= <ServiceCollection backends=['basic_pitch', 'beat_this', 'demucs_mlx', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'pesto', 'roformer', 'swift_f0', 'torchaudio_hdemucs', 'torchcrepe']>*
 
 Lazy mapping of backend names → ServiceHandle instances.
 
@@ -1967,13 +2442,180 @@ returned unscaled (as a copy): there is nothing to normalise.
   `ndarray`
 
 
+# _autosummary/denote.workers.demucs_mlx_worker.html.md
+
+# denote.workers.demucs_mlx_worker
+
+demucs-mlx worker: HTDemucs on Apple’s MLX, run in the `demucs_mlx` environment.
+
+Loaded standalone by `ps.isolated.Worker` (it imports nothing from denote). The
+mix arrives as a `(channels, frames)` float32 `.npy` file at the model’s rate
+(44.1 kHz); each requested stem is written back as `<stem>.npy` in the request’s
+folder, in the order requested (the model’s order by default).
+
+Normalization is Demucs’s own (`demucs.separate`): the mix minus the mean of its
+mono reference, divided by that reference’s std, and undone on the way out; the
+mean comes back as `mean / n_sources` per stem, so the stems add up to the mix.
+Weights download on first use into demucs-mlx’s cache (`~/.cache/demucs-mlx`, or
+`$DEMUCS_MLX_CACHE_DIR`), verified against digests shipped with the package.
+
+### Module Attributes
+
+| [`NORM_EPS`](_autosummary/denote.workers.demucs_mlx_worker.html.md#denote.workers.demucs_mlx_worker.NORM_EPS)          | Added to the reference's std, so a silent mix does not divide by zero.              |
+|--------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [`SINGLE_STEM_MODEL`](_autosummary/denote.workers.demucs_mlx_worker.html.md#denote.workers.demucs_mlx_worker.SINGLE_STEM_MODEL) | The model that has one specialist sub-model per stem (single-stem runs are faster). |
+| [`SAMPLE_RATE`](_autosummary/denote.workers.demucs_mlx_worker.html.md#denote.workers.demucs_mlx_worker.SAMPLE_RATE)       | The rate every demucs model runs at.                                                |
+
+### Functions
+
+| [`load`](_autosummary/denote.workers.demucs_mlx_worker.html.md#denote.workers.demucs_mlx_worker.load)(\*\*_)                                  | The worker's state: the separator in use, built on first request.             |
+|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| [`separate`](_autosummary/denote.workers.demucs_mlx_worker.html.md#denote.workers.demucs_mlx_worker.separate)(state, \*, mix, out_dir, sr[, ...]) | Separate the mix in `mix` (a `.npy` path); write `<stem>.npy` into `out_dir`. |
+
+### denote.workers.demucs_mlx_worker.NORM_EPS *= 1e-08*
+
+Added to the reference’s std, so a silent mix does not divide by zero.
+
+### denote.workers.demucs_mlx_worker.SAMPLE_RATE *= 44100*
+
+The rate every demucs model runs at.
+
+### denote.workers.demucs_mlx_worker.SINGLE_STEM_MODEL *= 'htdemucs_ft'*
+
+The model that has one specialist sub-model per stem (single-stem runs are faster).
+
+### denote.workers.demucs_mlx_worker.load(\*\*\_)
+
+The worker’s state: the separator in use, built on first request.
+
+demucs-mlx downloads weights with urllib, which verifies TLS against the
+interpreter’s OpenSSL defaults; an interpreter built without a CA bundle (some
+system and MacPorts Pythons) fails there. certifi’s bundle is used unless
+`SSL_CERT_FILE` already names one.
+
+### denote.workers.demucs_mlx_worker.separate(state, , mix, out_dir, sr, model='htdemucs', sources=None, shifts=1, overlap=0.25, segment=None, seed=None)
+
+Separate the mix in `mix` (a `.npy` path); write `<stem>.npy` into `out_dir`.
+
+* **Returns:**
+  {name: path}, “sr”: rate, “sources”: the model’s stems,
+  “model”: model}\`\`; only `sources` (default: all) are written, in that order.
+* **Return type:**
+  ```
+  ``
+  ```
+
+  {“stems”
+
+
+# _autosummary/denote.workers.html.md
+
+# denote.workers
+
+Worker files: model code that runs in a backend’s own environment (`denote.isolated`).
+
+Each `<backend>_worker.py` is loaded standalone by `ps.isolated.Worker` with the
+environment’s interpreter, so it imports nothing from denote: it defines
+`load(**init) -> state` and operations `op(state, **request) -> dict`.
+
+### Modules
+
+| [`demucs_mlx_worker`](_autosummary/denote.workers.demucs_mlx_worker.html.md#module-denote.workers.demucs_mlx_worker)   | demucs-mlx worker: HTDemucs on Apple's MLX, run in the `demucs_mlx` environment.            |
+|--------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| [`roformer_worker`](_autosummary/denote.workers.roformer_worker.html.md#module-denote.workers.roformer_worker)       | RoFormer worker: audio-separator's RoFormer checkpoints, run in the `roformer` environment. |
+
+
+# _autosummary/denote.workers.roformer_worker.html.md
+
+# denote.workers.roformer_worker
+
+RoFormer worker: audio-separator’s RoFormer checkpoints, run in the `roformer` environment.
+
+Loaded standalone by `ps.isolated.Worker` (it imports nothing from denote). The
+mix arrives as a `(channels, frames)` float32 `.npy` file at 44.1 kHz; it is
+written, next to it, as a 32-bit float WAV (audio-separator reads files), separated,
+and each stem read back and written as `<stem>.npy` (lower-case stem name) in the
+request’s folder. Output WAVs are float too (audio-separator keeps the input’s
+subtype), so no level is lost to 16-bit quantization; audio-separator scales a stem
+down only if its peak exceeds `normalization_threshold` (1.0 here, its maximum).
+
+Stems come back target first (the checkpoint’s primary stem, e.g. `vocals`), then
+the rest in the order audio-separator wrote them (it writes the secondary stem first).
+audio-separator writes its outputs into one folder fixed when it is built: a
+temporary folder of this worker, emptied after each request and removed at exit.
+
+### Module Attributes
+
+| [`STEM_IN_FILENAME`](_autosummary/denote.workers.roformer_worker.html.md#denote.workers.roformer_worker.STEM_IN_FILENAME)        | audio-separator names outputs `<input>_(<Stem>)_<model>.<ext>`.                   |
+|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| [`MIX_WAV`](_autosummary/denote.workers.roformer_worker.html.md#denote.workers.roformer_worker.MIX_WAV)                 | The input's file name in the request's folder (its stem prefixes outputs).        |
+| [`SAMPLE_RATE`](_autosummary/denote.workers.roformer_worker.html.md#denote.workers.roformer_worker.SAMPLE_RATE)             | The rate audio-separator resamples to and writes at.                              |
+| [`NORMALIZATION_THRESHOLD`](_autosummary/denote.workers.roformer_worker.html.md#denote.workers.roformer_worker.NORMALIZATION_THRESHOLD) | Peak above which audio-separator scales a stem down (1.0 is its largest allowed). |
+
+### Functions
+
+| [`load`](_autosummary/denote.workers.roformer_worker.html.md#denote.workers.roformer_worker.load)(\*, model_file_dir[, log_level])        | The worker's state: audio-separator's settings and its output folder.         |
+|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| [`separate`](_autosummary/denote.workers.roformer_worker.html.md#denote.workers.roformer_worker.separate)(state, \*, mix, out_dir, sr, model) | Separate the mix in `mix` (a `.npy` path); write `<stem>.npy` into `out_dir`. |
+| [`stem_name`](_autosummary/denote.workers.roformer_worker.html.md#denote.workers.roformer_worker.stem_name)(path)                              | The lower-cased stem name in an audio-separator output file name.             |
+| [`target_first`](_autosummary/denote.workers.roformer_worker.html.md#denote.workers.roformer_worker.target_first)(names, primary)                 | `names` with `primary` (case-insensitive) moved to the front, if present.     |
+
+### denote.workers.roformer_worker.MIX_WAV *= 'mix.wav'*
+
+The input’s file name in the request’s folder (its stem prefixes outputs).
+
+### denote.workers.roformer_worker.NORMALIZATION_THRESHOLD *= 1.0*
+
+Peak above which audio-separator scales a stem down (1.0 is its largest allowed).
+
+### denote.workers.roformer_worker.SAMPLE_RATE *= 44100*
+
+The rate audio-separator resamples to and writes at.
+
+### denote.workers.roformer_worker.STEM_IN_FILENAME *= re.compile('_\\\\(([^)]+)\\\\)_')*
+
+audio-separator names outputs `<input>_(<Stem>)_<model>.<ext>`.
+
+### denote.workers.roformer_worker.load(, model_file_dir, log_level='WARNING')
+
+The worker’s state: audio-separator’s settings and its output folder.
+
+### denote.workers.roformer_worker.separate(state, , mix, out_dir, sr, model, sources=None)
+
+Separate the mix in `mix` (a `.npy` path); write `<stem>.npy` into `out_dir`.
+
+* **Returns:**
+  {name: path}, “sr”: rate, “sources”: the checkpoint’s stems,
+  “model”: model}\`\`; only `sources` (default: all, target first) are kept,
+  in that order.
+* **Return type:**
+  ```
+  ``
+  ```
+
+  {“stems”
+
+### denote.workers.roformer_worker.stem_name(path)
+
+The lower-cased stem name in an audio-separator output file name.
+
+### denote.workers.roformer_worker.target_first(names, primary)
+
+`names` with `primary` (case-insensitive) moved to the front, if present.
+
+```pycon
+>>> target_first(["other", "vocals"], "Vocals")
+['vocals', 'other']
+```
+
+
 # about-this-build.html.md
 
 <!-- generated by epythet -->
 
 # About this build
 
-This documentation was built on **2026-11-10 10:34 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/1aabce7b18e5149ba27c5707bb186461bc30b2fd"><code>1aabce7</code></a> on branch <code>main</code>, for **denote 0.0.11** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-10 11:33 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/34460a941586a800b88592d2268080546dbc54c9"><code>34460a9</code></a> on branch <code>main</code>, for **denote 0.0.12** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -1982,9 +2624,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/1aabce7b18e5149ba27c5707bb186461bc30b2fd"><code>1aabce7b18e5149ba27c5707bb186461bc30b2fd</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/34460a941586a800b88592d2268080546dbc54c9"><code>34460a941586a800b88592d2268080546dbc54c9</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.11</code>                                                                                                                                      |
+| Tags at this commit | <code>0.0.12</code>                                                                                                                                      |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -1993,9 +2635,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/42799883082">42799883082</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/42808098263">42808098263</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>6111e7905f131721d32cf03331da12ca39723763</code> (in the history of the built commit) |
+| Event commit | <code>00378d36debf9af5853ccf7a2addb74a321f9d8c</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -2020,13 +2662,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.11/">0.0.11</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.12/">0.0.12</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 1aabce7b18e5149ba27c5707bb186461bc30b2fd
+git checkout 34460a941586a800b88592d2268080546dbc54c9
 pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

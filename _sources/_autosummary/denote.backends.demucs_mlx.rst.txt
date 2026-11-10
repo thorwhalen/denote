@@ -1,0 +1,14 @@
+denote.backends.demucs\_mlx
+===========================
+
+.. automodule:: denote.backends.demucs_mlx
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapter
+   config

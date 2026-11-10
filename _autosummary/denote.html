@@ -88,11 +88,13 @@
 <li class="toctree-l3"><a class="reference internal" href="denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.translation.html">denote.translation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.util.html">denote.util</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.workers.html">denote.workers</a></li>
 </ul>
 </li>
 </ul>
@@ -303,9 +305,16 @@ model, device, hop_length).</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>audio</strong> – File path (str/Path) or numpy array.</p></li>
 <li><p><strong>sr</strong> – Sample rate (required when audio is an array).</p></li>
-<li><p><strong>backend</strong> – Backend name. Defaults to ‘torchaudio_hdemucs’.</p></li>
-<li><p><strong>**kwargs</strong> – Backend-specific parameters (segment_s, overlap_s, device,
-bundle, sources).</p></li>
+<li><p><strong>backend</strong> – Backend name. Defaults to ‘torchaudio_hdemucs’. ‘demucs_mlx’ and
+‘roformer’ run in their own environment (see <code class="docutils literal notranslate"><span class="pre">denote.isolated</span></code>).</p></li>
+<li><p><strong>**kwargs</strong> – Backend-specific parameters. All take <code class="docutils literal notranslate"><span class="pre">sources</span></code> (stem names
+to keep, in that order). torchaudio_hdemucs: segment_s, overlap_s,
+device, bundle. demucs_mlx: model (‘htdemucs’, ‘htdemucs_ft’,
+‘htdemucs_6s’), shifts, overlap, seed, build_env. roformer: model (a
+checkpoint file name), build_env. <code class="docutils literal notranslate"><span class="pre">build_env=True</span></code> builds a missing
+environment instead of raising <code class="docutils literal notranslate"><span class="pre">denote.isolated.EnvNotBuilt</span></code>; the
+worker then keeps the model in memory until
+<code class="docutils literal notranslate"><span class="pre">denote.services[backend].close()</span></code> or exit.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -354,20 +363,26 @@ bundle, sources).</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="denote.compare.html#module-denote.compare" title="denote.compare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare</span></code></a></p></td>
 <td><p>Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.keys.html#module-denote.keys" title="denote.keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.isolated.html#module-denote.isolated" title="denote.isolated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isolated</span></code></a></p></td>
+<td><p>Backends that run in their own Python environment, through <code class="docutils literal notranslate"><span class="pre">ps.isolated</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.keys.html#module-denote.keys" title="denote.keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code></a></p></td>
 <td><p>Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="denote.registry.html#module-denote.registry" title="denote.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.registry.html#module-denote.registry" title="denote.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
 <td><p>Backend discovery, registration, and lazy loading.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.services.html#denote.services" title="denote.services"><code class="xref py py-obj docutils literal notranslate"><span class="pre">services</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.services.html#denote.services" title="denote.services"><code class="xref py py-obj docutils literal notranslate"><span class="pre">services</span></code></a></p></td>
 <td><p>Lazy mapping of backend names → ServiceHandle instances.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="denote.translation.html#module-denote.translation" title="denote.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.translation.html#module-denote.translation" title="denote.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
 <td><p>Parameter translation between normalized and native backend interfaces.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.util.html#module-denote.util" title="denote.util"><code class="xref py py-obj docutils literal notranslate"><span class="pre">util</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.util.html#module-denote.util" title="denote.util"><code class="xref py py-obj docutils literal notranslate"><span class="pre">util</span></code></a></p></td>
 <td><p>Audio loading (any layout to <code class="docutils literal notranslate"><span class="pre">(channels,</span> <span class="pre">frames)</span></code>), and chunked overlap-add for models that take bounded lengths (<code class="docutils literal notranslate"><span class="pre">chunked_apply</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.workers.html#module-denote.workers" title="denote.workers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">workers</span></code></a></p></td>
+<td><p>Worker files: model code that runs in a backend's own environment (<code class="docutils literal notranslate"><span class="pre">denote.isolated</span></code>).</p></td>
 </tr>
 </tbody>
 </table>
@@ -396,7 +411,7 @@ bundle, sources).</p></li>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=0c446633"></script>
+<script src="../_static/documentation_options.js?v=3bbcec59"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

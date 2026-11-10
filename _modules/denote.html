@@ -118,11 +118,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.translation.html">denote.translation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.util.html">denote.util</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/denote.workers.html">denote.workers</a></li>
 </ul>
 </li>
 </ul>
@@ -322,70 +324,77 @@
 </span><span id="line-136"><span class="sd">    Args:</span>
 </span><span id="line-137"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
 </span><span id="line-138"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
-</span><span id="line-139"><span class="sd">        backend: Backend name. Defaults to 'torchaudio_hdemucs'.</span>
-</span><span id="line-140"><span class="sd">        **kwargs: Backend-specific parameters (segment_s, overlap_s, device,</span>
-</span><span id="line-141"><span class="sd">            bundle, sources).</span>
-</span><span id="line-142">
-</span><span id="line-143"><span class="sd">    Returns:</span>
-</span><span id="line-144"><span class="sd">        SeparationResult with .stems ({name: (channels, frames)}), .sr, and</span>
-</span><span id="line-145"><span class="sd">        .vocals (mono).</span>
-</span><span id="line-146">
-</span><span id="line-147"><span class="sd">    Example::</span>
-</span><span id="line-148">
-</span><span id="line-149"><span class="sd">        voice = denote.separate("song.mp3").vocals</span>
-</span><span id="line-150"><span class="sd">    """</span>
-</span><span id="line-151">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"separate"</span><span class="p">)</span>
-</span><span id="line-152">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
-</span><span id="line-153">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-</span><span id="line-154">
+</span><span id="line-139"><span class="sd">        backend: Backend name. Defaults to 'torchaudio_hdemucs'. 'demucs_mlx' and</span>
+</span><span id="line-140"><span class="sd">            'roformer' run in their own environment (see ``denote.isolated``).</span>
+</span><span id="line-141"><span class="sd">        **kwargs: Backend-specific parameters. All take ``sources`` (stem names</span>
+</span><span id="line-142"><span class="sd">            to keep, in that order). torchaudio_hdemucs: segment_s, overlap_s,</span>
+</span><span id="line-143"><span class="sd">            device, bundle. demucs_mlx: model ('htdemucs', 'htdemucs_ft',</span>
+</span><span id="line-144"><span class="sd">            'htdemucs_6s'), shifts, overlap, seed, build_env. roformer: model (a</span>
+</span><span id="line-145"><span class="sd">            checkpoint file name), build_env. ``build_env=True`` builds a missing</span>
+</span><span id="line-146"><span class="sd">            environment instead of raising ``denote.isolated.EnvNotBuilt``; the</span>
+</span><span id="line-147"><span class="sd">            worker then keeps the model in memory until</span>
+</span><span id="line-148"><span class="sd">            ``denote.services[backend].close()`` or exit.</span>
+</span><span id="line-149">
+</span><span id="line-150"><span class="sd">    Returns:</span>
+</span><span id="line-151"><span class="sd">        SeparationResult with .stems ({name: (channels, frames)}), .sr, and</span>
+</span><span id="line-152"><span class="sd">        .vocals (mono).</span>
+</span><span id="line-153">
+</span><span id="line-154"><span class="sd">    Example::</span>
 </span><span id="line-155">
+</span><span id="line-156"><span class="sd">        voice = denote.separate("song.mp3").vocals</span>
+</span><span id="line-157"><span class="sd">    """</span>
+</span><span id="line-158">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"separate"</span><span class="p">)</span>
+</span><span id="line-159">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+</span><span id="line-160">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+</span><span id="line-161">
+</span><span id="line-162">
 <div class="viewcode-block" id="get_beats">
 <a class="viewcode-back" href="../_autosummary/denote.html#denote.get_beats">[docs]</a>
-</span><span id="line-156"><span class="k">def</span><span class="w"> </span><span class="nf">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="line-157"><span class="w">    </span><span class="sd">"""Track beats in audio.</span>
-</span><span id="line-158">
-</span><span id="line-159"><span class="sd">    Args:</span>
-</span><span id="line-160"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
-</span><span id="line-161"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
-</span><span id="line-162"><span class="sd">        backend: Backend name. Defaults to 'librosa_beats'.</span>
-</span><span id="line-163"><span class="sd">        **kwargs: Backend-specific parameters (hop_length, start_bpm).</span>
-</span><span id="line-164">
-</span><span id="line-165"><span class="sd">    Returns:</span>
-</span><span id="line-166"><span class="sd">        BeatResult with .beats, .downbeats, .tempo fields.</span>
-</span><span id="line-167"><span class="sd">    """</span>
-</span><span id="line-168">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"beats"</span><span class="p">)</span>
-</span><span id="line-169">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
-</span><span id="line-170">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
+</span><span id="line-163"><span class="k">def</span><span class="w"> </span><span class="nf">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="line-164"><span class="w">    </span><span class="sd">"""Track beats in audio.</span>
+</span><span id="line-165">
+</span><span id="line-166"><span class="sd">    Args:</span>
+</span><span id="line-167"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
+</span><span id="line-168"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
+</span><span id="line-169"><span class="sd">        backend: Backend name. Defaults to 'librosa_beats'.</span>
+</span><span id="line-170"><span class="sd">        **kwargs: Backend-specific parameters (hop_length, start_bpm).</span>
 </span><span id="line-171">
-</span><span id="line-172">
+</span><span id="line-172"><span class="sd">    Returns:</span>
+</span><span id="line-173"><span class="sd">        BeatResult with .beats, .downbeats, .tempo fields.</span>
+</span><span id="line-174"><span class="sd">    """</span>
+</span><span id="line-175">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"beats"</span><span class="p">)</span>
+</span><span id="line-176">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+</span><span id="line-177">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_beats</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+</span><span id="line-178">
+</span><span id="line-179">
 <div class="viewcode-block" id="get_key">
 <a class="viewcode-back" href="../_autosummary/denote.html#denote.get_key">[docs]</a>
-</span><span id="line-173"><span class="k">def</span><span class="w"> </span><span class="nf">get_key</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="line-174"><span class="w">    </span><span class="sd">"""Estimate the key (tonic + mode) of a recording.</span>
-</span><span id="line-175">
-</span><span id="line-176"><span class="sd">    Args:</span>
-</span><span id="line-177"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
-</span><span id="line-178"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
-</span><span id="line-179"><span class="sd">        backend: Backend name. Defaults to 'librosa_key'.</span>
-</span><span id="line-180"><span class="sd">        **kwargs: Backend-specific parameters (``profile``: 'krumhansl' default or</span>
-</span><span id="line-181"><span class="sd">            'temperley' or a (major, minor) pair; ``chroma``: 'cqt' default,</span>
-</span><span id="line-182"><span class="sd">            'stft', 'cens' or a callable (y, sr) -&gt; (12, frames)).</span>
-</span><span id="line-183">
-</span><span id="line-184"><span class="sd">    Returns:</span>
-</span><span id="line-185"><span class="sd">        KeyResult with .key ("A minor"), .tonic, .mode, .confidence (the winner's</span>
-</span><span id="line-186"><span class="sd">        profile correlation, not a probability), .margin (lead over the runner-up),</span>
-</span><span id="line-187"><span class="sd">        .scores (all 24 keys, best first) and .relative.</span>
-</span><span id="line-188">
-</span><span id="line-189"><span class="sd">    Example::</span>
+</span><span id="line-180"><span class="k">def</span><span class="w"> </span><span class="nf">get_key</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="line-181"><span class="w">    </span><span class="sd">"""Estimate the key (tonic + mode) of a recording.</span>
+</span><span id="line-182">
+</span><span id="line-183"><span class="sd">    Args:</span>
+</span><span id="line-184"><span class="sd">        audio: File path (str/Path) or numpy array.</span>
+</span><span id="line-185"><span class="sd">        sr: Sample rate (required when audio is an array).</span>
+</span><span id="line-186"><span class="sd">        backend: Backend name. Defaults to 'librosa_key'.</span>
+</span><span id="line-187"><span class="sd">        **kwargs: Backend-specific parameters (``profile``: 'krumhansl' default or</span>
+</span><span id="line-188"><span class="sd">            'temperley' or a (major, minor) pair; ``chroma``: 'cqt' default,</span>
+</span><span id="line-189"><span class="sd">            'stft', 'cens' or a callable (y, sr) -&gt; (12, frames)).</span>
 </span><span id="line-190">
-</span><span id="line-191"><span class="sd">        k = denote.get_key("song.wav")</span>
-</span><span id="line-192"><span class="sd">        k.key, k.margin, k.ranked[:2]</span>
-</span><span id="line-193"><span class="sd">    """</span>
-</span><span id="line-194">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"key"</span><span class="p">)</span>
-</span><span id="line-195">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
-</span><span id="line-196">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</span><span id="line-191"><span class="sd">    Returns:</span>
+</span><span id="line-192"><span class="sd">        KeyResult with .key ("A minor"), .tonic, .mode, .confidence (the winner's</span>
+</span><span id="line-193"><span class="sd">        profile correlation, not a probability), .margin (lead over the runner-up),</span>
+</span><span id="line-194"><span class="sd">        .scores (all 24 keys, best first) and .relative.</span>
+</span><span id="line-195">
+</span><span id="line-196"><span class="sd">    Example::</span>
+</span><span id="line-197">
+</span><span id="line-198"><span class="sd">        k = denote.get_key("song.wav")</span>
+</span><span id="line-199"><span class="sd">        k.key, k.margin, k.ranked[:2]</span>
+</span><span id="line-200"><span class="sd">    """</span>
+</span><span id="line-201">    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span> <span class="ow">or</span> <span class="n">get_default_backend</span><span class="p">(</span><span class="s2">"key"</span><span class="p">)</span>
+</span><span id="line-202">    <span class="n">handle</span> <span class="o">=</span> <span class="n">services</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+</span><span id="line-203">    <span class="k">return</span> <span class="n">handle</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </span></code></pre></div>
     </div></div>
@@ -400,7 +409,7 @@
 </footer>
     </div>
     
-    <script src="../_static/documentation_options.js?v=0c446633"></script>
+    <script src="../_static/documentation_options.js?v=3bbcec59"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

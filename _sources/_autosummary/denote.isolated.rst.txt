@@ -1,0 +1,48 @@
+denote.isolated
+===============
+
+.. automodule:: denote.isolated
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DATA_DIR_ENVVAR
+      DFLT_DATA_DIR
+      DFLT_ENV_PYTHON
+      WORKERS_DIR
+      MIX_FILE
+      HOST_UV_VARS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      build_command
+      build_env
+      compile_lock
+      data_dir
+      env_dir
+      env_python
+      env_size_hint
+      env_spec
+      is_env_ready
+      lock_command
+      lock_requirements
+      make_worker
+      separate_in_worker
+      worker_file
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      IsolatedSeparator
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      EnvNotBuilt
+   

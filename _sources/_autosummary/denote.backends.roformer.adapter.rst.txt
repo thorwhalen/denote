@@ -1,0 +1,24 @@
+denote.backends.roformer.adapter
+================================
+
+.. automodule:: denote.backends.roformer.adapter
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      MODEL_DIR_ENVVAR
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      checkpoint_license
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

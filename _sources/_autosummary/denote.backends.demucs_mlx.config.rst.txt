@@ -1,0 +1,13 @@
+denote.backends.demucs\_mlx.config
+==================================
+
+.. automodule:: denote.backends.demucs_mlx.config
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      ENV_LOCK
+      MODELS
+   

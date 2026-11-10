@@ -81,21 +81,41 @@ denote.services.basic_pitch.adapter
 
 ## Supported Backends
 
-| Backend                            | Task               | Code licence   | Weights licence (commercial use)                              | Install                                  |
-|------------------------------------|--------------------|----------------|---------------------------------------------------------------|------------------------------------------|
-| Basic Pitch (Spotify)              | MIDI transcription | Apache 2.0     | Apache 2.0 (yes)                                              | `pip install denote[basic_pitch]`        |
-| torchcrepe                         | Pitch estimation   | MIT            | MIT (yes)                                                     | `pip install denote[torchcrepe]`         |
-| SwiftF0                            | Pitch estimation   | MIT            | MIT (yes)                                                     | `pip install denote[swift_f0]`           |
-| PESTO                              | Pitch estimation   | LGPL 3.0       | LGPL 3.0 (yes; redistributing the weights carries LGPL terms) | `pip install denote[pesto]`              |
-| librosa pYIN                       | Pitch estimation   | ISC            | no weights (yes)                                              | (included)                               |
-| Beat This!                         | Beats + downbeats  | MIT            | MIT (yes)                                                     | `pip install denote[beat_this]`          |
-| librosa beats                      | Beat tracking      | ISC            | no weights (yes)                                              | (included)                               |
-| librosa key (Krumhansl-Schmuckler) | Key estimation     | ISC            | no weights (yes)                                              | (included)                               |
-| Hybrid Demucs (torchaudio)         | Source separation  | BSD 2-Clause   | unstated; author says research use (unclear)                  | `pip install denote[torchaudio_hdemucs]` |
+| Backend                                   | Task                              | Code licence   | Weights licence (commercial use)                                             | Install                                                       |
+|-------------------------------------------|-----------------------------------|----------------|------------------------------------------------------------------------------|---------------------------------------------------------------|
+| Basic Pitch (Spotify)                     | MIDI transcription                | Apache 2.0     | Apache 2.0 (yes)                                                             | `pip install denote[basic_pitch]`                             |
+| torchcrepe                                | Pitch estimation                  | MIT            | MIT (yes)                                                                    | `pip install denote[torchcrepe]`                              |
+| SwiftF0                                   | Pitch estimation                  | MIT            | MIT (yes)                                                                    | `pip install denote[swift_f0]`                                |
+| PESTO                                     | Pitch estimation                  | LGPL 3.0       | LGPL 3.0 (yes; redistributing the weights carries LGPL terms)                | `pip install denote[pesto]`                                   |
+| librosa pYIN                              | Pitch estimation                  | ISC            | no weights (yes)                                                             | (included)                                                    |
+| Beat This!                                | Beats + downbeats                 | MIT            | MIT (yes)                                                                    | `pip install denote[beat_this]`                               |
+| librosa beats                             | Beat tracking                     | ISC            | no weights (yes)                                                             | (included)                                                    |
+| librosa key (Krumhansl-Schmuckler)        | Key estimation                    | ISC            | no weights (yes)                                                             | (included)                                                    |
+| Hybrid Demucs (torchaudio)                | Source separation                 | BSD 2-Clause   | unstated; author says research use (unclear)                                 | `pip install denote[torchaudio_hdemucs]`                      |
+| HTDemucs on MLX (`demucs_mlx`)            | Source separation (Apple silicon) | MIT            | unstated; converted from the same Demucs checkpoints (unclear)               | own environment: `python -m denote.isolated build demucs_mlx` |
+| RoFormer via audio-separator (`roformer`) | Source separation                 | MIT            | default checkpoint MIT (yes); other community checkpoints unstated (unclear) | own environment: `python -m denote.isolated build roformer`   |
 
 `denote.backend_table()` gives the same columns from the backends’ configs, where each licence’s source is cited.
 
-More backends coming: madmom, autochord, newer separators.
+More backends coming: madmom, autochord.
+
+### Backends in their own environment
+
+Some models pin dependencies that cannot share denote’s environment (`demucs-mlx` pins its MLX, `audio-separator` needs torch>=2.13 on Apple silicon). Those backends run their model in a separate Python environment that denote builds with [uv](https://docs.astral.sh/uv/) from pinned requirements (through [`ps.isolated`](https://github.com/thorwhalen/ps)), and talk to it through a long-lived worker process, so the model loads once:
+
+```bash
+python -m denote.isolated build demucs_mlx   # one-time
+python -m denote.isolated status             # which are built, and where
+```
+
+```python
+result = denote.separate("song.wav", backend="demucs_mlx")  # htdemucs on MLX
+result.stems  # {"drums", "bass", "other", "vocals"}
+vocals = denote.separate("song.wav", backend="roformer").vocals  # Mel-Band RoFormer
+denote.services["roformer"].close()  # free the worker's memory
+```
+
+Environments live in `~/.local/share/denote/envs/<backend>` (set `DENOTE_DATA_DIR` to move them). A missing one raises `denote.isolated.EnvNotBuilt` with the build command; pass `build_env=True` to build it on first use instead. Building needs `uv` on the `PATH`. Each environment is installed from a lock kept with its backend (`env.lock`, every package pinned), so it is reproducible; `python -m denote.isolated lock <backend>` re-resolves it. A backend’s worker keeps its model loaded (4.5 to 6 GB for these two) until `denote.services[<backend>].close()` or the end of the process.
 
 ## Plugin System
 

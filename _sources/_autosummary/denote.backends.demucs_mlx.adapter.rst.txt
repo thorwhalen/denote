@@ -1,0 +1,12 @@
+denote.backends.demucs\_mlx.adapter
+===================================
+
+.. automodule:: denote.backends.demucs_mlx.adapter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

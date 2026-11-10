@@ -17,6 +17,9 @@
 - [denote.backends.beat_this](_autosummary/denote.backends.beat_this.html.md): | &#96;adapter&#96;   | Adapter for Beat This! — transformer beat and downbeat tracking.     |
 - [denote.backends.beat_this.adapter](_autosummary/denote.backends.beat_this.adapter.html.md): Adapter for Beat This! — transformer beat and downbeat tracking.
 - [denote.backends.beat_this.config](_autosummary/denote.backends.beat_this.config.html.md): Configuration for the Beat This! beat and downbeat tracking backend.
+- [denote.backends.demucs_mlx](_autosummary/denote.backends.demucs_mlx.html.md): HTDemucs source separation on MLX (demucs-mlx), run in its own environment.
+- [denote.backends.demucs_mlx.adapter](_autosummary/denote.backends.demucs_mlx.adapter.html.md): Adapter for demucs-mlx: HTDemucs on MLX, in its own environment (&#96;denote.isolated&#96;).
+- [denote.backends.demucs_mlx.config](_autosummary/denote.backends.demucs_mlx.config.html.md): Configuration for the demucs-mlx (HTDemucs on MLX) separation backend.
 - [denote.backends.librosa_beats](_autosummary/denote.backends.librosa_beats.html.md): | &#96;adapter&#96;   | Adapter for librosa beat tracking.                   |
 - [denote.backends.librosa_beats.adapter](_autosummary/denote.backends.librosa_beats.adapter.html.md): Adapter for librosa beat tracking.
 - [denote.backends.librosa_beats.config](_autosummary/denote.backends.librosa_beats.config.html.md): Configuration for the librosa beat tracking backend.
@@ -29,6 +32,9 @@
 - [denote.backends.pesto](_autosummary/denote.backends.pesto.html.md): | &#96;adapter&#96;   | Adapter for PESTO — self-supervised pitch estimation (Sony CSL).   |
 - [denote.backends.pesto.adapter](_autosummary/denote.backends.pesto.adapter.html.md): Adapter for PESTO — self-supervised pitch estimation (Sony CSL).
 - [denote.backends.pesto.config](_autosummary/denote.backends.pesto.config.html.md): Configuration for the PESTO pitch backend.
+- [denote.backends.roformer](_autosummary/denote.backends.roformer.html.md): RoFormer source separation (audio-separator), run in its own environment.
+- [denote.backends.roformer.adapter](_autosummary/denote.backends.roformer.adapter.html.md): Adapter for RoFormer checkpoints via audio-separator, in its own environment.
+- [denote.backends.roformer.config](_autosummary/denote.backends.roformer.config.html.md): Configuration for the RoFormer separation backend (audio-separator).
 - [denote.backends.swift_f0](_autosummary/denote.backends.swift_f0.html.md): | &#96;adapter&#96;   | Adapter for SwiftF0 — fast CNN pitch estimation on CPU (ONNX).   |
 - [denote.backends.swift_f0.adapter](_autosummary/denote.backends.swift_f0.adapter.html.md): Adapter for SwiftF0 — fast CNN pitch estimation on CPU (ONNX).
 - [denote.backends.swift_f0.config](_autosummary/denote.backends.swift_f0.config.html.md): Configuration for the SwiftF0 pitch backend.
@@ -40,13 +46,17 @@
 - [denote.backends.torchcrepe.config](_autosummary/denote.backends.torchcrepe.config.html.md): Configuration for the torchcrepe backend.
 - [denote.base](_autosummary/denote.base.html.md): Core types and result dataclasses for denote.
 - [denote.compare](_autosummary/denote.compare.html.md): Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).
+- [denote.isolated](_autosummary/denote.isolated.html.md): Backends that run in their own Python environment, through &#96;ps.isolated&#96;.
 - [denote.keys](_autosummary/denote.keys.html.md): Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).
 - [denote.registry](_autosummary/denote.registry.html.md): Backend discovery, registration, and lazy loading.
 - [denote.services](_autosummary/denote.services.html.md): Lazy mapping of backend names → ServiceHandle instances.
 - [denote.translation](_autosummary/denote.translation.html.md): Parameter translation between normalized and native backend interfaces.
 - [denote.util](_autosummary/denote.util.html.md): Audio loading (any layout to &#96;(channels, frames)&#96;), and chunked overlap-add for models
+- [denote.workers](_autosummary/denote.workers.html.md): Worker files: model code that runs in a backend’s own environment (&#96;denote.isolated&#96;).
+- [denote.workers.demucs_mlx_worker](_autosummary/denote.workers.demucs_mlx_worker.html.md): demucs-mlx worker: HTDemucs on Apple’s MLX, run in the &#96;demucs_mlx&#96; environment.
+- [denote.workers.roformer_worker](_autosummary/denote.workers.roformer_worker.html.md): RoFormer worker: audio-separator’s RoFormer checkpoints, run in the &#96;roformer&#96; environment.
 - [For AI agents](ai-agents.html.md): &#96;denote&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-10 10:34 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-10 11:33 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
 
 ## Optional
 

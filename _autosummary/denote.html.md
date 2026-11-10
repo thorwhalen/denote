@@ -140,9 +140,16 @@ Separate a mix into stems (drums, bass, other, vocals, …).
 * **Parameters:**
   * **audio** – File path (str/Path) or numpy array.
   * **sr** – Sample rate (required when audio is an array).
-  * **backend** – Backend name. Defaults to ‘torchaudio_hdemucs’.
-  * **\*\*kwargs** – Backend-specific parameters (segment_s, overlap_s, device,
-    bundle, sources).
+  * **backend** – Backend name. Defaults to ‘torchaudio_hdemucs’. ‘demucs_mlx’ and
+    ‘roformer’ run in their own environment (see `denote.isolated`).
+  * **\*\*kwargs** – Backend-specific parameters. All take `sources` (stem names
+    to keep, in that order). torchaudio_hdemucs: segment_s, overlap_s,
+    device, bundle. demucs_mlx: model (‘htdemucs’, ‘htdemucs_ft’,
+    ‘htdemucs_6s’), shifts, overlap, seed, build_env. roformer: model (a
+    checkpoint file name), build_env. `build_env=True` builds a missing
+    environment instead of raising `denote.isolated.EnvNotBuilt`; the
+    worker then keeps the model in memory until
+    `denote.services[backend].close()` or exit.
 * **Returns:**
   (channels, frames)}), .sr, and
   .vocals (mono).
@@ -174,8 +181,10 @@ Transcribe audio to MIDI.
 | [`backends`](denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
 | [`base`](denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
 | [`compare`](denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
+| [`isolated`](denote.isolated.html.md#module-denote.isolated)       | Backends that run in their own Python environment, through `ps.isolated`.                                                           |
 | [`keys`](denote.keys.html.md#module-denote.keys)               | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
 | [`registry`](denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                                                  |
 | [`services`](denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
 | [`translation`](denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                                                             |
 | [`util`](denote.util.html.md#module-denote.util)               | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |
+| [`workers`](denote.workers.html.md#module-denote.workers)         | Worker files: model code that runs in a backend's own environment (`denote.isolated`).                                              |

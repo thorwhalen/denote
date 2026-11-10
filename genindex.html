@@ -118,11 +118,13 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.translation.html">denote.translation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.util.html">denote.util</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.workers.html">denote.workers</a></li>
 </ul>
 </li>
 </ul>
@@ -176,6 +178,8 @@
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.backends.beat_this.adapter.html#denote.backends.beat_this.adapter.Adapter">(class in denote.backends.beat_this.adapter)</a>
 </li>
+        <li><a href="_autosummary/denote.backends.demucs_mlx.adapter.html#denote.backends.demucs_mlx.adapter.Adapter">(class in denote.backends.demucs_mlx.adapter)</a>
+</li>
         <li><a href="_autosummary/denote.backends.librosa_beats.adapter.html#denote.backends.librosa_beats.adapter.Adapter">(class in denote.backends.librosa_beats.adapter)</a>
 </li>
         <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.Adapter">(class in denote.backends.librosa_key.adapter)</a>
@@ -183,6 +187,8 @@
         <li><a href="_autosummary/denote.backends.librosa_pyin.adapter.html#denote.backends.librosa_pyin.adapter.Adapter">(class in denote.backends.librosa_pyin.adapter)</a>
 </li>
         <li><a href="_autosummary/denote.backends.pesto.adapter.html#denote.backends.pesto.adapter.Adapter">(class in denote.backends.pesto.adapter)</a>
+</li>
+        <li><a href="_autosummary/denote.backends.roformer.adapter.html#denote.backends.roformer.adapter.Adapter">(class in denote.backends.roformer.adapter)</a>
 </li>
         <li><a href="_autosummary/denote.backends.swift_f0.adapter.html#denote.backends.swift_f0.adapter.Adapter">(class in denote.backends.swift_f0.adapter)</a>
 </li>
@@ -220,11 +226,15 @@
 </li>
       <li><a href="_autosummary/denote.html#denote.BACKEND_TABLE_FIELDS">BACKEND_TABLE_FIELDS (in module denote)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.backends.beat_this.adapter.html#denote.backends.beat_this.adapter.BEAT_THIS_SR">BEAT_THIS_SR (in module denote.backends.beat_this.adapter)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.base.html#denote.base.BeatResult">BeatResult (class in denote.base)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.build_command">build_command() (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.build_env">build_env() (in module denote.isolated)</a>
 </li>
   </ul></td>
   </tr>
@@ -233,7 +243,19 @@
   <h2 id="C">C</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator.CHANNELS">CHANNELS (denote.isolated.IsolatedSeparator attribute)</a>
+</li>
       <li><a href="_autosummary/denote.util.html#denote.util.channels_first">channels_first() (in module denote.util)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.demucs_mlx.adapter.html#denote.backends.demucs_mlx.adapter.Adapter.check">check() (denote.backends.demucs_mlx.adapter.Adapter method)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator.check">(denote.isolated.IsolatedSeparator method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/denote.backends.roformer.adapter.html#denote.backends.roformer.adapter.checkpoint_license">checkpoint_license() (in module denote.backends.roformer.adapter)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.roformer.config.html#denote.backends.roformer.config.CHECKPOINTS">CHECKPOINTS (in module denote.backends.roformer.config)</a>
 </li>
       <li><a href="_autosummary/denote.base.html#denote.base.ChordResult">ChordResult (class in denote.base)</a>
 </li>
@@ -243,17 +265,21 @@
 </li>
       <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.chroma_stft">chroma_stft() (in module denote.backends.librosa_key.adapter)</a>
 </li>
-      <li><a href="_autosummary/denote.util.html#denote.util.chunk_bounds">chunk_bounds() (in module denote.util)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.util.html#denote.util.chunk_bounds">chunk_bounds() (in module denote.util)</a>
+</li>
       <li><a href="_autosummary/denote.util.html#denote.util.chunked_apply">chunked_apply() (in module denote.util)</a>
 </li>
       <li><a href="_autosummary/denote.registry.html#denote.registry.clear_registry">clear_registry() (in module denote.registry)</a>
 </li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator.close">close() (denote.isolated.IsolatedSeparator method)</a>
+</li>
       <li><a href="_autosummary/denote.base.html#denote.base.COMMERCIAL_USE_VALUES">COMMERCIAL_USE_VALUES (in module denote.base)</a>
 </li>
       <li><a href="_autosummary/denote.compare.html#denote.compare.compare_audio">compare_audio() (in module denote.compare)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.compile_lock">compile_lock() (in module denote.isolated)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.cost">cost (denote.align.ScoreAlignment attribute)</a>
 </li>
@@ -268,6 +294,10 @@
   <h2 id="D">D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.data_dir">data_dir() (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.DATA_DIR_ENVVAR">DATA_DIR_ENVVAR (in module denote.isolated)</a>
+</li>
       <li>
     denote
 
@@ -336,6 +366,27 @@
 
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.backends.beat_this.config.html#module-denote.backends.beat_this.config">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.demucs_mlx
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.demucs_mlx.html#module-denote.backends.demucs_mlx">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.demucs_mlx.adapter
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.demucs_mlx.adapter.html#module-denote.backends.demucs_mlx.adapter">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.demucs_mlx.config
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.demucs_mlx.config.html#module-denote.backends.demucs_mlx.config">module</a>
 </li>
       </ul></li>
       <li>
@@ -408,8 +459,6 @@
         <li><a href="_autosummary/denote.backends.pesto.html#module-denote.backends.pesto">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li>
     denote.backends.pesto.adapter
 
@@ -422,6 +471,29 @@
 
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.backends.pesto.config.html#module-denote.backends.pesto.config">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li>
+    denote.backends.roformer
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.roformer.html#module-denote.backends.roformer">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.roformer.adapter
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.roformer.adapter.html#module-denote.backends.roformer.adapter">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.roformer.config
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.roformer.config.html#module-denote.backends.roformer.config">module</a>
 </li>
       </ul></li>
       <li>
@@ -502,6 +574,13 @@
 </li>
       </ul></li>
       <li>
+    denote.isolated
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.isolated.html#module-denote.isolated">module</a>
+</li>
+      </ul></li>
+      <li>
     denote.keys
 
       <ul style="list-style-type:none">
@@ -529,9 +608,36 @@
         <li><a href="_autosummary/denote.util.html#module-denote.util">module</a>
 </li>
       </ul></li>
+      <li>
+    denote.workers
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.workers.html#module-denote.workers">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.workers.demucs_mlx_worker
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.workers.demucs_mlx_worker.html#module-denote.workers.demucs_mlx_worker">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.workers.roformer_worker
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.workers.roformer_worker.html#module-denote.workers.roformer_worker">module</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/denote.util.html#denote.util.DFLT_AUDIO_SR">DFLT_AUDIO_SR (in module denote.util)</a>
 </li>
+      <li><a href="_autosummary/denote.backends.roformer.config.html#denote.backends.roformer.config.DFLT_CHECKPOINT">DFLT_CHECKPOINT (in module denote.backends.roformer.config)</a>
+</li>
       <li><a href="_autosummary/denote.util.html#denote.util.DFLT_CHROMA_HOP">DFLT_CHROMA_HOP (in module denote.util)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.DFLT_DATA_DIR">DFLT_DATA_DIR (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.DFLT_ENV_PYTHON">DFLT_ENV_PYTHON (in module denote.isolated)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.DFLT_FRAME_RATE">DFLT_FRAME_RATE (in module denote.align)</a>
 </li>
@@ -549,6 +655,24 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.util.html#denote.util.ensure_file_path">ensure_file_path() (in module denote.util)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.env_dir">env_dir() (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.demucs_mlx.config.html#denote.backends.demucs_mlx.config.ENV_LOCK">ENV_LOCK (in module denote.backends.demucs_mlx.config)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.roformer.config.html#denote.backends.roformer.config.ENV_LOCK">(in module denote.backends.roformer.config)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.env_python">env_python() (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.env_size_hint">env_size_hint() (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.env_spec">env_spec() (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.EnvNotBuilt">EnvNotBuilt</a>
 </li>
   </ul></td>
   </tr>
@@ -625,6 +749,8 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.hide_broken_tensorflow">hide_broken_tensorflow() (in module denote.backends.basic_pitch.compat)</a>
 </li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.HOST_UV_VARS">HOST_UV_VARS (in module denote.isolated)</a>
+</li>
   </ul></td>
   </tr>
       </table>
@@ -634,9 +760,13 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.import_basic_pitch">import_basic_pitch() (in module denote.backends.basic_pitch.compat)</a>
 </li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.is_env_ready">is_env_ready() (in module denote.isolated)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.is_namespace_leftover">is_namespace_leftover() (in module denote.backends.basic_pitch.compat)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator">IsolatedSeparator (class in denote.isolated)</a>
 </li>
   </ul></td>
   </tr>
@@ -666,9 +796,19 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.registry.html#denote.registry.list_backends">list_backends() (in module denote.registry)</a>
 </li>
+      <li><a href="_autosummary/denote.workers.demucs_mlx_worker.html#denote.workers.demucs_mlx_worker.load">load() (in module denote.workers.demucs_mlx_worker)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.load">(in module denote.workers.roformer_worker)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.util.html#denote.util.load_audio">load_audio() (in module denote.util)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.lock_command">lock_command() (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.lock_requirements">lock_requirements() (in module denote.isolated)</a>
 </li>
   </ul></td>
   </tr>
@@ -681,6 +821,8 @@
 </li>
       <li><a href="_autosummary/denote.translation.html#denote.translation.make_kwargs_translator">make_kwargs_translator() (in module denote.translation)</a>
 </li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.make_worker">make_worker() (in module denote.isolated)</a>
+</li>
       <li><a href="_autosummary/denote.compare.html#denote.compare.Metric">Metric (in module denote.compare)</a>
 </li>
       <li><a href="_autosummary/denote.compare.html#denote.compare.METRICS">METRICS (in module denote.compare)</a>
@@ -689,9 +831,19 @@
 </li>
       <li><a href="_autosummary/denote.keys.html#denote.keys.KeyProfile.minor">minor (denote.keys.KeyProfile attribute)</a>
 </li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.MIX_FILE">MIX_FILE (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.MIX_WAV">MIX_WAV (in module denote.workers.roformer_worker)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.roformer.adapter.html#denote.backends.roformer.adapter.MODEL_DIR_ENVVAR">MODEL_DIR_ENVVAR (in module denote.backends.roformer.adapter)</a>
+</li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.model_path">model_path() (in module denote.backends.basic_pitch.compat)</a>
 </li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.MODEL_RUNTIMES">MODEL_RUNTIMES (in module denote.backends.basic_pitch.compat)</a>
+</li>
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator.MODEL_SR">MODEL_SR (denote.isolated.IsolatedSeparator attribute)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.demucs_mlx.config.html#denote.backends.demucs_mlx.config.MODELS">MODELS (in module denote.backends.demucs_mlx.config)</a>
 </li>
       <li>
     module
@@ -717,6 +869,12 @@
 </li>
         <li><a href="_autosummary/denote.backends.beat_this.config.html#module-denote.backends.beat_this.config">denote.backends.beat_this.config</a>
 </li>
+        <li><a href="_autosummary/denote.backends.demucs_mlx.html#module-denote.backends.demucs_mlx">denote.backends.demucs_mlx</a>
+</li>
+        <li><a href="_autosummary/denote.backends.demucs_mlx.adapter.html#module-denote.backends.demucs_mlx.adapter">denote.backends.demucs_mlx.adapter</a>
+</li>
+        <li><a href="_autosummary/denote.backends.demucs_mlx.config.html#module-denote.backends.demucs_mlx.config">denote.backends.demucs_mlx.config</a>
+</li>
         <li><a href="_autosummary/denote.backends.librosa_beats.html#module-denote.backends.librosa_beats">denote.backends.librosa_beats</a>
 </li>
         <li><a href="_autosummary/denote.backends.librosa_beats.adapter.html#module-denote.backends.librosa_beats.adapter">denote.backends.librosa_beats.adapter</a>
@@ -741,6 +899,12 @@
 </li>
         <li><a href="_autosummary/denote.backends.pesto.config.html#module-denote.backends.pesto.config">denote.backends.pesto.config</a>
 </li>
+        <li><a href="_autosummary/denote.backends.roformer.html#module-denote.backends.roformer">denote.backends.roformer</a>
+</li>
+        <li><a href="_autosummary/denote.backends.roformer.adapter.html#module-denote.backends.roformer.adapter">denote.backends.roformer.adapter</a>
+</li>
+        <li><a href="_autosummary/denote.backends.roformer.config.html#module-denote.backends.roformer.config">denote.backends.roformer.config</a>
+</li>
         <li><a href="_autosummary/denote.backends.swift_f0.html#module-denote.backends.swift_f0">denote.backends.swift_f0</a>
 </li>
         <li><a href="_autosummary/denote.backends.swift_f0.adapter.html#module-denote.backends.swift_f0.adapter">denote.backends.swift_f0.adapter</a>
@@ -763,6 +927,8 @@
 </li>
         <li><a href="_autosummary/denote.compare.html#module-denote.compare">denote.compare</a>
 </li>
+        <li><a href="_autosummary/denote.isolated.html#module-denote.isolated">denote.isolated</a>
+</li>
         <li><a href="_autosummary/denote.keys.html#module-denote.keys">denote.keys</a>
 </li>
         <li><a href="_autosummary/denote.registry.html#module-denote.registry">denote.registry</a>
@@ -770,6 +936,12 @@
         <li><a href="_autosummary/denote.translation.html#module-denote.translation">denote.translation</a>
 </li>
         <li><a href="_autosummary/denote.util.html#module-denote.util">denote.util</a>
+</li>
+        <li><a href="_autosummary/denote.workers.html#module-denote.workers">denote.workers</a>
+</li>
+        <li><a href="_autosummary/denote.workers.demucs_mlx_worker.html#module-denote.workers.demucs_mlx_worker">denote.workers.demucs_mlx_worker</a>
+</li>
+        <li><a href="_autosummary/denote.workers.roformer_worker.html#module-denote.workers.roformer_worker">denote.workers.roformer_worker</a>
 </li>
       </ul></li>
   </ul></td>
@@ -785,9 +957,15 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.align.html#denote.align.N_PITCH_CLASSES">N_PITCH_CLASSES (in module denote.align)</a>
 </li>
+      <li><a href="_autosummary/denote.backends.torchaudio_hdemucs.adapter.html#denote.backends.torchaudio_hdemucs.adapter.NORM_EPS">NORM_EPS (in module denote.backends.torchaudio_hdemucs.adapter)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.workers.demucs_mlx_worker.html#denote.workers.demucs_mlx_worker.NORM_EPS">(in module denote.workers.demucs_mlx_worker)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
-      <li><a href="_autosummary/denote.backends.torchaudio_hdemucs.adapter.html#denote.backends.torchaudio_hdemucs.adapter.NORM_EPS">NORM_EPS (in module denote.backends.torchaudio_hdemucs.adapter)</a>
+      <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.NORMALIZATION_THRESHOLD">NORMALIZATION_THRESHOLD (in module denote.workers.roformer_worker)</a>
 </li>
       <li><a href="_autosummary/denote.base.html#denote.base.NoteEvent">NoteEvent (class in denote.base)</a>
 </li>
@@ -843,12 +1021,18 @@
 </li>
       <li><a href="_autosummary/denote.registry.html#denote.registry.register_backend">register_backend() (in module denote.registry)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.base.html#denote.base.KeyResult.relative">relative (denote.base.KeyResult property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.keys.html#denote.keys.relative_key">relative_key() (in module denote.keys)</a>
 </li>
+      <li><a href="_autosummary/denote.backends.demucs_mlx.adapter.html#denote.backends.demucs_mlx.adapter.Adapter.request">request() (denote.backends.demucs_mlx.adapter.Adapter method)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator.request">(denote.isolated.IsolatedSeparator method)</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/denote.keys.html#denote.keys.resolve_profile">resolve_profile() (in module denote.keys)</a>
 </li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.restore_scipy_gaussian">restore_scipy_gaussian() (in module denote.backends.basic_pitch.compat)</a>
@@ -862,6 +1046,12 @@
   <h2 id="S">S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.workers.demucs_mlx_worker.html#denote.workers.demucs_mlx_worker.SAMPLE_RATE">SAMPLE_RATE (in module denote.workers.demucs_mlx_worker)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.SAMPLE_RATE">(in module denote.workers.roformer_worker)</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/denote.align.html#denote.align.score_chroma">score_chroma() (in module denote.align)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.score_span">score_span (denote.align.ScoreAlignment property)</a>
@@ -872,21 +1062,37 @@
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment">ScoreAlignment (class in denote.align)</a>
 </li>
-      <li><a href="_autosummary/denote.backends.torchaudio_hdemucs.adapter.html#denote.backends.torchaudio_hdemucs.adapter.Adapter.separate">separate() (denote.backends.torchaudio_hdemucs.adapter.Adapter method)</a>
+      <li><a href="_autosummary/denote.backends.roformer.adapter.html#denote.backends.roformer.adapter.Adapter.separate">separate() (denote.backends.roformer.adapter.Adapter method)</a>
 
       <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.torchaudio_hdemucs.adapter.html#denote.backends.torchaudio_hdemucs.adapter.Adapter.separate">(denote.backends.torchaudio_hdemucs.adapter.Adapter method)</a>
+</li>
+        <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator.separate">(denote.isolated.IsolatedSeparator method)</a>
+</li>
         <li><a href="_autosummary/denote.html#denote.separate">(in module denote)</a>
+</li>
+        <li><a href="_autosummary/denote.workers.demucs_mlx_worker.html#denote.workers.demucs_mlx_worker.separate">(in module denote.workers.demucs_mlx_worker)</a>
+</li>
+        <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.separate">(in module denote.workers.roformer_worker)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.separate_in_worker">separate_in_worker() (in module denote.isolated)</a>
+</li>
       <li><a href="_autosummary/denote.base.html#denote.base.SeparationResult">SeparationResult (class in denote.base)</a>
 </li>
       <li><a href="_autosummary/denote.services.html#denote.services">services (in module denote)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.SILENT_NORM">SILENT_NORM (in module denote.align)</a>
 </li>
+      <li><a href="_autosummary/denote.workers.demucs_mlx_worker.html#denote.workers.demucs_mlx_worker.SINGLE_STEM_MODEL">SINGLE_STEM_MODEL (in module denote.workers.demucs_mlx_worker)</a>
+</li>
       <li><a href="_autosummary/denote.keys.html#denote.keys.KeyProfile.source">source (denote.keys.KeyProfile attribute)</a>
+</li>
+      <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.STEM_IN_FILENAME">STEM_IN_FILENAME (in module denote.workers.roformer_worker)</a>
+</li>
+      <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.stem_name">stem_name() (in module denote.workers.roformer_worker)</a>
 </li>
       <li><a href="_autosummary/denote.backends.swift_f0.adapter.html#denote.backends.swift_f0.adapter.SWIFT_F0_SR">SWIFT_F0_SR (in module denote.backends.swift_f0.adapter)</a>
 </li>
@@ -897,21 +1103,32 @@
   <h2 id="T">T</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.target_first">target_first() (in module denote.workers.roformer_worker)</a>
+</li>
       <li><a href="_autosummary/denote.backends.beat_this.adapter.html#denote.backends.beat_this.adapter.tempo_from_beats">tempo_from_beats() (in module denote.backends.beat_this.adapter)</a>
 </li>
       <li><a href="_autosummary/denote.compare.html#denote.compare.timbre_metric">timbre_metric() (in module denote.compare)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.backends.basic_pitch.adapter.html#denote.backends.basic_pitch.adapter.Adapter.transcribe">transcribe() (denote.backends.basic_pitch.adapter.Adapter method)</a>
 
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.html#denote.transcribe">(in module denote)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.base.html#denote.base.TranscriptionResult">TranscriptionResult (class in denote.base)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.transpose">transpose (denote.align.ScoreAlignment attribute)</a>
+</li>
+  </ul></td>
+  </tr>
+      </table>
+  
+  <h2 id="U">U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.backends.roformer.config.html#denote.backends.roformer.config.UNLISTED_CHECKPOINT">UNLISTED_CHECKPOINT (in module denote.backends.roformer.config)</a>
 </li>
   </ul></td>
   </tr>
@@ -930,11 +1147,30 @@
   </tr>
       </table>
   
+  <h2 id="W">W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.worker_file">worker_file() (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.roformer.adapter.html#denote.backends.roformer.adapter.Adapter.worker_init">worker_init() (denote.backends.roformer.adapter.Adapter method)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator.worker_init">(denote.isolated.IsolatedSeparator method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.isolated.html#denote.isolated.WORKERS_DIR">WORKERS_DIR (in module denote.isolated)</a>
+</li>
+  </ul></td>
+  </tr>
+      </table>
+  
 
 </div></div>
 <aside id="right-sidebar" class="hidden text-sm xl:block">
 <div class="sticky top-16 -mt-10 max-h-[calc(var(--vh)-4rem)] overflow-y-auto pt-6 space-y-2">
-<a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#A">A</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#B">B</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#C">C</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#D">D</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#E">E</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#F">F</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#G">G</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#H">H</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#I">I</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#K">K</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#L">L</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#M">M</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#N">N</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#O">O</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#P">P</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#Q">Q</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#R">R</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#S">S</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#T">T</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#V">V</a>
+<a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#A">A</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#B">B</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#C">C</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#D">D</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#E">E</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#F">F</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#G">G</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#H">H</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#I">I</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#K">K</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#L">L</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#M">M</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#N">N</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#O">O</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#P">P</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#Q">Q</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#R">R</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#S">S</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#T">T</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#U">U</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#V">V</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#W">W</a>
 </div>
 </aside>
           </main>
@@ -948,7 +1184,7 @@
 </footer>
     </div>
     
-    <script src="_static/documentation_options.js?v=0c446633"></script>
+    <script src="_static/documentation_options.js?v=3bbcec59"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>

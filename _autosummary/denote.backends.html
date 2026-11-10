@@ -88,11 +88,13 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.translation.html">denote.translation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.util.html">denote.util</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.workers.html">denote.workers</a></li>
 </ul>
 </li>
 </ul>
@@ -134,17 +136,23 @@
 <tr class="row-even"><td><p><a class="reference internal" href="denote.backends.beat_this.html#module-denote.backends.beat_this" title="denote.backends.beat_this"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beat_this</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.backends.librosa_beats.html#module-denote.backends.librosa_beats" title="denote.backends.librosa_beats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">librosa_beats</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.backends.demucs_mlx.html#module-denote.backends.demucs_mlx" title="denote.backends.demucs_mlx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">demucs_mlx</span></code></a></p></td>
+<td><p>HTDemucs source separation on MLX (demucs-mlx), run in its own environment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.backends.librosa_beats.html#module-denote.backends.librosa_beats" title="denote.backends.librosa_beats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">librosa_beats</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="denote.backends.librosa_key.html#module-denote.backends.librosa_key" title="denote.backends.librosa_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">librosa_key</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.backends.librosa_key.html#module-denote.backends.librosa_key" title="denote.backends.librosa_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">librosa_key</span></code></a></p></td>
 <td><p>librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="denote.backends.librosa_pyin.html#module-denote.backends.librosa_pyin" title="denote.backends.librosa_pyin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">librosa_pyin</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.backends.librosa_pyin.html#module-denote.backends.librosa_pyin" title="denote.backends.librosa_pyin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">librosa_pyin</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="denote.backends.pesto.html#module-denote.backends.pesto" title="denote.backends.pesto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pesto</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="denote.backends.pesto.html#module-denote.backends.pesto" title="denote.backends.pesto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pesto</span></code></a></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="denote.backends.roformer.html#module-denote.backends.roformer" title="denote.backends.roformer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roformer</span></code></a></p></td>
+<td><p>RoFormer source separation (audio-separator), run in its own environment.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="denote.backends.swift_f0.html#module-denote.backends.swift_f0" title="denote.backends.swift_f0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swift_f0</span></code></a></p></td>
 <td><p></p></td>
@@ -169,7 +177,7 @@
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=0c446633"></script>
+<script src="../_static/documentation_options.js?v=3bbcec59"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

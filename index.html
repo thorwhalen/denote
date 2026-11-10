@@ -87,11 +87,13 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.compare.html">denote.compare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.keys.html">denote.keys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.registry.html">denote.registry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.services.html">denote.services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.translation.html">denote.translation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.util.html">denote.util</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.workers.html">denote.workers</a></li>
 </ul>
 </li>
 </ul>
@@ -253,10 +255,37 @@ Each backend is an optional dependency — install only what you need.</p>
 <td><p>unstated; author says research use (unclear)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">denote[torchaudio_hdemucs]</span></code></p></td>
 </tr>
+<tr class="row-odd"><td><p>HTDemucs on MLX (<code class="docutils literal notranslate"><span class="pre">demucs_mlx</span></code>)</p></td>
+<td><p>Source separation (Apple silicon)</p></td>
+<td><p>MIT</p></td>
+<td><p>unstated; converted from the same Demucs checkpoints (unclear)</p></td>
+<td><p>own environment: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">denote.isolated</span> <span class="pre">build</span> <span class="pre">demucs_mlx</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>RoFormer via audio-separator (<code class="docutils literal notranslate"><span class="pre">roformer</span></code>)</p></td>
+<td><p>Source separation</p></td>
+<td><p>MIT</p></td>
+<td><p>default checkpoint MIT (yes); other community checkpoints unstated (unclear)</p></td>
+<td><p>own environment: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">denote.isolated</span> <span class="pre">build</span> <span class="pre">roformer</span></code></p></td>
+</tr>
 </tbody>
 </table>
 <p><code class="docutils literal notranslate"><span class="pre">denote.backend_table()</span></code> gives the same columns from the backends’ configs, where each licence’s source is cited.</p>
-<p>More backends coming: madmom, autochord, newer separators.</p>
+<p>More backends coming: madmom, autochord.</p>
+<section id="backends-in-their-own-environment">
+<h3>Backends in their own environment<a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#backends-in-their-own-environment" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#backends-in-their-own-environment'">¶</a></h3>
+<p>Some models pin dependencies that cannot share denote’s environment (<code class="docutils literal notranslate"><span class="pre">demucs-mlx</span></code> pins its MLX, <code class="docutils literal notranslate"><span class="pre">audio-separator</span></code> needs torch&gt;=2.13 on Apple silicon). Those backends run their model in a separate Python environment that denote builds with <a class="reference external" href="https://docs.astral.sh/uv/" rel="nofollow noopener">uv<svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a> from pinned requirements (through <a class="reference external" href="https://github.com/thorwhalen/ps" rel="nofollow noopener"><code class="docutils literal notranslate"><span class="pre">ps.isolated</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a>), and talk to it through a long-lived worker process, so the model loads once:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><code><span id="line-1">python<span class="w"> </span>-m<span class="w"> </span>denote.isolated<span class="w"> </span>build<span class="w"> </span>demucs_mlx<span class="w">   </span><span class="c1"># one-time</span>
+</span><span id="line-2">python<span class="w"> </span>-m<span class="w"> </span>denote.isolated<span class="w"> </span>status<span class="w">             </span><span class="c1"># which are built, and where</span>
+</span></code></pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="n">result</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"demucs_mlx"</span><span class="p">)</span>  <span class="c1"># htdemucs on MLX</span>
+</span><span id="line-2"><span class="n">result</span><span class="o">.</span><span class="n">stems</span>  <span class="c1"># {"drums", "bass", "other", "vocals"}</span>
+</span><span id="line-3"><span class="n">vocals</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"roformer"</span><span class="p">)</span><span class="o">.</span><span class="n">vocals</span>  <span class="c1"># Mel-Band RoFormer</span>
+</span><span id="line-4"><span class="n">denote</span><span class="o">.</span><span class="n">services</span><span class="p">[</span><span class="s2">"roformer"</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># free the worker's memory</span>
+</span></code></pre></div>
+</div>
+<p>Environments live in <code class="docutils literal notranslate"><span class="pre">~/.local/share/denote/envs/&lt;backend&gt;</span></code> (set <code class="docutils literal notranslate"><span class="pre">DENOTE_DATA_DIR</span></code> to move them). A missing one raises <code class="docutils literal notranslate"><span class="pre">denote.isolated.EnvNotBuilt</span></code> with the build command; pass <code class="docutils literal notranslate"><span class="pre">build_env=True</span></code> to build it on first use instead. Building needs <code class="docutils literal notranslate"><span class="pre">uv</span></code> on the <code class="docutils literal notranslate"><span class="pre">PATH</span></code>. Each environment is installed from a lock kept with its backend (<code class="docutils literal notranslate"><span class="pre">env.lock</span></code>, every package pinned), so it is reproducible; <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">denote.isolated</span> <span class="pre">lock</span> <span class="pre">&lt;backend&gt;</span></code> re-resolves it. A backend’s worker keeps its model loaded (4.5 to 6 GB for these two) until <code class="docutils literal notranslate"><span class="pre">denote.services[&lt;backend&gt;].close()</span></code> or the end of the process.</p>
+</section>
 </section>
 <section id="plugin-system">
 <h2>Plugin System<a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#plugin-system" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#plugin-system'">¶</a></h2>
@@ -278,7 +307,7 @@ Each backend is an optional dependency — install only what you need.</p>
 
 </section>
 </section>
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-10 10:34 UTC from <a href="https://github.com/thorwhalen/denote/commit/1aabce7b18e5149ba27c5707bb186461bc30b2fd">1aabce7</a> (main) · denote 0.0.11 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-10 11:33 UTC from <a href="https://github.com/thorwhalen/denote/commit/34460a941586a800b88592d2268080546dbc54c9">34460a9</a> (main) · denote 0.0.12 · <a href="about-this-build.html">about this build</a></p>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
@@ -286,7 +315,10 @@ Each backend is an optional dependency — install only what you need.</p>
 <li><a :data-current="activeSection === '#quick-start'" class="reference internal" href="#quick-start">Quick Start</a></li>
 <li><a :data-current="activeSection === '#choose-your-backend'" class="reference internal" href="#choose-your-backend">Choose Your Backend</a></li>
 <li><a :data-current="activeSection === '#service-level-access'" class="reference internal" href="#service-level-access">Service-Level Access</a></li>
-<li><a :data-current="activeSection === '#supported-backends'" class="reference internal" href="#supported-backends">Supported Backends</a></li>
+<li><a :data-current="activeSection === '#supported-backends'" class="reference internal" href="#supported-backends">Supported Backends</a><ul>
+<li><a :data-current="activeSection === '#backends-in-their-own-environment'" class="reference internal" href="#backends-in-their-own-environment">Backends in their own environment</a></li>
+</ul>
+</li>
 <li><a :data-current="activeSection === '#plugin-system'" class="reference internal" href="#plugin-system">Plugin System</a></li>
 </ul>
 </div>
@@ -301,7 +333,7 @@ Each backend is an optional dependency — install only what you need.</p>
 </div>
 </footer>
 </div>
-<script src="_static/documentation_options.js?v=0c446633"></script>
+<script src="_static/documentation_options.js?v=3bbcec59"></script>
 <script src="_static/doctools.js?v=fd6eb6e6"></script>
 <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="_static/clipboard.min.js?v=a7894cd8"></script>

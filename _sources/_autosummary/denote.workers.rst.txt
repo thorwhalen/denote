@@ -1,0 +1,14 @@
+denote.workers
+==============
+
+.. automodule:: denote.workers
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   demucs_mlx_worker
+   roformer_worker

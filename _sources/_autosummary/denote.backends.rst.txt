@@ -12,10 +12,12 @@ denote.backends
 
    basic_pitch
    beat_this
+   demucs_mlx
    librosa_beats
    librosa_key
    librosa_pyin
    pesto
+   roformer
    swift_f0
    torchaudio_hdemucs
    torchcrepe

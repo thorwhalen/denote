@@ -32,8 +32,10 @@
    backends
    base
    compare
+   isolated
    keys
    registry
    services
    translation
    util
+   workers
