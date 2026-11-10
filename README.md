@@ -107,10 +107,10 @@ python -m denote.isolated status             # which are built, and where
 ```
 
 ```python
-result = denote.separate("song.wav", backend="demucs_mlx")         # htdemucs on MLX
-result.stems                                                         # {"drums", "bass", "other", "vocals"}
-vocals = denote.separate("song.wav", backend="roformer").vocals     # Mel-Band RoFormer
-denote.services["roformer"].close()                                  # free the worker's memory
+result = denote.separate("song.wav", backend="demucs_mlx")  # htdemucs on MLX
+result.stems  # {"drums", "bass", "other", "vocals"}
+vocals = denote.separate("song.wav", backend="roformer").vocals  # Mel-Band RoFormer
+denote.services["roformer"].close()  # free the worker's memory
 ```
 
 Environments live in `~/.local/share/denote/envs/<backend>` (set `DENOTE_DATA_DIR` to move them). A missing one raises `denote.isolated.EnvNotBuilt` with the build command; pass `build_env=True` to build it on first use instead. Building needs `uv` on the `PATH`. Each environment is installed from a lock kept with its backend (`env.lock`, every package pinned), so it is reproducible; `python -m denote.isolated lock <backend>` re-resolves it. A backend's worker keeps its model loaded (4.5 to 6 GB for these two) until `denote.services[<backend>].close()` or the end of the process.
