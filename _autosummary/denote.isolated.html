@@ -177,9 +177,6 @@ built, and changing the lock changes the spec’s digest (the next build starts 
 <tr class="row-odd"><td><p><a class="reference internal" href="#denote.isolated.MIX_FILE" title="denote.isolated.MIX_FILE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIX_FILE</span></code></a></p></td>
 <td><p>The file a worker reads its input from, in the request's folder.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.isolated.HOST_UV_VARS" title="denote.isolated.HOST_UV_VARS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HOST_UV_VARS</span></code></a></p></td>
-<td><p>uv settings holding the host's pins, cleared when resolving a lock.</p></td>
-</tr>
 </tbody>
 </table>
 <p class="rubric">Functions</p>
@@ -212,19 +209,16 @@ built, and changing the lock changes the spec’s digest (the next build starts 
 <tr class="row-odd"><td><p><a class="reference internal" href="#denote.isolated.is_env_ready" title="denote.isolated.is_env_ready"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_env_ready</span></code></a>(config)</p></td>
 <td><p>True if the backend's environment exists and was built from its current spec.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.isolated.lock_command" title="denote.isolated.lock_command"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lock_command</span></code></a>(config)</p></td>
-<td><p>The <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">compile</span></code> command that resolves a config's lock (requirements on stdin).</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.isolated.lock_requirements" title="denote.isolated.lock_requirements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lock_requirements</span></code></a>(text)</p></td>
+<td><p>The requirement lines of a lock (<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">compile</span></code> output): <code class="xref py py-func docutils literal notranslate"><span class="pre">ps.isolated.lock_requirements()</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.isolated.lock_requirements" title="denote.isolated.lock_requirements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lock_requirements</span></code></a>(text)</p></td>
-<td><p>The requirement lines of a lock (<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">compile</span></code> output), comments dropped.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.isolated.make_worker" title="denote.isolated.make_worker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_worker</span></code></a>(config, *[, init, build])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.isolated.make_worker" title="denote.isolated.make_worker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_worker</span></code></a>(config, *[, init, build])</p></td>
 <td><p>A <code class="docutils literal notranslate"><span class="pre">ps.isolated.Worker</span></code> running the backend's worker file in its environment.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#denote.isolated.separate_in_worker" title="denote.isolated.separate_in_worker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">separate_in_worker</span></code></a>(call, mix, **request)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#denote.isolated.separate_in_worker" title="denote.isolated.separate_in_worker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">separate_in_worker</span></code></a>(call, mix, **request)</p></td>
 <td><p>Run a worker's <code class="docutils literal notranslate"><span class="pre">separate</span></code> on <code class="docutils literal notranslate"><span class="pre">mix</span></code> (<code class="docutils literal notranslate"><span class="pre">(channels,</span> <span class="pre">frames)</span></code>), return <code class="docutils literal notranslate"><span class="pre">(stems,</span> <span class="pre">reply)</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#denote.isolated.worker_file" title="denote.isolated.worker_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">worker_file</span></code></a>(name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#denote.isolated.worker_file" title="denote.isolated.worker_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">worker_file</span></code></a>(name)</p></td>
 <td><p>The worker file of backend <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p></td>
 </tr>
 </tbody>
@@ -265,11 +259,6 @@ built, and changing the lock changes the spec’s digest (the next build starts 
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">denote.isolated.</span></span><span class="sig-name descname"><span class="pre">EnvNotBuilt</span></span><a class="reference internal" href="../_modules/denote/isolated.html#EnvNotBuilt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.isolated.EnvNotBuilt" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.isolated.EnvNotBuilt'">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></p>
 <p>A backend’s isolated environment is not built; the message says how to build it.</p>
-</dd></dl>
-<dl class="py data">
-<dt class="sig sig-object py" id="denote.isolated.HOST_UV_VARS">
-<span class="sig-prename descclassname"><span class="pre">denote.isolated.</span></span><span class="sig-name descname"><span class="pre">HOST_UV_VARS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('UV_CONSTRAINT',</span> <span class="pre">'UV_OVERRIDE',</span> <span class="pre">'UV_BUILD_CONSTRAINT')</span></span><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.isolated.HOST_UV_VARS" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.isolated.HOST_UV_VARS'">¶</a></dt>
-<dd><p>uv settings holding the host’s pins, cleared when resolving a lock.</p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="denote.isolated.IsolatedSeparator">
@@ -458,19 +447,9 @@ stops it. Config needs <code class="docutils literal notranslate"><span class="p
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt class="sig sig-object py" id="denote.isolated.lock_command">
-<span class="sig-prename descclassname"><span class="pre">denote.isolated.</span></span><span class="sig-name descname"><span class="pre">lock_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/isolated.html#lock_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.isolated.lock_command" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.isolated.lock_command'">¶</a></dt>
-<dd><p>The <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">compile</span></code> command that resolves a config’s lock (requirements on stdin).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a></span></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
 <dt class="sig sig-object py" id="denote.isolated.lock_requirements">
 <span class="sig-prename descclassname"><span class="pre">denote.isolated.</span></span><span class="sig-name descname"><span class="pre">lock_requirements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/isolated.html#lock_requirements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.isolated.lock_requirements" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.isolated.lock_requirements'">¶</a></dt>
-<dd><p>The requirement lines of a lock (<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">compile</span></code> output), comments dropped.</p>
+<dd><p>The requirement lines of a lock (<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">compile</span></code> output): <code class="xref py py-func docutils literal notranslate"><span class="pre">ps.isolated.lock_requirements()</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gp">&gt;&gt;&gt; </span><span class="n">lock_requirements</span><span class="p">(</span><span class="s2">"# header</span><span class="se">\n</span><span class="s2">numpy==2.1.0</span><span class="se">\n</span><span class="s2">    # via x</span><span class="se">\n</span><span class="s2">torch==2.15.0 ; sys_platform == 'darwin'</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 </span><span id="line-2"><span class="go">('numpy==2.1.0', "torch==2.15.0 ; sys_platform == 'darwin'")</span>
 </span></code></pre></div>
@@ -519,7 +498,6 @@ folder is removed before this returns.</p>
 <li><a :data-current="activeSection === '#denote.isolated.DFLT_DATA_DIR'" class="reference internal" href="#denote.isolated.DFLT_DATA_DIR"><code class="docutils literal notranslate"><span class="pre">DFLT_DATA_DIR</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.DFLT_ENV_PYTHON'" class="reference internal" href="#denote.isolated.DFLT_ENV_PYTHON"><code class="docutils literal notranslate"><span class="pre">DFLT_ENV_PYTHON</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.EnvNotBuilt'" class="reference internal" href="#denote.isolated.EnvNotBuilt"><code class="docutils literal notranslate"><span class="pre">EnvNotBuilt</span></code></a></li>
-<li><a :data-current="activeSection === '#denote.isolated.HOST_UV_VARS'" class="reference internal" href="#denote.isolated.HOST_UV_VARS"><code class="docutils literal notranslate"><span class="pre">HOST_UV_VARS</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.IsolatedSeparator'" class="reference internal" href="#denote.isolated.IsolatedSeparator"><code class="docutils literal notranslate"><span class="pre">IsolatedSeparator</span></code></a><ul>
 <li><a :data-current="activeSection === '#denote.isolated.IsolatedSeparator.CHANNELS'" class="reference internal" href="#denote.isolated.IsolatedSeparator.CHANNELS"><code class="docutils literal notranslate"><span class="pre">IsolatedSeparator.CHANNELS</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.IsolatedSeparator.MODEL_SR'" class="reference internal" href="#denote.isolated.IsolatedSeparator.MODEL_SR"><code class="docutils literal notranslate"><span class="pre">IsolatedSeparator.MODEL_SR</span></code></a></li>
@@ -541,7 +519,6 @@ folder is removed before this returns.</p>
 <li><a :data-current="activeSection === '#denote.isolated.env_size_hint'" class="reference internal" href="#denote.isolated.env_size_hint"><code class="docutils literal notranslate"><span class="pre">env_size_hint()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.env_spec'" class="reference internal" href="#denote.isolated.env_spec"><code class="docutils literal notranslate"><span class="pre">env_spec()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.is_env_ready'" class="reference internal" href="#denote.isolated.is_env_ready"><code class="docutils literal notranslate"><span class="pre">is_env_ready()</span></code></a></li>
-<li><a :data-current="activeSection === '#denote.isolated.lock_command'" class="reference internal" href="#denote.isolated.lock_command"><code class="docutils literal notranslate"><span class="pre">lock_command()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.lock_requirements'" class="reference internal" href="#denote.isolated.lock_requirements"><code class="docutils literal notranslate"><span class="pre">lock_requirements()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.make_worker'" class="reference internal" href="#denote.isolated.make_worker"><code class="docutils literal notranslate"><span class="pre">make_worker()</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.isolated.separate_in_worker'" class="reference internal" href="#denote.isolated.separate_in_worker"><code class="docutils literal notranslate"><span class="pre">separate_in_worker()</span></code></a></li>
@@ -559,7 +536,7 @@ folder is removed before this returns.</p>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=3bbcec59"></script>
+<script src="../_static/documentation_options.js?v=9fc46840"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

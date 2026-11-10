@@ -43,31 +43,29 @@ A worker keeps its model in memory (several GB for these models) until it is clo
 
 ### Module Attributes
 
-| [`DATA_DIR_ENVVAR`](#denote.isolated.DATA_DIR_ENVVAR)   | Environment variable naming denote's data root.                     |
-|--------------------------------------------------------------------|---------------------------------------------------------------------|
-| [`DFLT_DATA_DIR`](#denote.isolated.DFLT_DATA_DIR)     | The data root when `DENOTE_DATA_DIR` is not set.                    |
-| [`DFLT_ENV_PYTHON`](#denote.isolated.DFLT_ENV_PYTHON)   | Python of an isolated environment when its config names none.       |
-| [`WORKERS_DIR`](#denote.isolated.WORKERS_DIR)       | The folder holding the worker files.                                |
-| [`MIX_FILE`](#denote.isolated.MIX_FILE)          | The file a worker reads its input from, in the request's folder.    |
-| [`HOST_UV_VARS`](#denote.isolated.HOST_UV_VARS)      | uv settings holding the host's pins, cleared when resolving a lock. |
+| [`DATA_DIR_ENVVAR`](#denote.isolated.DATA_DIR_ENVVAR)   | Environment variable naming denote's data root.                  |
+|--------------------------------------------------------------------|------------------------------------------------------------------|
+| [`DFLT_DATA_DIR`](#denote.isolated.DFLT_DATA_DIR)     | The data root when `DENOTE_DATA_DIR` is not set.                 |
+| [`DFLT_ENV_PYTHON`](#denote.isolated.DFLT_ENV_PYTHON)   | Python of an isolated environment when its config names none.    |
+| [`WORKERS_DIR`](#denote.isolated.WORKERS_DIR)       | The folder holding the worker files.                             |
+| [`MIX_FILE`](#denote.isolated.MIX_FILE)          | The file a worker reads its input from, in the request's folder. |
 
 ### Functions
 
-| [`build_command`](#denote.isolated.build_command)(name)                        | The shell command that builds backend `name`'s environment.                         |
-|---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| [`build_env`](#denote.isolated.build_env)(name, \*\*ensure_kwargs)         | Build backend `name`'s environment (no-op if built from this spec); its Python.     |
-| [`compile_lock`](#denote.isolated.compile_lock)(name, \*[, run])              | Re-resolve backend `name`'s lock from its top-level requirements; the lock's path.  |
-| [`data_dir`](#denote.isolated.data_dir)(\*parts)                          | `$DENOTE_DATA_DIR/<parts>` (default root `~/.local/share/denote`), not created.     |
-| [`env_dir`](#denote.isolated.env_dir)(name)                              | The folder of backend `name`'s environment (it may not exist).                      |
-| [`env_python`](#denote.isolated.env_python)(config, \*[, build])            | The interpreter of the backend's environment, building it only if `build`.          |
-| [`env_size_hint`](#denote.isolated.env_size_hint)(config)                      | The rough download size a config states for its environment.                        |
-| [`env_spec`](#denote.isolated.env_spec)(config)                           | The `ps.isolated.EnvSpec` of a backend config's `isolated_env`.                     |
-| [`is_env_ready`](#denote.isolated.is_env_ready)(config)                       | True if the backend's environment exists and was built from its current spec.       |
-| [`lock_command`](#denote.isolated.lock_command)(config)                       | The `uv pip compile` command that resolves a config's lock (requirements on stdin). |
-| [`lock_requirements`](#denote.isolated.lock_requirements)(text)                    | The requirement lines of a lock (`uv pip compile` output), comments dropped.        |
-| [`make_worker`](#denote.isolated.make_worker)(config, \*[, init, build])     | A `ps.isolated.Worker` running the backend's worker file in its environment.        |
-| [`separate_in_worker`](#denote.isolated.separate_in_worker)(call, mix, \*\*request) | Run a worker's `separate` on `mix` (`(channels, frames)`), return `(stems, reply)`. |
-| [`worker_file`](#denote.isolated.worker_file)(name)                          | The worker file of backend `name`.                                                  |
+| [`build_command`](#denote.isolated.build_command)(name)                        | The shell command that builds backend `name`'s environment.                                   |
+|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| [`build_env`](#denote.isolated.build_env)(name, \*\*ensure_kwargs)         | Build backend `name`'s environment (no-op if built from this spec); its Python.               |
+| [`compile_lock`](#denote.isolated.compile_lock)(name, \*[, run])              | Re-resolve backend `name`'s lock from its top-level requirements; the lock's path.            |
+| [`data_dir`](#denote.isolated.data_dir)(\*parts)                          | `$DENOTE_DATA_DIR/<parts>` (default root `~/.local/share/denote`), not created.               |
+| [`env_dir`](#denote.isolated.env_dir)(name)                              | The folder of backend `name`'s environment (it may not exist).                                |
+| [`env_python`](#denote.isolated.env_python)(config, \*[, build])            | The interpreter of the backend's environment, building it only if `build`.                    |
+| [`env_size_hint`](#denote.isolated.env_size_hint)(config)                      | The rough download size a config states for its environment.                                  |
+| [`env_spec`](#denote.isolated.env_spec)(config)                           | The `ps.isolated.EnvSpec` of a backend config's `isolated_env`.                               |
+| [`is_env_ready`](#denote.isolated.is_env_ready)(config)                       | True if the backend's environment exists and was built from its current spec.                 |
+| [`lock_requirements`](#denote.isolated.lock_requirements)(text)                    | The requirement lines of a lock (`uv pip compile` output): `ps.isolated.lock_requirements()`. |
+| [`make_worker`](#denote.isolated.make_worker)(config, \*[, init, build])     | A `ps.isolated.Worker` running the backend's worker file in its environment.                  |
+| [`separate_in_worker`](#denote.isolated.separate_in_worker)(call, mix, \*\*request) | Run a worker's `separate` on `mix` (`(channels, frames)`), return `(stems, reply)`.           |
+| [`worker_file`](#denote.isolated.worker_file)(name)                          | The worker file of backend `name`.                                                            |
 
 ### Classes
 
@@ -96,10 +94,6 @@ Python of an isolated environment when its config names none.
 Bases: [`RuntimeError`](https://docs.python.org/3/builtins/exceptions.html#RuntimeError)
 
 A backend’s isolated environment is not built; the message says how to build it.
-
-### denote.isolated.HOST_UV_VARS *= ('UV_CONSTRAINT', 'UV_OVERRIDE', 'UV_BUILD_CONSTRAINT')*
-
-uv settings holding the host’s pins, cleared when resolving a lock.
 
 ### *class* denote.isolated.IsolatedSeparator(config)
 
@@ -236,16 +230,9 @@ True if the backend’s environment exists and was built from its current spec.
 * **Return type:**
   [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
-### denote.isolated.lock_command(config)
-
-The `uv pip compile` command that resolves a config’s lock (requirements on stdin).
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
-
 ### denote.isolated.lock_requirements(text)
 
-The requirement lines of a lock (`uv pip compile` output), comments dropped.
+The requirement lines of a lock (`uv pip compile` output): `ps.isolated.lock_requirements()`.
 
 ```pycon
 >>> lock_requirements("# header\nnumpy==2.1.0\n    # via x\ntorch==2.15.0 ; sys_platform == 'darwin'\n")

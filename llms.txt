@@ -56,7 +56,7 @@
 - [denote.workers.demucs_mlx_worker](_autosummary/denote.workers.demucs_mlx_worker.html.md): demucs-mlx worker: HTDemucs on Apple’s MLX, run in the &#96;demucs_mlx&#96; environment.
 - [denote.workers.roformer_worker](_autosummary/denote.workers.roformer_worker.html.md): RoFormer worker: audio-separator’s RoFormer checkpoints, run in the &#96;roformer&#96; environment.
 - [For AI agents](ai-agents.html.md): &#96;denote&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-10 11:33 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-10 15:18 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
 
 ## Optional
 

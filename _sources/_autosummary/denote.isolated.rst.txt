@@ -13,7 +13,6 @@ denote.isolated
       DFLT_ENV_PYTHON
       WORKERS_DIR
       MIX_FILE
-      HOST_UV_VARS
    
    .. rubric:: Functions
 
@@ -28,7 +27,6 @@ denote.isolated
       env_size_hint
       env_spec
       is_env_ready
-      lock_command
       lock_requirements
       make_worker
       separate_in_worker

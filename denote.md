@@ -1,4 +1,4 @@
-> built 2026-11-10 11:33 UTC from 34460a9 (main) · denote 0.0.12. Details: build_info.json
+> built 2026-11-10 15:18 UTC from 8b42326 (main) · denote 0.0.13. Details: build_info.json
 
 # index.html.md
 
@@ -1760,31 +1760,29 @@ A worker keeps its model in memory (several GB for these models) until it is clo
 
 ### Module Attributes
 
-| [`DATA_DIR_ENVVAR`](_autosummary/denote.isolated.html.md#denote.isolated.DATA_DIR_ENVVAR)   | Environment variable naming denote's data root.                     |
-|--------------------------------------------------------------------|---------------------------------------------------------------------|
-| [`DFLT_DATA_DIR`](_autosummary/denote.isolated.html.md#denote.isolated.DFLT_DATA_DIR)     | The data root when `DENOTE_DATA_DIR` is not set.                    |
-| [`DFLT_ENV_PYTHON`](_autosummary/denote.isolated.html.md#denote.isolated.DFLT_ENV_PYTHON)   | Python of an isolated environment when its config names none.       |
-| [`WORKERS_DIR`](_autosummary/denote.isolated.html.md#denote.isolated.WORKERS_DIR)       | The folder holding the worker files.                                |
-| [`MIX_FILE`](_autosummary/denote.isolated.html.md#denote.isolated.MIX_FILE)          | The file a worker reads its input from, in the request's folder.    |
-| [`HOST_UV_VARS`](_autosummary/denote.isolated.html.md#denote.isolated.HOST_UV_VARS)      | uv settings holding the host's pins, cleared when resolving a lock. |
+| [`DATA_DIR_ENVVAR`](_autosummary/denote.isolated.html.md#denote.isolated.DATA_DIR_ENVVAR)   | Environment variable naming denote's data root.                  |
+|--------------------------------------------------------------------|------------------------------------------------------------------|
+| [`DFLT_DATA_DIR`](_autosummary/denote.isolated.html.md#denote.isolated.DFLT_DATA_DIR)     | The data root when `DENOTE_DATA_DIR` is not set.                 |
+| [`DFLT_ENV_PYTHON`](_autosummary/denote.isolated.html.md#denote.isolated.DFLT_ENV_PYTHON)   | Python of an isolated environment when its config names none.    |
+| [`WORKERS_DIR`](_autosummary/denote.isolated.html.md#denote.isolated.WORKERS_DIR)       | The folder holding the worker files.                             |
+| [`MIX_FILE`](_autosummary/denote.isolated.html.md#denote.isolated.MIX_FILE)          | The file a worker reads its input from, in the request's folder. |
 
 ### Functions
 
-| [`build_command`](_autosummary/denote.isolated.html.md#denote.isolated.build_command)(name)                        | The shell command that builds backend `name`'s environment.                         |
-|---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| [`build_env`](_autosummary/denote.isolated.html.md#denote.isolated.build_env)(name, \*\*ensure_kwargs)         | Build backend `name`'s environment (no-op if built from this spec); its Python.     |
-| [`compile_lock`](_autosummary/denote.isolated.html.md#denote.isolated.compile_lock)(name, \*[, run])              | Re-resolve backend `name`'s lock from its top-level requirements; the lock's path.  |
-| [`data_dir`](_autosummary/denote.isolated.html.md#denote.isolated.data_dir)(\*parts)                          | `$DENOTE_DATA_DIR/<parts>` (default root `~/.local/share/denote`), not created.     |
-| [`env_dir`](_autosummary/denote.isolated.html.md#denote.isolated.env_dir)(name)                              | The folder of backend `name`'s environment (it may not exist).                      |
-| [`env_python`](_autosummary/denote.isolated.html.md#denote.isolated.env_python)(config, \*[, build])            | The interpreter of the backend's environment, building it only if `build`.          |
-| [`env_size_hint`](_autosummary/denote.isolated.html.md#denote.isolated.env_size_hint)(config)                      | The rough download size a config states for its environment.                        |
-| [`env_spec`](_autosummary/denote.isolated.html.md#denote.isolated.env_spec)(config)                           | The `ps.isolated.EnvSpec` of a backend config's `isolated_env`.                     |
-| [`is_env_ready`](_autosummary/denote.isolated.html.md#denote.isolated.is_env_ready)(config)                       | True if the backend's environment exists and was built from its current spec.       |
-| [`lock_command`](_autosummary/denote.isolated.html.md#denote.isolated.lock_command)(config)                       | The `uv pip compile` command that resolves a config's lock (requirements on stdin). |
-| [`lock_requirements`](_autosummary/denote.isolated.html.md#denote.isolated.lock_requirements)(text)                    | The requirement lines of a lock (`uv pip compile` output), comments dropped.        |
-| [`make_worker`](_autosummary/denote.isolated.html.md#denote.isolated.make_worker)(config, \*[, init, build])     | A `ps.isolated.Worker` running the backend's worker file in its environment.        |
-| [`separate_in_worker`](_autosummary/denote.isolated.html.md#denote.isolated.separate_in_worker)(call, mix, \*\*request) | Run a worker's `separate` on `mix` (`(channels, frames)`), return `(stems, reply)`. |
-| [`worker_file`](_autosummary/denote.isolated.html.md#denote.isolated.worker_file)(name)                          | The worker file of backend `name`.                                                  |
+| [`build_command`](_autosummary/denote.isolated.html.md#denote.isolated.build_command)(name)                        | The shell command that builds backend `name`'s environment.                                   |
+|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| [`build_env`](_autosummary/denote.isolated.html.md#denote.isolated.build_env)(name, \*\*ensure_kwargs)         | Build backend `name`'s environment (no-op if built from this spec); its Python.               |
+| [`compile_lock`](_autosummary/denote.isolated.html.md#denote.isolated.compile_lock)(name, \*[, run])              | Re-resolve backend `name`'s lock from its top-level requirements; the lock's path.            |
+| [`data_dir`](_autosummary/denote.isolated.html.md#denote.isolated.data_dir)(\*parts)                          | `$DENOTE_DATA_DIR/<parts>` (default root `~/.local/share/denote`), not created.               |
+| [`env_dir`](_autosummary/denote.isolated.html.md#denote.isolated.env_dir)(name)                              | The folder of backend `name`'s environment (it may not exist).                                |
+| [`env_python`](_autosummary/denote.isolated.html.md#denote.isolated.env_python)(config, \*[, build])            | The interpreter of the backend's environment, building it only if `build`.                    |
+| [`env_size_hint`](_autosummary/denote.isolated.html.md#denote.isolated.env_size_hint)(config)                      | The rough download size a config states for its environment.                                  |
+| [`env_spec`](_autosummary/denote.isolated.html.md#denote.isolated.env_spec)(config)                           | The `ps.isolated.EnvSpec` of a backend config's `isolated_env`.                               |
+| [`is_env_ready`](_autosummary/denote.isolated.html.md#denote.isolated.is_env_ready)(config)                       | True if the backend's environment exists and was built from its current spec.                 |
+| [`lock_requirements`](_autosummary/denote.isolated.html.md#denote.isolated.lock_requirements)(text)                    | The requirement lines of a lock (`uv pip compile` output): `ps.isolated.lock_requirements()`. |
+| [`make_worker`](_autosummary/denote.isolated.html.md#denote.isolated.make_worker)(config, \*[, init, build])     | A `ps.isolated.Worker` running the backend's worker file in its environment.                  |
+| [`separate_in_worker`](_autosummary/denote.isolated.html.md#denote.isolated.separate_in_worker)(call, mix, \*\*request) | Run a worker's `separate` on `mix` (`(channels, frames)`), return `(stems, reply)`.           |
+| [`worker_file`](_autosummary/denote.isolated.html.md#denote.isolated.worker_file)(name)                          | The worker file of backend `name`.                                                            |
 
 ### Classes
 
@@ -1813,10 +1811,6 @@ Python of an isolated environment when its config names none.
 Bases: [`RuntimeError`](https://docs.python.org/3/builtins/exceptions.html#RuntimeError)
 
 A backend’s isolated environment is not built; the message says how to build it.
-
-### denote.isolated.HOST_UV_VARS *= ('UV_CONSTRAINT', 'UV_OVERRIDE', 'UV_BUILD_CONSTRAINT')*
-
-uv settings holding the host’s pins, cleared when resolving a lock.
 
 ### *class* denote.isolated.IsolatedSeparator(config)
 
@@ -1953,16 +1947,9 @@ True if the backend’s environment exists and was built from its current spec.
 * **Return type:**
   [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
-### denote.isolated.lock_command(config)
-
-The `uv pip compile` command that resolves a config’s lock (requirements on stdin).
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
-
 ### denote.isolated.lock_requirements(text)
 
-The requirement lines of a lock (`uv pip compile` output), comments dropped.
+The requirement lines of a lock (`uv pip compile` output): `ps.isolated.lock_requirements()`.
 
 ```pycon
 >>> lock_requirements("# header\nnumpy==2.1.0\n    # via x\ntorch==2.15.0 ; sys_platform == 'darwin'\n")
@@ -2615,18 +2602,20 @@ The lower-cased stem name in an audio-separator output file name.
 
 # About this build
 
-This documentation was built on **2026-11-10 11:33 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/34460a941586a800b88592d2268080546dbc54c9"><code>34460a9</code></a> on branch <code>main</code>, for **denote 0.0.12** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-10 15:18 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/8b42326019d84c308602d4b8d827612c8b3e2308"><code>8b42326</code></a> on branch <code>main</code>, for **denote 0.0.13** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.13) is ahead of the latest release on PyPI (0.0.12): these docs describe unreleased code.
 
 ## Source
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/34460a941586a800b88592d2268080546dbc54c9"><code>34460a941586a800b88592d2268080546dbc54c9</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/8b42326019d84c308602d4b8d827612c8b3e2308"><code>8b42326019d84c308602d4b8d827612c8b3e2308</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
-| Tags at this commit | <code>0.0.12</code>                                                                                                                                      |
+| Tags at this commit | <code>0.0.13</code>                                                                                                                                      |
 | Working tree        | clean                                                                                                                                                    |
 | Remote              | <code>https://github.com/thorwhalen/denote</code>                                                                                                        |
 
@@ -2635,9 +2624,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/42808098263">42808098263</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/42842440423">42842440423</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>00378d36debf9af5853ccf7a2addb74a321f9d8c</code> (in the history of the built commit) |
+| Event commit | <code>2c5b1bf8e2830d4b5dde0239e6817706adcbbce2</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -2662,13 +2651,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.12/">0.0.12</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.12/">0.0.12</a>, older than the documented version (0.0.13).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 34460a941586a800b88592d2268080546dbc54c9
+git checkout 8b42326019d84c308602d4b8d827612c8b3e2308
 pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
