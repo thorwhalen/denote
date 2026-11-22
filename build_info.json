@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "built_at": "2026-11-10T15:18:20Z",
+  "built_at": "2026-11-22T19:19:59Z",
   "package": {
     "name": "denote",
     "version": "0.0.13",
@@ -9,30 +9,28 @@
   },
   "git": {
     "available": true,
-    "commit": "8b42326019d84c308602d4b8d827612c8b3e2308",
-    "short_commit": "8b42326",
+    "commit": "b9fe4f6619709c90aa39efffce6ca1a6be61f352",
+    "short_commit": "b9fe4f6",
     "branch": "main",
-    "tags": [
-      "0.0.13"
-    ],
+    "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/thorwhalen/denote",
-    "commit_url": "https://github.com/thorwhalen/denote/commit/8b42326019d84c308602d4b8d827612c8b3e2308",
+    "commit_url": "https://github.com/thorwhalen/denote/commit/b9fe4f6619709c90aa39efffce6ca1a6be61f352",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "thorwhalen/denote",
-    "sha": "2c5b1bf8e2830d4b5dde0239e6817706adcbbce2",
+    "sha": "b9fe4f6619709c90aa39efffce6ca1a6be61f352",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "42842440423",
-    "run_url": "https://github.com/thorwhalen/denote/actions/runs/42842440423",
+    "run_id": "45059954792",
+    "run_url": "https://github.com/thorwhalen/denote/actions/runs/45059954792",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.22",
+    "epythet": "0.2.23",
     "sphinx": "9.1.1",
     "docutils": "0.22.4",
     "python": "3.12.16"
@@ -62,16 +60,14 @@
   },
   "pypi": {
     "checked": true,
-    "latest": "0.0.12",
-    "relation": "ahead",
+    "latest": "0.0.13",
+    "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/thorwhalen/denote && cd denote\ngit checkout 8b42326019d84c308602d4b8d827612c8b3e2308\npip install \"epythet==0.2.22\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/thorwhalen/denote && cd denote\ngit checkout b9fe4f6619709c90aa39efffce6ca1a6be61f352\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": false,
-    "notes": [
-      "The documented version (0.0.13) is ahead of the latest release on PyPI (0.0.12): these docs describe unreleased code."
-    ]
+    "aligned": true,
+    "notes": []
   }
 }
