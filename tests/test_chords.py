@@ -123,3 +123,32 @@ def test_default_vocabulary_is_every_root_and_quality():
 def test_seventh_symbols_need_chordsym():
     pytest.importorskip("chordsym")
     assert C.parse_chord_label("Am7")[0] == "A:min7"
+
+
+def test_sections_let_the_alignment_jump_repeat_and_skip():
+    plan = [
+        ("C:maj", 3.0),
+        ("G:maj", 3.0),
+        ("A:min", 3.0),
+        ("F:maj", 3.0),
+        ("C:maj", 3.0),
+        ("G:maj", 3.0),
+    ]
+    y = render(plan)
+    # the score lists A F | C G | (system keys), the recording plays C G A F C G: the audio
+    # starts at the second system, goes to the first, and repeats the second
+    seq = ["A:min", "F:maj", "C:maj", "G:maj"]
+    keys = [0, 0, 1, 1]
+    strict = denote.get_chords(y, sr=SR, sequence=seq)
+    loose = denote.get_chords(y, sr=SR, sequence=seq, sections=keys)
+    want = ["C:maj", "G:maj", "A:min", "F:maj", "C:maj", "G:maj"]
+    assert labels_at(loose, [1.5 + 3 * i for i in range(6)]) == want
+    assert loose.raw["positions"][:2] == [2, 3] and 0 in loose.raw["positions"]
+    assert labels_at(strict, [1.5 + 3 * i for i in range(6)]) != want
+
+
+def test_sections_need_one_key_per_entry_and_a_sequence(audio):
+    with pytest.raises(ValueError, match="one key per"):
+        denote.get_chords(audio, sr=SR, sequence=["C", "G"], sections=[0])
+    with pytest.raises(ValueError, match="belongs to sequence"):
+        denote.get_chords(audio, sr=SR, sections=[0])

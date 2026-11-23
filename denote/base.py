@@ -47,7 +47,9 @@ class ChordResult:
     """Result of chord recognition."""
 
     intervals: np.ndarray  # (N, 2) array of [start_time, end_time]
-    labels: List[str] = field(default_factory=list)  # chord symbol strings (Harte; "N" = no chord)
+    labels: List[str] = field(
+        default_factory=list
+    )  # chord symbol strings (Harte; "N" = no chord)
     raw: Any = None
     backend: str = ""
 
@@ -61,7 +63,9 @@ class ChordResult:
     @classmethod
     def from_segments(cls, segments, *, raw=None, backend: str = "") -> "ChordResult":
         """Build a result from ``[{start, end, label}]``."""
-        intervals = np.array([[s["start"], s["end"]] for s in segments], dtype=float).reshape(-1, 2)
+        intervals = np.array(
+            [[s["start"], s["end"]] for s in segments], dtype=float
+        ).reshape(-1, 2)
         return cls(intervals, [s["label"] for s in segments], raw=raw, backend=backend)
 
 
