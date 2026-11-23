@@ -23,13 +23,14 @@ Labels are Harte syntax (`C:maj`, `A:min7`, `N` for no chord), the vocabulary of
 
 ### Module Attributes
 
-| [`QUALITY_INTERVALS`](#denote.chords.QUALITY_INTERVALS)   | Harte shorthand -> semitone intervals above the root.   |
-|----------------------------------------------------------------------|---------------------------------------------------------|
-| [`DFLT_NO_CHORD_COS`](#denote.chords.DFLT_NO_CHORD_COS)   | flat between 0.4 and 0.6).                              |
+| [`QUALITY_INTERVALS`](#denote.chords.QUALITY_INTERVALS)   | Harte shorthand -> semitone intervals above the root.                                                      |
+|----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| [`DFLT_NO_CHORD_COS`](#denote.chords.DFLT_NO_CHORD_COS)   | flat between 0.4 and 0.6).                                                                                 |
+| [`DFLT_JUMP_P`](#denote.chords.DFLT_JUMP_P)         | Per-transition probabilities of the order-tolerant alignment (a jump to a section start, a skipped entry). |
 
 ### Functions
 
-| [`align_sequence`](#denote.chords.align_sequence)(chroma, sequence[, level_db, ...])   | Force the decode through `sequence` in order (repeats allowed): a left-to-right HMM.                                                                                                                                                                                                                                                                             |
+| [`align_sequence`](#denote.chords.align_sequence)(chroma, sequence[, level_db, ...])   | Force the decode through `sequence` (repeats allowed): a left-to-right HMM.                                                                                                                                                                                                                                                                                      |
 |------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`chord_label`](#denote.chords.chord_label)(root, quality)                          | Harte label of a pitch class and a quality shorthand.                                                                                                                                                                                                                                                                                                            |
 | [`chord_templates`](#denote.chords.chord_templates)(vocabulary, \*[, harmonics, ...])   | `(K, 12)` unit-norm templates and the Harte labels, one per vocabulary entry.                                                                                                                                                                                                                                                                                    |
@@ -39,6 +40,10 @@ Labels are Harte syntax (`C:maj`, `A:min7`, `N` for no chord), the vocabulary of
 | [`parse_chord_label`](#denote.chords.parse_chord_label)(label)                            | `(harte_label, root_pc, intervals)` of a chord given as Harte (`A:min7`) or in common symbols (`F#m`, `Bb`; sevenths and the like need `chordsym`).                                                                                                                                                                                                              |
 | [`path_to_segments`](#denote.chords.path_to_segments)(path, labels, \*, hop_s[, ...])    | Run-length the per-frame path into `[{start, end, label}]` (frame `t` spans `t * hop_s` +- half a hop).                                                                                                                                                                                                                                                          |
 | [`peaks_chroma`](#denote.chords.peaks_chroma)(y, sr, \*[, window_s, hop_s, ...])     | `(chroma (frames, 12), level_db (frames,))` from spectral peaks only (HPCP-like).                                                                                                                                                                                                                                                                                |
+
+### denote.chords.DFLT_JUMP_P *= 0.01*
+
+Per-transition probabilities of the order-tolerant alignment (a jump to a section start, a skipped entry).
 
 ### denote.chords.DFLT_NO_CHORD_COS *= 0.5*
 
@@ -51,9 +56,16 @@ flat between 0.4 and 0.6).
 
 Harte shorthand -> semitone intervals above the root. The SSOT for template tones.
 
-### denote.chords.align_sequence(chroma, sequence, level_db=None, , hop_s=0.046, kappa=20.0, gate_db=45.0, no_chord_cos=0.5, harmonics=0.6, stay=None)
+### denote.chords.align_sequence(chroma, sequence, level_db=None, , hop_s=0.046, kappa=20.0, gate_db=45.0, no_chord_cos=0.5, harmonics=0.6, stay=None, sections=None, jump_p=0.01, skip_p=0.02)
 
-Force the decode through `sequence` in order (repeats allowed): a left-to-right HMM.
+Force the decode through `sequence` (repeats allowed): a left-to-right HMM.
+
+With `sections` the order is tolerant, as in JumpDTW (Fremerey et al. 2010): `sections` is
+one key per entry (a system or page number, a section name): a new section starts where the
+key changes. At the end of a section the decode may jump
+to the start of any section (a repeat, a skip, a D.S.), at cost `jump_p`; within a section
+it may skip one entry (a chord the recording leaves out), at cost `skip_p`; it may start
+at any section and stop after any. Without `sections` the order is strict.
 
 Returns `(path, labels, positions)`: `path[t]` indexes `labels`, one label per
 position of `[N, *sequence, N]` (a no-chord state may precede and follow the sequence, for

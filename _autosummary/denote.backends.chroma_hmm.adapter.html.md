@@ -26,7 +26,9 @@ Recognize the chords of `audio`.
     excludes `vocabulary` and `causal`), `qualities` (default vocabulary’s
     qualities: `("maj", "min")`; add `"7"`, `"maj7"`, `"min7"`…),
     `causal`, `dwell_s`, `kappa`, `harmonics`, `gate_db`, `no_chord_cos`, `window_s`,
-    `hop_s`, `audio_sr`.
+    `hop_s`, `audio_sr`. With `sequence`: `sections` (one key per entry; the order
+    becomes tolerant: jumps between section starts at `jump_p`, skipped entries at
+    `skip_p`).
 * **Returns:**
   `intervals` (N, 2) seconds, Harte `labels` (`N` = no chord),
   `segments()` for `[{start, end, label}]`; `raw` holds the per-frame path,

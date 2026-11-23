@@ -10,6 +10,7 @@ denote.chords
    
       QUALITY_INTERVALS
       DFLT_NO_CHORD_COS
+      DFLT_JUMP_P
    
    .. rubric:: Functions
 

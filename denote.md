@@ -1,4 +1,4 @@
-> built 2026-11-23 14:00 UTC from 96adea4 (main) · denote 0.0.13. Details: build_info.json
+> built 2026-11-23 14:08 UTC from ad97be2 (main) · denote 0.0.14. Details: build_info.json
 
 # index.html.md
 
@@ -57,7 +57,9 @@ key.ranked[:3]  # all 24 keys, best first; key.relative names the relative key
 chords = denote.get_chords("song.wav")
 chords.segments()  # [{"start": 0.0, "end": 2.9, "label": "C:maj"}, ...]; "N" = no chord
 denote.get_chords("song.wav", vocabulary=["C", "G", "Am", "F"])  # only these chords
-denote.get_chords("song.wav", sequence=["C", "G", "Am", "F"])  # known order: when does each happen?
+denote.get_chords(
+    "song.wav", sequence=["C", "G", "Am", "F"]
+)  # known order: when does each happen?
 # Score any backend against labelled data (the "eval" extra):
 # from denote.benchmark import evaluate_chords, guitarset_items
 ```
@@ -642,7 +644,9 @@ Recognize the chords of `audio`.
     excludes `vocabulary` and `causal`), `qualities` (default vocabulary’s
     qualities: `("maj", "min")`; add `"7"`, `"maj7"`, `"min7"`…),
     `causal`, `dwell_s`, `kappa`, `harmonics`, `gate_db`, `no_chord_cos`, `window_s`,
-    `hop_s`, `audio_sr`.
+    `hop_s`, `audio_sr`. With `sequence`: `sections` (one key per entry; the order
+    becomes tolerant: jumps between section starts at `jump_p`, skipped entries at
+    `skip_p`).
 * **Returns:**
   `intervals` (N, 2) seconds, Harte `labels` (`N` = no chord),
   `segments()` for `[{start, end, label}]`; `raw` holds the per-frame path,
@@ -1592,13 +1596,14 @@ Labels are Harte syntax (`C:maj`, `A:min7`, `N` for no chord), the vocabulary of
 
 ### Module Attributes
 
-| [`QUALITY_INTERVALS`](_autosummary/denote.chords.html.md#denote.chords.QUALITY_INTERVALS)   | Harte shorthand -> semitone intervals above the root.   |
-|----------------------------------------------------------------------|---------------------------------------------------------|
-| [`DFLT_NO_CHORD_COS`](_autosummary/denote.chords.html.md#denote.chords.DFLT_NO_CHORD_COS)   | flat between 0.4 and 0.6).                              |
+| [`QUALITY_INTERVALS`](_autosummary/denote.chords.html.md#denote.chords.QUALITY_INTERVALS)   | Harte shorthand -> semitone intervals above the root.                                                      |
+|----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| [`DFLT_NO_CHORD_COS`](_autosummary/denote.chords.html.md#denote.chords.DFLT_NO_CHORD_COS)   | flat between 0.4 and 0.6).                                                                                 |
+| [`DFLT_JUMP_P`](_autosummary/denote.chords.html.md#denote.chords.DFLT_JUMP_P)         | Per-transition probabilities of the order-tolerant alignment (a jump to a section start, a skipped entry). |
 
 ### Functions
 
-| [`align_sequence`](_autosummary/denote.chords.html.md#denote.chords.align_sequence)(chroma, sequence[, level_db, ...])   | Force the decode through `sequence` in order (repeats allowed): a left-to-right HMM.                                                                                                                                                                                                                                                                             |
+| [`align_sequence`](_autosummary/denote.chords.html.md#denote.chords.align_sequence)(chroma, sequence[, level_db, ...])   | Force the decode through `sequence` (repeats allowed): a left-to-right HMM.                                                                                                                                                                                                                                                                                      |
 |------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`chord_label`](_autosummary/denote.chords.html.md#denote.chords.chord_label)(root, quality)                          | Harte label of a pitch class and a quality shorthand.                                                                                                                                                                                                                                                                                                            |
 | [`chord_templates`](_autosummary/denote.chords.html.md#denote.chords.chord_templates)(vocabulary, \*[, harmonics, ...])   | `(K, 12)` unit-norm templates and the Harte labels, one per vocabulary entry.                                                                                                                                                                                                                                                                                    |
@@ -1608,6 +1613,10 @@ Labels are Harte syntax (`C:maj`, `A:min7`, `N` for no chord), the vocabulary of
 | [`parse_chord_label`](_autosummary/denote.chords.html.md#denote.chords.parse_chord_label)(label)                            | `(harte_label, root_pc, intervals)` of a chord given as Harte (`A:min7`) or in common symbols (`F#m`, `Bb`; sevenths and the like need `chordsym`).                                                                                                                                                                                                              |
 | [`path_to_segments`](_autosummary/denote.chords.html.md#denote.chords.path_to_segments)(path, labels, \*, hop_s[, ...])    | Run-length the per-frame path into `[{start, end, label}]` (frame `t` spans `t * hop_s` +- half a hop).                                                                                                                                                                                                                                                          |
 | [`peaks_chroma`](_autosummary/denote.chords.html.md#denote.chords.peaks_chroma)(y, sr, \*[, window_s, hop_s, ...])     | `(chroma (frames, 12), level_db (frames,))` from spectral peaks only (HPCP-like).                                                                                                                                                                                                                                                                                |
+
+### denote.chords.DFLT_JUMP_P *= 0.01*
+
+Per-transition probabilities of the order-tolerant alignment (a jump to a section start, a skipped entry).
 
 ### denote.chords.DFLT_NO_CHORD_COS *= 0.5*
 
@@ -1620,9 +1629,16 @@ flat between 0.4 and 0.6).
 
 Harte shorthand -> semitone intervals above the root. The SSOT for template tones.
 
-### denote.chords.align_sequence(chroma, sequence, level_db=None, , hop_s=0.046, kappa=20.0, gate_db=45.0, no_chord_cos=0.5, harmonics=0.6, stay=None)
+### denote.chords.align_sequence(chroma, sequence, level_db=None, , hop_s=0.046, kappa=20.0, gate_db=45.0, no_chord_cos=0.5, harmonics=0.6, stay=None, sections=None, jump_p=0.01, skip_p=0.02)
 
-Force the decode through `sequence` in order (repeats allowed): a left-to-right HMM.
+Force the decode through `sequence` (repeats allowed): a left-to-right HMM.
+
+With `sections` the order is tolerant, as in JumpDTW (Fremerey et al. 2010): `sections` is
+one key per entry (a system or page number, a section name): a new section starts where the
+key changes. At the end of a section the decode may jump
+to the start of any section (a repeat, a skip, a D.S.), at cost `jump_p`; within a section
+it may skip one entry (a chord the recording leaves out), at cost `skip_p`; it may start
+at any section and stop after any. Without `sections` the order is strict.
 
 Returns `(path, labels, positions)`: `path[t]` indexes `labels`, one label per
 position of `[N, *sequence, N]` (a no-chord state may precede and follow the sequence, for
@@ -2925,18 +2941,16 @@ The lower-cased stem name in an audio-separator output file name.
 
 # About this build
 
-This documentation was built on **2026-11-23 14:00 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/96adea412f433e7c68f8fff6a63eca6ecbb9c1b1"><code>96adea4</code></a> on branch <code>main</code>, for **denote 0.0.13** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 14:08 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/ad97be2366adcb5bd13cd87f85fa623a06bea484"><code>ad97be2</code></a> on branch <code>main</code>, for **denote 0.0.14** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.13) is behind the latest release on PyPI (0.0.14): `pip install denote` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/96adea412f433e7c68f8fff6a63eca6ecbb9c1b1"><code>96adea412f433e7c68f8fff6a63eca6ecbb9c1b1</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/ad97be2366adcb5bd13cd87f85fa623a06bea484"><code>ad97be2366adcb5bd13cd87f85fa623a06bea484</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
 | Tags at this commit | none                                                                                                                                                     |
 | Working tree        | clean                                                                                                                                                    |
@@ -2947,9 +2961,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/45189254923">45189254923</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/45190597512">45190597512</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>96adea412f433e7c68f8fff6a63eca6ecbb9c1b1</code> (in the history of the built commit) |
+| Event commit | <code>ad97be2366adcb5bd13cd87f85fa623a06bea484</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -2974,13 +2988,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.14/">0.0.14</a>, newer than the documented version (0.0.13).
+Latest release: <a href="https://pypi.org/project/denote/0.0.14/">0.0.14</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout 96adea412f433e7c68f8fff6a63eca6ecbb9c1b1
+git checkout ad97be2366adcb5bd13cd87f85fa623a06bea484
 pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

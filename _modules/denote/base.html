@@ -237,145 +237,149 @@
 </span><span id="line-47"><span class="w">    </span><span class="sd">"""Result of chord recognition."""</span>
 </span><span id="line-48">
 </span><span id="line-49">    <span class="n">intervals</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># (N, 2) array of [start_time, end_time]</span>
-</span><span id="line-50">    <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># chord symbol strings (Harte; "N" = no chord)</span>
-</span><span id="line-51">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="line-52">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
-</span><span id="line-53">
+</span><span id="line-50">    <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+</span><span id="line-51">        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span>
+</span><span id="line-52">    <span class="p">)</span>  <span class="c1"># chord symbol strings (Harte; "N" = no chord)</span>
+</span><span id="line-53">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-54">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+</span><span id="line-55">
 <div class="viewcode-block" id="ChordResult.segments">
 <a class="viewcode-back" href="../../_autosummary/denote.base.html#denote.base.ChordResult.segments">[docs]</a>
-</span><span id="line-54">    <span class="k">def</span><span class="w"> </span><span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-</span><span id="line-55"><span class="w">        </span><span class="sd">"""``[{start, end, label}]``: the shape JAMS / Harte-label consumers read."""</span>
-</span><span id="line-56">        <span class="k">return</span> <span class="p">[</span>
-</span><span id="line-57">            <span class="p">{</span><span class="s2">"start"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s2">"end"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s2">"label"</span><span class="p">:</span> <span class="n">label</span><span class="p">}</span>
-</span><span id="line-58">            <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
-</span><span id="line-59">        <span class="p">]</span></div>
+</span><span id="line-56">    <span class="k">def</span><span class="w"> </span><span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+</span><span id="line-57"><span class="w">        </span><span class="sd">"""``[{start, end, label}]``: the shape JAMS / Harte-label consumers read."""</span>
+</span><span id="line-58">        <span class="k">return</span> <span class="p">[</span>
+</span><span id="line-59">            <span class="p">{</span><span class="s2">"start"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s2">"end"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s2">"label"</span><span class="p">:</span> <span class="n">label</span><span class="p">}</span>
+</span><span id="line-60">            <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+</span><span id="line-61">        <span class="p">]</span></div>
 
-</span><span id="line-60">
+</span><span id="line-62">
 <div class="viewcode-block" id="ChordResult.from_segments">
 <a class="viewcode-back" href="../../_autosummary/denote.base.html#denote.base.ChordResult.from_segments">[docs]</a>
-</span><span id="line-61">    <span class="nd">@classmethod</span>
-</span><span id="line-62">    <span class="k">def</span><span class="w"> </span><span class="nf">from_segments</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">segments</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ChordResult"</span><span class="p">:</span>
-</span><span id="line-63"><span class="w">        </span><span class="sd">"""Build a result from ``[{start, end, label}]``."""</span>
-</span><span id="line-64">        <span class="n">intervals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">s</span><span class="p">[</span><span class="s2">"start"</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s2">"end"</span><span class="p">]]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-</span><span id="line-65">        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">],</span> <span class="n">raw</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span></div>
+</span><span id="line-63">    <span class="nd">@classmethod</span>
+</span><span id="line-64">    <span class="k">def</span><span class="w"> </span><span class="nf">from_segments</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">segments</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ChordResult"</span><span class="p">:</span>
+</span><span id="line-65"><span class="w">        </span><span class="sd">"""Build a result from ``[{start, end, label}]``."""</span>
+</span><span id="line-66">        <span class="n">intervals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+</span><span id="line-67">            <span class="p">[[</span><span class="n">s</span><span class="p">[</span><span class="s2">"start"</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s2">"end"</span><span class="p">]]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+</span><span id="line-68">        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span id="line-69">        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">],</span> <span class="n">raw</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span></div>
 </div>
 
-</span><span id="line-66">
-</span><span id="line-67">
+</span><span id="line-70">
+</span><span id="line-71">
 <div class="viewcode-block" id="BeatResult">
 <a class="viewcode-back" href="../../_autosummary/denote.base.html#denote.base.BeatResult">[docs]</a>
-</span><span id="line-68"><span class="nd">@dataclass</span>
-</span><span id="line-69"><span class="k">class</span><span class="w"> </span><span class="nc">BeatResult</span><span class="p">:</span>
-</span><span id="line-70"><span class="w">    </span><span class="sd">"""Result of beat/downbeat tracking."""</span>
-</span><span id="line-71">
-</span><span id="line-72">    <span class="n">beats</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># beat times in seconds</span>
-</span><span id="line-73">    <span class="n">downbeats</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
-</span><span id="line-74">    <span class="n">tempo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># BPM estimate</span>
-</span><span id="line-75">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="line-76">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span></div>
+</span><span id="line-72"><span class="nd">@dataclass</span>
+</span><span id="line-73"><span class="k">class</span><span class="w"> </span><span class="nc">BeatResult</span><span class="p">:</span>
+</span><span id="line-74"><span class="w">    </span><span class="sd">"""Result of beat/downbeat tracking."""</span>
+</span><span id="line-75">
+</span><span id="line-76">    <span class="n">beats</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># beat times in seconds</span>
+</span><span id="line-77">    <span class="n">downbeats</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
+</span><span id="line-78">    <span class="n">tempo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># BPM estimate</span>
+</span><span id="line-79">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-80">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span></div>
 
-</span><span id="line-77">
-</span><span id="line-78">
+</span><span id="line-81">
+</span><span id="line-82">
 <div class="viewcode-block" id="SeparationResult">
 <a class="viewcode-back" href="../../_autosummary/denote.base.html#denote.base.SeparationResult">[docs]</a>
-</span><span id="line-79"><span class="nd">@dataclass</span>
-</span><span id="line-80"><span class="k">class</span><span class="w"> </span><span class="nc">SeparationResult</span><span class="p">:</span>
-</span><span id="line-81"><span class="w">    </span><span class="sd">"""Result of source separation: one ``(channels, frames)`` array per stem, at ``sr``."""</span>
-</span><span id="line-82">
-</span><span id="line-83">    <span class="n">stems</span><span class="p">:</span> <span class="nb">dict</span>  <span class="c1"># stem name -&gt; np.ndarray (channels, frames)</span>
-</span><span id="line-84">    <span class="n">sr</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="line-85">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="line-86">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
-</span><span id="line-87">
+</span><span id="line-83"><span class="nd">@dataclass</span>
+</span><span id="line-84"><span class="k">class</span><span class="w"> </span><span class="nc">SeparationResult</span><span class="p">:</span>
+</span><span id="line-85"><span class="w">    </span><span class="sd">"""Result of source separation: one ``(channels, frames)`` array per stem, at ``sr``."""</span>
+</span><span id="line-86">
+</span><span id="line-87">    <span class="n">stems</span><span class="p">:</span> <span class="nb">dict</span>  <span class="c1"># stem name -&gt; np.ndarray (channels, frames)</span>
+</span><span id="line-88">    <span class="n">sr</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="line-89">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-90">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+</span><span id="line-91">
 <div class="viewcode-block" id="SeparationResult.mono">
 <a class="viewcode-back" href="../../_autosummary/denote.base.html#denote.base.SeparationResult.mono">[docs]</a>
-</span><span id="line-88">    <span class="k">def</span><span class="w"> </span><span class="nf">mono</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="line-89"><span class="w">        </span><span class="sd">"""Stem ``name`` averaged to one channel."""</span>
-</span><span id="line-90">        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stems</span><span class="p">:</span>
-</span><span id="line-91">            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"no stem </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">; stems: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stems</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</span><span id="line-92">        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stems</span><span class="p">[</span><span class="n">name</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+</span><span id="line-92">    <span class="k">def</span><span class="w"> </span><span class="nf">mono</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-93"><span class="w">        </span><span class="sd">"""Stem ``name`` averaged to one channel."""</span>
+</span><span id="line-94">        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stems</span><span class="p">:</span>
+</span><span id="line-95">            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"no stem </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">; stems: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stems</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-96">        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stems</span><span class="p">[</span><span class="n">name</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 
-</span><span id="line-93">
-</span><span id="line-94">    <span class="nd">@property</span>
-</span><span id="line-95">    <span class="k">def</span><span class="w"> </span><span class="nf">vocals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="line-96"><span class="w">        </span><span class="sd">"""The vocals stem, mono: ``separate(song, sr=sr).vocals``."""</span>
-</span><span id="line-97">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mono</span><span class="p">(</span><span class="s2">"vocals"</span><span class="p">)</span></div>
+</span><span id="line-97">
+</span><span id="line-98">    <span class="nd">@property</span>
+</span><span id="line-99">    <span class="k">def</span><span class="w"> </span><span class="nf">vocals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="line-100"><span class="w">        </span><span class="sd">"""The vocals stem, mono: ``separate(song, sr=sr).vocals``."""</span>
+</span><span id="line-101">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mono</span><span class="p">(</span><span class="s2">"vocals"</span><span class="p">)</span></div>
 
-</span><span id="line-98">
-</span><span id="line-99">
+</span><span id="line-102">
+</span><span id="line-103">
 <div class="viewcode-block" id="KeyResult">
 <a class="viewcode-back" href="../../_autosummary/denote.base.html#denote.base.KeyResult">[docs]</a>
-</span><span id="line-100"><span class="nd">@dataclass</span>
-</span><span id="line-101"><span class="k">class</span><span class="w"> </span><span class="nc">KeyResult</span><span class="p">:</span>
-</span><span id="line-102"><span class="w">    </span><span class="sd">"""Result of key estimation: tonic + mode, with every candidate key's score.</span>
-</span><span id="line-103">
-</span><span id="line-104"><span class="sd">    ``confidence`` is the winning key's score: for profile backends (``librosa_key``)</span>
-</span><span id="line-105"><span class="sd">    the Pearson correlation, in [-1, 1], between the recording's mean chroma and that</span>
-</span><span id="line-106"><span class="sd">    key's profile. It measures fit, and is not a probability. ``margin`` is the</span>
-</span><span id="line-107"><span class="sd">    winner's score minus the runner-up's; a small margin means two keys fit about</span>
-</span><span id="line-108"><span class="sd">    equally well, most often the relative key (C major / A minor share every pitch</span>
-</span><span id="line-109"><span class="sd">    class), the parallel key or a key a fifth away. Look at ``ranked`` before</span>
-</span><span id="line-110"><span class="sd">    trusting the winner when the margin is small.</span>
-</span><span id="line-111"><span class="sd">    """</span>
-</span><span id="line-112">
-</span><span id="line-113">    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "C major", "F# minor"</span>
-</span><span id="line-114">    <span class="n">tonic</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "C", "F#"</span>
-</span><span id="line-115">    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "major" or "minor"</span>
-</span><span id="line-116">    <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># the winner's score (correlation for profile backends)</span>
-</span><span id="line-117">    <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># winner's score minus runner-up's</span>
-</span><span id="line-118">    <span class="n">scores</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># key name -&gt; score, best first</span>
-</span><span id="line-119">    <span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>  <span class="c1"># key profile used, e.g. "krumhansl"</span>
-</span><span id="line-120">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="line-121">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
-</span><span id="line-122">
-</span><span id="line-123">    <span class="nd">@property</span>
-</span><span id="line-124">    <span class="k">def</span><span class="w"> </span><span class="nf">ranked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
-</span><span id="line-125"><span class="w">        </span><span class="sd">"""``[(key, score), ...]`` for every candidate key, best first (``scores``' order)."""</span>
-</span><span id="line-126">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-</span><span id="line-127">
-</span><span id="line-128">    <span class="nd">@property</span>
-</span><span id="line-129">    <span class="k">def</span><span class="w"> </span><span class="nf">runner_up</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="line-130"><span class="w">        </span><span class="sd">"""The second-best key (``""`` when only one was scored)."""</span>
-</span><span id="line-131">        <span class="n">ranked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranked</span>
-</span><span id="line-132">        <span class="k">return</span> <span class="n">ranked</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranked</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span>
-</span><span id="line-133">
-</span><span id="line-134">    <span class="nd">@property</span>
-</span><span id="line-135">    <span class="k">def</span><span class="w"> </span><span class="nf">relative</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="line-136"><span class="w">        </span><span class="sd">"""The relative key of the estimate (C major -&gt; A minor); ``""`` if none applies.</span>
+</span><span id="line-104"><span class="nd">@dataclass</span>
+</span><span id="line-105"><span class="k">class</span><span class="w"> </span><span class="nc">KeyResult</span><span class="p">:</span>
+</span><span id="line-106"><span class="w">    </span><span class="sd">"""Result of key estimation: tonic + mode, with every candidate key's score.</span>
+</span><span id="line-107">
+</span><span id="line-108"><span class="sd">    ``confidence`` is the winning key's score: for profile backends (``librosa_key``)</span>
+</span><span id="line-109"><span class="sd">    the Pearson correlation, in [-1, 1], between the recording's mean chroma and that</span>
+</span><span id="line-110"><span class="sd">    key's profile. It measures fit, and is not a probability. ``margin`` is the</span>
+</span><span id="line-111"><span class="sd">    winner's score minus the runner-up's; a small margin means two keys fit about</span>
+</span><span id="line-112"><span class="sd">    equally well, most often the relative key (C major / A minor share every pitch</span>
+</span><span id="line-113"><span class="sd">    class), the parallel key or a key a fifth away. Look at ``ranked`` before</span>
+</span><span id="line-114"><span class="sd">    trusting the winner when the margin is small.</span>
+</span><span id="line-115"><span class="sd">    """</span>
+</span><span id="line-116">
+</span><span id="line-117">    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "C major", "F# minor"</span>
+</span><span id="line-118">    <span class="n">tonic</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "C", "F#"</span>
+</span><span id="line-119">    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "major" or "minor"</span>
+</span><span id="line-120">    <span class="n">confidence</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># the winner's score (correlation for profile backends)</span>
+</span><span id="line-121">    <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># winner's score minus runner-up's</span>
+</span><span id="line-122">    <span class="n">scores</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># key name -&gt; score, best first</span>
+</span><span id="line-123">    <span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>  <span class="c1"># key profile used, e.g. "krumhansl"</span>
+</span><span id="line-124">    <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-125">    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+</span><span id="line-126">
+</span><span id="line-127">    <span class="nd">@property</span>
+</span><span id="line-128">    <span class="k">def</span><span class="w"> </span><span class="nf">ranked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+</span><span id="line-129"><span class="w">        </span><span class="sd">"""``[(key, score), ...]`` for every candidate key, best first (``scores``' order)."""</span>
+</span><span id="line-130">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</span><span id="line-131">
+</span><span id="line-132">    <span class="nd">@property</span>
+</span><span id="line-133">    <span class="k">def</span><span class="w"> </span><span class="nf">runner_up</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-134"><span class="w">        </span><span class="sd">"""The second-best key (``""`` when only one was scored)."""</span>
+</span><span id="line-135">        <span class="n">ranked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranked</span>
+</span><span id="line-136">        <span class="k">return</span> <span class="n">ranked</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranked</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span>
 </span><span id="line-137">
-</span><span id="line-138"><span class="sd">        Only major and minor have a relative key here; a backend reporting another</span>
-</span><span id="line-139"><span class="sd">        mode (dorian, ...) gets ``""``.</span>
-</span><span id="line-140"><span class="sd">        """</span>
-</span><span id="line-141">        <span class="kn">from</span><span class="w"> </span><span class="nn">denote.keys</span><span class="w"> </span><span class="kn">import</span> <span class="n">relative_key</span>
-</span><span id="line-142">
-</span><span id="line-143">        <span class="k">try</span><span class="p">:</span>
-</span><span id="line-144">            <span class="k">return</span> <span class="n">relative_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
-</span><span id="line-145">        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="line-146">            <span class="k">return</span> <span class="s2">""</span></div>
+</span><span id="line-138">    <span class="nd">@property</span>
+</span><span id="line-139">    <span class="k">def</span><span class="w"> </span><span class="nf">relative</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-140"><span class="w">        </span><span class="sd">"""The relative key of the estimate (C major -&gt; A minor); ``""`` if none applies.</span>
+</span><span id="line-141">
+</span><span id="line-142"><span class="sd">        Only major and minor have a relative key here; a backend reporting another</span>
+</span><span id="line-143"><span class="sd">        mode (dorian, ...) gets ``""``.</span>
+</span><span id="line-144"><span class="sd">        """</span>
+</span><span id="line-145">        <span class="kn">from</span><span class="w"> </span><span class="nn">denote.keys</span><span class="w"> </span><span class="kn">import</span> <span class="n">relative_key</span>
+</span><span id="line-146">
+</span><span id="line-147">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-148">            <span class="k">return</span> <span class="n">relative_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+</span><span id="line-149">        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="line-150">            <span class="k">return</span> <span class="s2">""</span></div>
 
-</span><span id="line-147">
-</span><span id="line-148">
-</span><span id="line-149"><span class="c1"># Supported task identifiers</span>
-</span><span id="line-150"><span class="n">TASKS</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="line-151">    <span class="s2">"transcribe"</span><span class="p">:</span> <span class="s2">"Audio to MIDI transcription"</span><span class="p">,</span>
-</span><span id="line-152">    <span class="s2">"pitch"</span><span class="p">:</span> <span class="s2">"Pitch / F0 estimation"</span><span class="p">,</span>
-</span><span id="line-153">    <span class="s2">"chords"</span><span class="p">:</span> <span class="s2">"Chord recognition"</span><span class="p">,</span>
-</span><span id="line-154">    <span class="s2">"beats"</span><span class="p">:</span> <span class="s2">"Beat and downbeat tracking"</span><span class="p">,</span>
-</span><span id="line-155">    <span class="s2">"separate"</span><span class="p">:</span> <span class="s2">"Source separation"</span><span class="p">,</span>
-</span><span id="line-156">    <span class="s2">"key"</span><span class="p">:</span> <span class="s2">"Key (tonic + mode) estimation"</span><span class="p">,</span>
-</span><span id="line-157"><span class="p">}</span>
-</span><span id="line-158">
-</span><span id="line-159"><span class="c1">#: What a backend's ``commercial_use`` config field may say, about using its</span>
-</span><span id="line-160"><span class="c1">#: OUTPUTS (what the model produces) commercially: the terms allow it (``"yes"``),</span>
-</span><span id="line-161"><span class="c1">#: forbid it (``"no"``), allow it under conditions such as a revenue cap or a use</span>
-</span><span id="line-162"><span class="c1">#: restriction (``"conditional"``), the terms are not settled: the licence is</span>
-</span><span id="line-163"><span class="c1">#: unstated, disputed or withdrawn, or the training-data chain is doubtful</span>
-</span><span id="line-164"><span class="c1">#: ("unclear"), or the weights are not public and a hosted service's own terms</span>
-</span><span id="line-165"><span class="c1">#: decide (``"provider terms"``, kept for a future hosted backend). The field is</span>
-</span><span id="line-166"><span class="c1">#: about using outputs commercially; obligations on redistributing the weights</span>
-</span><span id="line-167"><span class="c1">#: themselves (LGPL and the like) belong in ``weights_license`` (with prose in</span>
-</span><span id="line-168"><span class="c1">#: ``weights_license_note``). The same tuple as arioso's.</span>
-</span><span id="line-169"><span class="n">COMMERCIAL_USE_VALUES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"no"</span><span class="p">,</span> <span class="s2">"conditional"</span><span class="p">,</span> <span class="s2">"unclear"</span><span class="p">,</span> <span class="s2">"provider terms"</span><span class="p">)</span>
+</span><span id="line-151">
+</span><span id="line-152">
+</span><span id="line-153"><span class="c1"># Supported task identifiers</span>
+</span><span id="line-154"><span class="n">TASKS</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="line-155">    <span class="s2">"transcribe"</span><span class="p">:</span> <span class="s2">"Audio to MIDI transcription"</span><span class="p">,</span>
+</span><span id="line-156">    <span class="s2">"pitch"</span><span class="p">:</span> <span class="s2">"Pitch / F0 estimation"</span><span class="p">,</span>
+</span><span id="line-157">    <span class="s2">"chords"</span><span class="p">:</span> <span class="s2">"Chord recognition"</span><span class="p">,</span>
+</span><span id="line-158">    <span class="s2">"beats"</span><span class="p">:</span> <span class="s2">"Beat and downbeat tracking"</span><span class="p">,</span>
+</span><span id="line-159">    <span class="s2">"separate"</span><span class="p">:</span> <span class="s2">"Source separation"</span><span class="p">,</span>
+</span><span id="line-160">    <span class="s2">"key"</span><span class="p">:</span> <span class="s2">"Key (tonic + mode) estimation"</span><span class="p">,</span>
+</span><span id="line-161"><span class="p">}</span>
+</span><span id="line-162">
+</span><span id="line-163"><span class="c1">#: What a backend's ``commercial_use`` config field may say, about using its</span>
+</span><span id="line-164"><span class="c1">#: OUTPUTS (what the model produces) commercially: the terms allow it (``"yes"``),</span>
+</span><span id="line-165"><span class="c1">#: forbid it (``"no"``), allow it under conditions such as a revenue cap or a use</span>
+</span><span id="line-166"><span class="c1">#: restriction (``"conditional"``), the terms are not settled: the licence is</span>
+</span><span id="line-167"><span class="c1">#: unstated, disputed or withdrawn, or the training-data chain is doubtful</span>
+</span><span id="line-168"><span class="c1">#: ("unclear"), or the weights are not public and a hosted service's own terms</span>
+</span><span id="line-169"><span class="c1">#: decide (``"provider terms"``, kept for a future hosted backend). The field is</span>
+</span><span id="line-170"><span class="c1">#: about using outputs commercially; obligations on redistributing the weights</span>
+</span><span id="line-171"><span class="c1">#: themselves (LGPL and the like) belong in ``weights_license`` (with prose in</span>
+</span><span id="line-172"><span class="c1">#: ``weights_license_note``). The same tuple as arioso's.</span>
+</span><span id="line-173"><span class="n">COMMERCIAL_USE_VALUES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"no"</span><span class="p">,</span> <span class="s2">"conditional"</span><span class="p">,</span> <span class="s2">"unclear"</span><span class="p">,</span> <span class="s2">"provider terms"</span><span class="p">)</span>
 </span></code></pre></div>
     </div></div>
           </main>
@@ -389,7 +393,7 @@
 </footer>
     </div>
     
-    <script src="../../_static/documentation_options.js?v=9fc46840"></script>
+    <script src="../../_static/documentation_options.js?v=544df88d"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

@@ -1,32 +1,32 @@
 {
   "schema_version": 1,
-  "built_at": "2026-11-23T14:00:45Z",
+  "built_at": "2026-11-23T14:08:43Z",
   "package": {
     "name": "denote",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "display_name": "denote",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "96adea412f433e7c68f8fff6a63eca6ecbb9c1b1",
-    "short_commit": "96adea4",
+    "commit": "ad97be2366adcb5bd13cd87f85fa623a06bea484",
+    "short_commit": "ad97be2",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/thorwhalen/denote",
-    "commit_url": "https://github.com/thorwhalen/denote/commit/96adea412f433e7c68f8fff6a63eca6ecbb9c1b1",
+    "commit_url": "https://github.com/thorwhalen/denote/commit/ad97be2366adcb5bd13cd87f85fa623a06bea484",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "thorwhalen/denote",
-    "sha": "96adea412f433e7c68f8fff6a63eca6ecbb9c1b1",
+    "sha": "ad97be2366adcb5bd13cd87f85fa623a06bea484",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "45189254923",
-    "run_url": "https://github.com/thorwhalen/denote/actions/runs/45189254923",
+    "run_id": "45190597512",
+    "run_url": "https://github.com/thorwhalen/denote/actions/runs/45190597512",
     "server_url": "https://github.com"
   },
   "tools": {
@@ -56,20 +56,18 @@
   },
   "site": {
     "modules_documented": 53,
-    "objects_documented": 193
+    "objects_documented": 194
   },
   "pypi": {
     "checked": true,
     "latest": "0.0.14",
-    "relation": "behind",
+    "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/thorwhalen/denote && cd denote\ngit checkout 96adea412f433e7c68f8fff6a63eca6ecbb9c1b1\npip install \"epythet==0.2.25\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/thorwhalen/denote && cd denote\ngit checkout ad97be2366adcb5bd13cd87f85fa623a06bea484\npip install \"epythet==0.2.25\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": false,
-    "notes": [
-      "The documented version (0.0.13) is behind the latest release on PyPI (0.0.14): `pip install denote` gives newer code than these docs describe."
-    ]
+    "aligned": true,
+    "notes": []
   }
 }
