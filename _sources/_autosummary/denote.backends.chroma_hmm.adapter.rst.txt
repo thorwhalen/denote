@@ -1,0 +1,12 @@
+denote.backends.chroma\_hmm.adapter
+===================================
+
+.. automodule:: denote.backends.chroma_hmm.adapter
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Adapter
+   

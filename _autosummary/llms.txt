@@ -15,6 +15,9 @@
 - [denote.backends.beat_this](denote.backends.beat_this.html.md): | &#96;adapter&#96;   | Adapter for Beat This! — transformer beat and downbeat tracking.     |
 - [denote.backends.beat_this.adapter](denote.backends.beat_this.adapter.html.md): Adapter for Beat This! — transformer beat and downbeat tracking.
 - [denote.backends.beat_this.config](denote.backends.beat_this.config.html.md): Configuration for the Beat This! beat and downbeat tracking backend.
+- [denote.backends.chroma_hmm](denote.backends.chroma_hmm.html.md): Model-free chord recognition: spectral-peak chroma, chord templates and an HMM.
+- [denote.backends.chroma_hmm.adapter](denote.backends.chroma_hmm.adapter.html.md): Adapter for the model-free chord recognizer in &#96;denote.chords&#96;.
+- [denote.backends.chroma_hmm.config](denote.backends.chroma_hmm.config.html.md): Configuration for the chroma_hmm chord backend (the single source of its defaults).
 - [denote.backends.demucs_mlx](denote.backends.demucs_mlx.html.md): HTDemucs source separation on MLX (demucs-mlx), run in its own environment.
 - [denote.backends.demucs_mlx.adapter](denote.backends.demucs_mlx.adapter.html.md): Adapter for demucs-mlx: HTDemucs on MLX, in its own environment (&#96;denote.isolated&#96;).
 - [denote.backends.demucs_mlx.config](denote.backends.demucs_mlx.config.html.md): Configuration for the demucs-mlx (HTDemucs on MLX) separation backend.
@@ -43,6 +46,8 @@
 - [denote.backends.torchcrepe.adapter](denote.backends.torchcrepe.adapter.html.md): Adapter for torchcrepe — GPU-accelerated pitch estimation.
 - [denote.backends.torchcrepe.config](denote.backends.torchcrepe.config.html.md): Configuration for the torchcrepe backend.
 - [denote.base](denote.base.html.md): Core types and result dataclasses for denote.
+- [denote.benchmark](denote.benchmark.html.md): Score chord recognition against a labelled set with &#96;mir_eval&#96;, the same way for any backend.
+- [denote.chords](denote.chords.html.md): Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.
 - [denote.compare](denote.compare.html.md): Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).
 - [denote.isolated](denote.isolated.html.md): Backends that run in their own Python environment, through &#96;ps.isolated&#96;.
 - [denote.keys](denote.keys.html.md): Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).

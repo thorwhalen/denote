@@ -31,6 +31,8 @@
    align
    backends
    base
+   benchmark
+   chords
    compare
    isolated
    keys

@@ -1,0 +1,6 @@
+denote.backends.chroma\_hmm.config
+==================================
+
+.. automodule:: denote.backends.chroma_hmm.config
+
+   

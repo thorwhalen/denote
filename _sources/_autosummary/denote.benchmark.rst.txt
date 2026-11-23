@@ -1,0 +1,27 @@
+denote.benchmark
+================
+
+.. automodule:: denote.benchmark
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DFLT_METRICS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      evaluate_chords
+      guitarset_items
+      load_jams_chords
+      score_chords
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ChordItem
+   

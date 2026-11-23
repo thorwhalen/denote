@@ -17,6 +17,9 @@
 - [denote.backends.beat_this](_autosummary/denote.backends.beat_this.html.md): | &#96;adapter&#96;   | Adapter for Beat This! — transformer beat and downbeat tracking.     |
 - [denote.backends.beat_this.adapter](_autosummary/denote.backends.beat_this.adapter.html.md): Adapter for Beat This! — transformer beat and downbeat tracking.
 - [denote.backends.beat_this.config](_autosummary/denote.backends.beat_this.config.html.md): Configuration for the Beat This! beat and downbeat tracking backend.
+- [denote.backends.chroma_hmm](_autosummary/denote.backends.chroma_hmm.html.md): Model-free chord recognition: spectral-peak chroma, chord templates and an HMM.
+- [denote.backends.chroma_hmm.adapter](_autosummary/denote.backends.chroma_hmm.adapter.html.md): Adapter for the model-free chord recognizer in &#96;denote.chords&#96;.
+- [denote.backends.chroma_hmm.config](_autosummary/denote.backends.chroma_hmm.config.html.md): Configuration for the chroma_hmm chord backend (the single source of its defaults).
 - [denote.backends.demucs_mlx](_autosummary/denote.backends.demucs_mlx.html.md): HTDemucs source separation on MLX (demucs-mlx), run in its own environment.
 - [denote.backends.demucs_mlx.adapter](_autosummary/denote.backends.demucs_mlx.adapter.html.md): Adapter for demucs-mlx: HTDemucs on MLX, in its own environment (&#96;denote.isolated&#96;).
 - [denote.backends.demucs_mlx.config](_autosummary/denote.backends.demucs_mlx.config.html.md): Configuration for the demucs-mlx (HTDemucs on MLX) separation backend.
@@ -45,6 +48,8 @@
 - [denote.backends.torchcrepe.adapter](_autosummary/denote.backends.torchcrepe.adapter.html.md): Adapter for torchcrepe — GPU-accelerated pitch estimation.
 - [denote.backends.torchcrepe.config](_autosummary/denote.backends.torchcrepe.config.html.md): Configuration for the torchcrepe backend.
 - [denote.base](_autosummary/denote.base.html.md): Core types and result dataclasses for denote.
+- [denote.benchmark](_autosummary/denote.benchmark.html.md): Score chord recognition against a labelled set with &#96;mir_eval&#96;, the same way for any backend.
+- [denote.chords](_autosummary/denote.chords.html.md): Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.
 - [denote.compare](_autosummary/denote.compare.html.md): Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).
 - [denote.isolated](_autosummary/denote.isolated.html.md): Backends that run in their own Python environment, through &#96;ps.isolated&#96;.
 - [denote.keys](_autosummary/denote.keys.html.md): Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).
@@ -56,7 +61,7 @@
 - [denote.workers.demucs_mlx_worker](_autosummary/denote.workers.demucs_mlx_worker.html.md): demucs-mlx worker: HTDemucs on Apple’s MLX, run in the &#96;demucs_mlx&#96; environment.
 - [denote.workers.roformer_worker](_autosummary/denote.workers.roformer_worker.html.md): RoFormer worker: audio-separator’s RoFormer checkpoints, run in the &#96;roformer&#96; environment.
 - [For AI agents](ai-agents.html.md): &#96;denote&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-22 19:19 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 14:00 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
 
 ## Optional
 

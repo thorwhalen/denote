@@ -180,6 +180,8 @@ Transcribe audio to MIDI.
 |----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
 | [`backends`](denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
 | [`base`](denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
+| [`benchmark`](denote.benchmark.html.md#module-denote.benchmark)     | Score chord recognition against a labelled set with `mir_eval`, the same way for any backend.                                       |
+| [`chords`](denote.chords.html.md#module-denote.chords)           | Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.                                         |
 | [`compare`](denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
 | [`isolated`](denote.isolated.html.md#module-denote.isolated)       | Backends that run in their own Python environment, through `ps.isolated`.                                                           |
 | [`keys`](denote.keys.html.md#module-denote.keys)               | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |

@@ -1,4 +1,4 @@
-> built 2026-11-22 19:19 UTC from b9fe4f6 (main) · denote 0.0.13. Details: build_info.json
+> built 2026-11-23 14:00 UTC from 96adea4 (main) · denote 0.0.13. Details: build_info.json
 
 # index.html.md
 
@@ -52,6 +52,14 @@ key.key  # "A minor"
 key.confidence  # the winner's profile correlation (not a probability)
 key.margin  # lead over the runner-up: small means ambiguous
 key.ranked[:3]  # all 24 keys, best first; key.relative names the relative key
+
+# Chords (no model, no download): Harte labels with times
+chords = denote.get_chords("song.wav")
+chords.segments()  # [{"start": 0.0, "end": 2.9, "label": "C:maj"}, ...]; "N" = no chord
+denote.get_chords("song.wav", vocabulary=["C", "G", "Am", "F"])  # only these chords
+denote.get_chords("song.wav", sequence=["C", "G", "Am", "F"])  # known order: when does each happen?
+# Score any backend against labelled data (the "eval" extra):
+# from denote.benchmark import evaluate_chords, guitarset_items
 ```
 
 ## Choose Your Backend
@@ -604,6 +612,65 @@ Configuration for the Beat This! beat and downbeat tracking backend.
 | [`config`](_autosummary/denote.backends.beat_this.config.html.md#module-denote.backends.beat_this.config)     | Configuration for the Beat This! beat and downbeat tracking backend. |
 
 
+# _autosummary/denote.backends.chroma_hmm.adapter.html.md
+
+# denote.backends.chroma_hmm.adapter
+
+Adapter for the model-free chord recognizer in `denote.chords`.
+
+### Classes
+
+| [`Adapter`](_autosummary/denote.backends.chroma_hmm.adapter.html.md#denote.backends.chroma_hmm.adapter.Adapter)(config)   | Chords as `[{start, end, label}]` in Harte syntax, free, vocabulary-restricted or aligned.   |
+|--------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+
+### *class* denote.backends.chroma_hmm.adapter.Adapter(config)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Chords as `[{start, end, label}]` in Harte syntax, free, vocabulary-restricted or aligned.
+
+#### get_chords(audio, , sr=None, \*\*kwargs)
+
+Recognize the chords of `audio`.
+
+* **Parameters:**
+  * **audio** – File path or numpy array.
+  * **sr** – Sample rate (required if audio is an array).
+  * **\*\*kwargs** – `vocabulary` (restrict the chords to this list), `sequence` (an ordered
+    chord list the audio is known to follow, repeats allowed: returns when each
+    happens, one segment per entry, `raw['positions']` giving the entry index;
+    excludes `vocabulary` and `causal`), `qualities` (default vocabulary’s
+    qualities: `("maj", "min")`; add `"7"`, `"maj7"`, `"min7"`…),
+    `causal`, `dwell_s`, `kappa`, `harmonics`, `gate_db`, `no_chord_cos`, `window_s`,
+    `hop_s`, `audio_sr`.
+* **Returns:**
+  `intervals` (N, 2) seconds, Harte `labels` (`N` = no chord),
+  `segments()` for `[{start, end, label}]`; `raw` holds the per-frame path,
+  states and chroma.
+* **Return type:**
+  [*ChordResult*](_autosummary/denote.base.html.md#denote.base.ChordResult)
+
+
+# _autosummary/denote.backends.chroma_hmm.config.html.md
+
+# denote.backends.chroma_hmm.config
+
+Configuration for the chroma_hmm chord backend (the single source of its defaults).
+
+
+# _autosummary/denote.backends.chroma_hmm.html.md
+
+# denote.backends.chroma_hmm
+
+Model-free chord recognition: spectral-peak chroma, chord templates and an HMM.
+
+### Modules
+
+| [`adapter`](_autosummary/denote.backends.chroma_hmm.adapter.html.md#module-denote.backends.chroma_hmm.adapter)   | Adapter for the model-free chord recognizer in `denote.chords`.                     |
+|------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [`config`](_autosummary/denote.backends.chroma_hmm.config.html.md#module-denote.backends.chroma_hmm.config)     | Configuration for the chroma_hmm chord backend (the single source of its defaults). |
+
+
 # _autosummary/denote.backends.demucs_mlx.adapter.html.md
 
 # denote.backends.demucs_mlx.adapter
@@ -672,18 +739,19 @@ Backend packages for denote. Each subpackage provides a config.py and adapter.py
 
 ### Modules
 
-| [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)               |                                                                             |
-|---------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| [`beat_this`](_autosummary/denote.backends.beat_this.html.md#module-denote.backends.beat_this)                   |                                                                             |
-| [`demucs_mlx`](_autosummary/denote.backends.demucs_mlx.html.md#module-denote.backends.demucs_mlx)                 | HTDemucs source separation on MLX (demucs-mlx), run in its own environment. |
-| [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats)           |                                                                             |
-| [`librosa_key`](_autosummary/denote.backends.librosa_key.html.md#module-denote.backends.librosa_key)               | librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma.  |
-| [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)             |                                                                             |
-| [`pesto`](_autosummary/denote.backends.pesto.html.md#module-denote.backends.pesto)                           |                                                                             |
-| [`roformer`](_autosummary/denote.backends.roformer.html.md#module-denote.backends.roformer)                     | RoFormer source separation (audio-separator), run in its own environment.   |
-| [`swift_f0`](_autosummary/denote.backends.swift_f0.html.md#module-denote.backends.swift_f0)                     |                                                                             |
-| [`torchaudio_hdemucs`](_autosummary/denote.backends.torchaudio_hdemucs.html.md#module-denote.backends.torchaudio_hdemucs) | torchaudio Hybrid Demucs source separation backend.                         |
-| [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)                 |                                                                             |
+| [`basic_pitch`](_autosummary/denote.backends.basic_pitch.html.md#module-denote.backends.basic_pitch)               |                                                                                 |
+|---------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| [`beat_this`](_autosummary/denote.backends.beat_this.html.md#module-denote.backends.beat_this)                   |                                                                                 |
+| [`chroma_hmm`](_autosummary/denote.backends.chroma_hmm.html.md#module-denote.backends.chroma_hmm)                 | Model-free chord recognition: spectral-peak chroma, chord templates and an HMM. |
+| [`demucs_mlx`](_autosummary/denote.backends.demucs_mlx.html.md#module-denote.backends.demucs_mlx)                 | HTDemucs source separation on MLX (demucs-mlx), run in its own environment.     |
+| [`librosa_beats`](_autosummary/denote.backends.librosa_beats.html.md#module-denote.backends.librosa_beats)           |                                                                                 |
+| [`librosa_key`](_autosummary/denote.backends.librosa_key.html.md#module-denote.backends.librosa_key)               | librosa key estimation backend: Krumhansl-Schmuckler over mean CQT chroma.      |
+| [`librosa_pyin`](_autosummary/denote.backends.librosa_pyin.html.md#module-denote.backends.librosa_pyin)             |                                                                                 |
+| [`pesto`](_autosummary/denote.backends.pesto.html.md#module-denote.backends.pesto)                           |                                                                                 |
+| [`roformer`](_autosummary/denote.backends.roformer.html.md#module-denote.backends.roformer)                     | RoFormer source separation (audio-separator), run in its own environment.       |
+| [`swift_f0`](_autosummary/denote.backends.swift_f0.html.md#module-denote.backends.swift_f0)                     |                                                                                 |
+| [`torchaudio_hdemucs`](_autosummary/denote.backends.torchaudio_hdemucs.html.md#module-denote.backends.torchaudio_hdemucs) | torchaudio Hybrid Demucs source separation backend.                             |
+| [`torchcrepe`](_autosummary/denote.backends.torchcrepe.html.md#module-denote.backends.torchcrepe)                 |                                                                                 |
 
 
 # _autosummary/denote.backends.librosa_beats.adapter.html.md
@@ -1317,6 +1385,20 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of chord recognition.
 
+#### *classmethod* from_segments(segments, , raw=None, backend='')
+
+Build a result from `[{start, end, label}]`.
+
+* **Return type:**
+  [`ChordResult`](_autosummary/denote.base.html.md#denote.base.ChordResult)
+
+#### segments()
+
+`[{start, end, label}]`: the shape JAMS / Harte-label consumers read.
+
+* **Return type:**
+  [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]
+
 ### *class* denote.base.KeyResult(key, tonic, mode, confidence, margin=0.0, scores=dict(), profile='', raw=None, backend='')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
@@ -1383,6 +1465,245 @@ Stem `name` averaged to one channel.
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of audio-to-MIDI transcription.
+
+
+# _autosummary/denote.benchmark.html.md
+
+# denote.benchmark
+
+Score chord recognition against a labelled set with `mir_eval`, the same way for any backend.
+
+A labelled set is an iterable of `(audio, reference)` pairs (or `ChordItem`); a reference is
+`(intervals, labels)` or `[{start, end, label}]`, labels in Harte syntax. Scores are
+`mir_eval.chord` weighted chord symbol recall (`root`, `majmin`, `sevenths`, …) plus
+segmentation quality, per item and pooled (duration-weighted over the whole set).
+
+```pycon
+>>> from denote.benchmark import ChordItem, evaluate_chords
+>>> report = evaluate_chords(items)
+>>> report["pooled"]["majmin"]
+0.71
+```
+
+`guitarset_items(root)` yields GuitarSet’s microphone comping takes (needs `jams`);
+`load_jams_chords` reads any JAMS chord annotation. `mir_eval` is imported lazily and comes
+with the `eval` extra.
+
+### Module Attributes
+
+| [`DFLT_METRICS`](_autosummary/denote.benchmark.html.md#denote.benchmark.DFLT_METRICS)   | mir_eval.chord comparison functions scored by default, loosest to strictest   |
+|-----------------------------------------------------------------|-------------------------------------------------------------------------------|
+
+### Functions
+
+| [`evaluate_chords`](_autosummary/denote.benchmark.html.md#denote.benchmark.evaluate_chords)(items, \*[, backend, ...])       | Run a chord recogniser over a labelled set and score it.                                    |
+|---------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| [`guitarset_items`](_autosummary/denote.benchmark.html.md#denote.benchmark.guitarset_items)(root, \*[, players, annotation]) | GuitarSet microphone comping takes as <br/><br/>```<br/>``<br/>```<br/><br/>ChordItem\`\`s. |
+| [`load_jams_chords`](_autosummary/denote.benchmark.html.md#denote.benchmark.load_jams_chords)(path, \*[, index, namespace])   | `(intervals, labels)` of the `index`-th chord annotation of a JAMS file (needs `jams`).     |
+| [`score_chords`](_autosummary/denote.benchmark.html.md#denote.benchmark.score_chords)(reference, estimate, \*[, ...])     | Score one estimate against one reference.                                                   |
+
+### Classes
+
+| [`ChordItem`](_autosummary/denote.benchmark.html.md#denote.benchmark.ChordItem)(audio, reference[, name, sr, kwargs])   | One labelled recording: audio (path or array + `sr`) and its reference chords.   |
+|----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+
+### *class* denote.benchmark.ChordItem(audio, reference, name='', sr=None, kwargs=dict())
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+One labelled recording: audio (path or array + `sr`) and its reference chords.
+
+### denote.benchmark.DFLT_METRICS *= ('root', 'majmin', 'sevenths')*
+
+mir_eval.chord comparison functions scored by default, loosest to strictest
+
+### denote.benchmark.evaluate_chords(items, , backend=None, recognizer=None, metrics=('root', 'majmin', 'sevenths'), \*\*backend_kwargs)
+
+Run a chord recogniser over a labelled set and score it.
+
+* **Parameters:**
+  * **items** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)) – `(audio, reference)` pairs or `ChordItem`.
+  * **backend** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – A chords backend name (default: the registry’s default for chords).
+  * **recognizer** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Instead of a backend, any `f(audio, **kwargs) -> ChordResult`.
+  * **metrics** ([`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – `mir_eval.chord` comparison names.
+  * **\*\*backend_kwargs** – passed to every call (e.g. `vocabulary=`, `causal=True`).
+* **Returns:**
+  {name: {metric: ratio, …, “segmentation”: …}}, “pooled”: {metric: ratio},
+  “n_items”: n, “backend”: name}\`\`. Pooled ratios weight each item by its duration.
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+### denote.benchmark.guitarset_items(root, , players=None, annotation='performed')
+
+GuitarSet microphone comping takes as 
+
+```
+``
+```
+
+ChordItem\`\`s.
+
+`root` holds `audio_mono-mic/*_comp_mic.wav` and `ann/*.jams` (the dataset’s layout,
+CC BY 4.0). `players` restricts to those player numbers 0-5; `annotation` is `"performed"`
+(what was played) or `"instructed"` (the lead sheet).
+
+### denote.benchmark.load_jams_chords(path, , index=0, namespace='chord')
+
+`(intervals, labels)` of the `index`-th chord annotation of a JAMS file (needs `jams`).
+
+* **Return type:**
+  [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[`ndarray`, [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)]
+
+### denote.benchmark.score_chords(reference, estimate, , duration=None, metrics=('root', 'majmin', 'sevenths'))
+
+Score one estimate against one reference. Both are `(intervals, labels)` or segment lists.
+
+Returns `{metric: (credit_seconds, total_seconds), ..., "segmentation": {...}}`: seconds, not
+ratios, so a set can be pooled by summing. Time outside either annotation counts as `N`.
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+
+# _autosummary/denote.chords.html.md
+
+# denote.chords
+
+Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.
+
+The pieces behind the `chroma_hmm` backend, usable on their own:
+
+- `peaks_chroma(y, sr)`: a `(frames, 12)` chroma from spectral peaks, log-compressed
+- `chord_templates(vocabulary)`: unit templates with each tone’s overtones folded in
+- `decode_chords(chroma, ...)`: free decoding (Viterbi, or the causal forward filter),
+  optionally restricted to a `vocabulary`
+- `align_sequence(chroma, sequence)`: a left-to-right decode through a known ordered
+  chord list (chord-sequence-to-audio alignment: *when* each chord happens)
+
+Labels are Harte syntax (`C:maj`, `A:min7`, `N` for no chord), the vocabulary of
+`mir_eval.chord` and the JAMS chord namespace. All times are seconds.
+
+```pycon
+>>> chord_label(9, "min")
+'A:min'
+>>> parse_chord_label("Am7")
+('A:min7', 9, (0, 3, 7, 10))
+```
+
+### Module Attributes
+
+| [`QUALITY_INTERVALS`](_autosummary/denote.chords.html.md#denote.chords.QUALITY_INTERVALS)   | Harte shorthand -> semitone intervals above the root.   |
+|----------------------------------------------------------------------|---------------------------------------------------------|
+| [`DFLT_NO_CHORD_COS`](_autosummary/denote.chords.html.md#denote.chords.DFLT_NO_CHORD_COS)   | flat between 0.4 and 0.6).                              |
+
+### Functions
+
+| [`align_sequence`](_autosummary/denote.chords.html.md#denote.chords.align_sequence)(chroma, sequence[, level_db, ...])   | Force the decode through `sequence` in order (repeats allowed): a left-to-right HMM.                                                                                                                                                                                                                                                                             |
+|------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`chord_label`](_autosummary/denote.chords.html.md#denote.chords.chord_label)(root, quality)                          | Harte label of a pitch class and a quality shorthand.                                                                                                                                                                                                                                                                                                            |
+| [`chord_templates`](_autosummary/denote.chords.html.md#denote.chords.chord_templates)(vocabulary, \*[, harmonics, ...])   | `(K, 12)` unit-norm templates and the Harte labels, one per vocabulary entry.                                                                                                                                                                                                                                                                                    |
+| [`decode_chords`](_autosummary/denote.chords.html.md#denote.chords.decode_chords)(chroma[, level_db, ...])              | `(path, states)`: the state index per frame and the Harte labels (`N` last).                                                                                                                                                                                                                                                                                     |
+| [`default_vocabulary`](_autosummary/denote.chords.html.md#denote.chords.default_vocabulary)([qualities])                     | Every root x quality as Harte labels, qualities outermost (<br/><br/>```<br/>``<br/>```<br/><br/>C:maj .                                                                                                                                                                                                                                                         |
+| [`emissions`](_autosummary/denote.chords.html.md#denote.chords.emissions)(chroma, templates[, level_db, ...])       | `(frames, K + 1)` normalised likelihoods `exp(kappa * cosine)`; the last column is the no-chord state: a fixed cosine `no_chord_cos` (a frame is a chord only when some template matches better; `None` uses the cosine with flat chroma instead, which log compression makes far too high), and it wins in frames more than `gate_db` below the loudest so far. |
+| [`parse_chord_label`](_autosummary/denote.chords.html.md#denote.chords.parse_chord_label)(label)                            | `(harte_label, root_pc, intervals)` of a chord given as Harte (`A:min7`) or in common symbols (`F#m`, `Bb`; sevenths and the like need `chordsym`).                                                                                                                                                                                                              |
+| [`path_to_segments`](_autosummary/denote.chords.html.md#denote.chords.path_to_segments)(path, labels, \*, hop_s[, ...])    | Run-length the per-frame path into `[{start, end, label}]` (frame `t` spans `t * hop_s` +- half a hop).                                                                                                                                                                                                                                                          |
+| [`peaks_chroma`](_autosummary/denote.chords.html.md#denote.chords.peaks_chroma)(y, sr, \*[, window_s, hop_s, ...])     | `(chroma (frames, 12), level_db (frames,))` from spectral peaks only (HPCP-like).                                                                                                                                                                                                                                                                                |
+
+### denote.chords.DFLT_NO_CHORD_COS *= 0.5*
+
+flat between 0.4 and 0.6).
+
+* **Type:**
+  Cosine a frame must beat to be a chord (measured on GuitarSet
+
+### denote.chords.QUALITY_INTERVALS *= {'6': (0, 4, 7, 9), '7': (0, 4, 7, 10), 'aug': (0, 4, 8), 'dim': (0, 3, 6), 'dim7': (0, 3, 6, 9), 'hdim7': (0, 3, 6, 10), 'maj': (0, 4, 7), 'maj7': (0, 4, 7, 11), 'min': (0, 3, 7), 'min6': (0, 3, 7, 9), 'min7': (0, 3, 7, 10), 'sus2': (0, 2, 7), 'sus4': (0, 5, 7)}*
+
+Harte shorthand -> semitone intervals above the root. The SSOT for template tones.
+
+### denote.chords.align_sequence(chroma, sequence, level_db=None, , hop_s=0.046, kappa=20.0, gate_db=45.0, no_chord_cos=0.5, harmonics=0.6, stay=None)
+
+Force the decode through `sequence` in order (repeats allowed): a left-to-right HMM.
+
+Returns `(path, labels, positions)`: `path[t]` indexes `labels`, one label per
+position of `[N, *sequence, N]` (a no-chord state may precede and follow the sequence, for
+an intro or an outro); `positions[t]` is the sequence index of frame `t` (`-1` for the
+no-chord ends), which keeps two equal neighbouring chords apart.
+
+* **Return type:**
+  [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[`ndarray`, [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`int`](https://docs.python.org/3/builtins/functions.html#int)]]
+
+### denote.chords.chord_label(root, quality)
+
+Harte label of a pitch class and a quality shorthand.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### denote.chords.chord_templates(vocabulary, , harmonics=0.6, n_harmonics=6)
+
+`(K, 12)` unit-norm templates and the Harte labels, one per vocabulary entry.
+
+`harmonics` > 0 adds each chord tone’s overtones (harmonic `h` weighted `harmonics**(h-1)`),
+which is how a played chord actually fills the chroma; 0 gives binary templates.
+
+* **Return type:**
+  [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[`ndarray`, [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
+
+### denote.chords.decode_chords(chroma, level_db=None, , vocabulary=None, hop_s=0.046, dwell_s=2.0, kappa=20.0, gate_db=45.0, no_chord_cos=0.5, harmonics=0.6, causal=False)
+
+`(path, states)`: the state index per frame and the Harte labels (`N` last).
+
+`vocabulary` restricts the states to those chords (default: every major and minor triad).
+A chord stays for `dwell_s` seconds on average. `causal=True` reads a frame’s decision
+from the frames up to it only (what a live follower can know); default is offline Viterbi.
+
+* **Return type:**
+  [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[`ndarray`, [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
+
+### denote.chords.default_vocabulary(qualities=('maj', 'min'))
+
+Every root x quality as Harte labels, qualities outermost (`C:maj ... B:maj, C:min ...`).
+
+* **Return type:**
+  [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
+### denote.chords.emissions(chroma, templates, level_db=None, , kappa=20.0, gate_db=45.0, no_chord_cos=0.5)
+
+`(frames, K + 1)` normalised likelihoods `exp(kappa * cosine)`; the last column is the
+no-chord state: a fixed cosine `no_chord_cos` (a frame is a chord only when some template
+matches better; `None` uses the cosine with flat chroma instead, which log compression
+makes far too high), and it wins in frames more than `gate_db` below the loudest so far.
+
+* **Return type:**
+  `ndarray`
+
+### denote.chords.parse_chord_label(label)
+
+`(harte_label, root_pc, intervals)` of a chord given as Harte (`A:min7`) or in common
+symbols (`F#m`, `Bb`; sevenths and the like need `chordsym`). Raises `ValueError` when unreadable.
+
+* **Return type:**
+  [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int), [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]]
+
+### denote.chords.path_to_segments(path, labels, , hop_s, duration=None, split_on=None)
+
+Run-length the per-frame path into `[{start, end, label}]` (frame `t` spans
+`t * hop_s` +- half a hop). `split_on` (e.g. sequence positions) also cuts where it changes.
+
+* **Return type:**
+  [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]
+
+### denote.chords.peaks_chroma(y, sr, , window_s=0.186, hop_s=0.046, min_hz=55.0, max_hz=2100.0, floor_db=50.0, log_compression=100.0)
+
+`(chroma (frames, 12), level_db (frames,))` from spectral peaks only (HPCP-like).
+
+Local maxima within `floor_db` of the frame’s top and between `min_hz` and `max_hz`;
+frequency refined by parabolic interpolation; each peak goes to its nearest pitch class,
+weighted by `cos^2` of its distance in semitones, and its magnitude is compressed as
+`log(1 + log_compression * |X| / frame max)`. Frame `t` is centred at `t * hop_s`.
+
+* **Return type:**
+  [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[`ndarray`, `ndarray`]
 
 
 # _autosummary/denote.compare.html.md
@@ -1703,6 +2024,8 @@ Transcribe audio to MIDI.
 |----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
 | [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
 | [`base`](_autosummary/denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
+| [`benchmark`](_autosummary/denote.benchmark.html.md#module-denote.benchmark)     | Score chord recognition against a labelled set with `mir_eval`, the same way for any backend.                                       |
+| [`chords`](_autosummary/denote.chords.html.md#module-denote.chords)           | Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.                                         |
 | [`compare`](_autosummary/denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
 | [`isolated`](_autosummary/denote.isolated.html.md#module-denote.isolated)       | Backends that run in their own Python environment, through `ps.isolated`.                                                           |
 | [`keys`](_autosummary/denote.keys.html.md#module-denote.keys)               | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
@@ -2231,7 +2554,7 @@ Register a backend (for third-party plugins).
 
 # denote.services
 
-### denote.services *= <ServiceCollection backends=['basic_pitch', 'beat_this', 'demucs_mlx', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'pesto', 'roformer', 'swift_f0', 'torchaudio_hdemucs', 'torchcrepe']>*
+### denote.services *= <ServiceCollection backends=['basic_pitch', 'beat_this', 'chroma_hmm', 'demucs_mlx', 'librosa_beats', 'librosa_key', 'librosa_pyin', 'pesto', 'roformer', 'swift_f0', 'torchaudio_hdemucs', 'torchcrepe']>*
 
 Lazy mapping of backend names → ServiceHandle instances.
 
@@ -2602,16 +2925,18 @@ The lower-cased stem name in an audio-separator output file name.
 
 # About this build
 
-This documentation was built on **2026-11-22 19:19 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/b9fe4f6619709c90aa39efffce6ca1a6be61f352"><code>b9fe4f6</code></a> on branch <code>main</code>, for **denote 0.0.13** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 14:00 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/96adea412f433e7c68f8fff6a63eca6ecbb9c1b1"><code>96adea4</code></a> on branch <code>main</code>, for **denote 0.0.13** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.13) is behind the latest release on PyPI (0.0.14): `pip install denote` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/b9fe4f6619709c90aa39efffce6ca1a6be61f352"><code>b9fe4f6619709c90aa39efffce6ca1a6be61f352</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/96adea412f433e7c68f8fff6a63eca6ecbb9c1b1"><code>96adea412f433e7c68f8fff6a63eca6ecbb9c1b1</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
 | Tags at this commit | none                                                                                                                                                     |
 | Working tree        | clean                                                                                                                                                    |
@@ -2622,15 +2947,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/45059954792">45059954792</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/45189254923">45189254923</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>b9fe4f6619709c90aa39efffce6ca1a6be61f352</code> (in the history of the built commit) |
+| Event commit | <code>96adea412f433e7c68f8fff6a63eca6ecbb9c1b1</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.23  |
+| epythet  | 0.2.25  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -2649,14 +2974,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.13/">0.0.13</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.14/">0.0.14</a>, newer than the documented version (0.0.13).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout b9fe4f6619709c90aa39efffce6ca1a6be61f352
-pip install "epythet==0.2.23"
+git checkout 96adea412f433e7c68f8fff6a63eca6ecbb9c1b1
+pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

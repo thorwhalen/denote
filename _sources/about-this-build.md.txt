@@ -5,17 +5,19 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-11-22 19:19 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/b9fe4f6619709c90aa39efffce6ca1a6be61f352"><code>b9fe4f6</code></a> on branch <code>main</code>, for **denote 0.0.13** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 14:00 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/96adea412f433e7c68f8fff6a63eca6ecbb9c1b1"><code>96adea4</code></a> on branch <code>main</code>, for **denote 0.0.13** (from <code>pyproject.toml</code>).
 
-:::{note}
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+:::{warning}
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.13) is behind the latest release on PyPI (0.0.14): `pip install denote` gives newer code than these docs describe.
 :::
 
 ## Source
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/thorwhalen/denote/commit/b9fe4f6619709c90aa39efffce6ca1a6be61f352"><code>b9fe4f6619709c90aa39efffce6ca1a6be61f352</code></a> |
+| Commit | <a href="https://github.com/thorwhalen/denote/commit/96adea412f433e7c68f8fff6a63eca6ecbb9c1b1"><code>96adea412f433e7c68f8fff6a63eca6ecbb9c1b1</code></a> |
 | Branch | <code>main</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -26,15 +28,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 | | |
 |---|---|
 | Repository | <code>thorwhalen/denote</code> |
-| Run | <a href="https://github.com/thorwhalen/denote/actions/runs/45059954792">45059954792</a> |
+| Run | <a href="https://github.com/thorwhalen/denote/actions/runs/45189254923">45189254923</a> |
 | Ref | <code>refs/heads/main</code> |
-| Event commit | <code>b9fe4f6619709c90aa39efffce6ca1a6be61f352</code> (in the history of the built commit) |
+| Event commit | <code>96adea412f433e7c68f8fff6a63eca6ecbb9c1b1</code> (in the history of the built commit) |
 
 ## Tools
 
 | | |
 |---|---|
-| epythet | 0.2.23 |
+| epythet | 0.2.25 |
 | Sphinx | 9.1.1 |
 | docutils | 0.22.4 |
 | Python | 3.12.16 |
@@ -53,14 +55,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.13/">0.0.13</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.14/">0.0.14</a>, newer than the documented version (0.0.13).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout b9fe4f6619709c90aa39efffce6ca1a6be61f352
-pip install "epythet==0.2.23"
+git checkout 96adea412f433e7c68f8fff6a63eca6ecbb9c1b1
+pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

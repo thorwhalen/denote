@@ -1,0 +1,14 @@
+denote.backends.chroma\_hmm
+===========================
+
+.. automodule:: denote.backends.chroma_hmm
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   adapter
+   config

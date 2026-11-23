@@ -1,0 +1,27 @@
+denote.chords
+=============
+
+.. automodule:: denote.chords
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      QUALITY_INTERVALS
+      DFLT_NO_CHORD_COS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      align_sequence
+      chord_label
+      chord_templates
+      decode_chords
+      default_vocabulary
+      emissions
+      parse_chord_label
+      path_to_segments
+      peaks_chroma
+   

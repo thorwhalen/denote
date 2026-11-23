@@ -12,6 +12,7 @@ denote.backends
 
    basic_pitch
    beat_this
+   chroma_hmm
    demucs_mlx
    librosa_beats
    librosa_key

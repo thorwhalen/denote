@@ -86,6 +86,8 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.align.html">denote.align</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.base.html">denote.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.benchmark.html">denote.benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.chords.html">denote.chords</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.keys.html">denote.keys</a></li>
@@ -158,6 +160,14 @@ Each backend is an optional dependency — install only what you need.</p>
 </span><span id="line-27"><span class="n">key</span><span class="o">.</span><span class="n">confidence</span>  <span class="c1"># the winner's profile correlation (not a probability)</span>
 </span><span id="line-28"><span class="n">key</span><span class="o">.</span><span class="n">margin</span>  <span class="c1"># lead over the runner-up: small means ambiguous</span>
 </span><span id="line-29"><span class="n">key</span><span class="o">.</span><span class="n">ranked</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># all 24 keys, best first; key.relative names the relative key</span>
+</span><span id="line-30">
+</span><span id="line-31"><span class="c1"># Chords (no model, no download): Harte labels with times</span>
+</span><span id="line-32"><span class="n">chords</span> <span class="o">=</span> <span class="n">denote</span><span class="o">.</span><span class="n">get_chords</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">)</span>
+</span><span id="line-33"><span class="n">chords</span><span class="o">.</span><span class="n">segments</span><span class="p">()</span>  <span class="c1"># [{"start": 0.0, "end": 2.9, "label": "C:maj"}, ...]; "N" = no chord</span>
+</span><span id="line-34"><span class="n">denote</span><span class="o">.</span><span class="n">get_chords</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">,</span> <span class="n">vocabulary</span><span class="o">=</span><span class="p">[</span><span class="s2">"C"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"Am"</span><span class="p">,</span> <span class="s2">"F"</span><span class="p">])</span>  <span class="c1"># only these chords</span>
+</span><span id="line-35"><span class="n">denote</span><span class="o">.</span><span class="n">get_chords</span><span class="p">(</span><span class="s2">"song.wav"</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="p">[</span><span class="s2">"C"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"Am"</span><span class="p">,</span> <span class="s2">"F"</span><span class="p">])</span>  <span class="c1"># known order: when does each happen?</span>
+</span><span id="line-36"><span class="c1"># Score any backend against labelled data (the "eval" extra):</span>
+</span><span id="line-37"><span class="c1"># from denote.benchmark import evaluate_chords, guitarset_items</span>
 </span></code></pre></div>
 </div>
 </section>
@@ -307,7 +317,7 @@ Each backend is an optional dependency — install only what you need.</p>
 
 </section>
 </section>
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-22 19:19 UTC from <a href="https://github.com/thorwhalen/denote/commit/b9fe4f6619709c90aa39efffce6ca1a6be61f352">b9fe4f6</a> (main) · denote 0.0.13 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-23 14:00 UTC from <a href="https://github.com/thorwhalen/denote/commit/96adea412f433e7c68f8fff6a63eca6ecbb9c1b1">96adea4</a> (main) · denote 0.0.13 · <a href="about-this-build.html">about this build</a></p>
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] h-full overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>

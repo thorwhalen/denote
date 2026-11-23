@@ -117,6 +117,8 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.align.html">denote.align</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.base.html">denote.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.benchmark.html">denote.benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.chords.html">denote.chords</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.keys.html">denote.keys</a></li>
@@ -178,6 +180,8 @@
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.backends.beat_this.adapter.html#denote.backends.beat_this.adapter.Adapter">(class in denote.backends.beat_this.adapter)</a>
 </li>
+        <li><a href="_autosummary/denote.backends.chroma_hmm.adapter.html#denote.backends.chroma_hmm.adapter.Adapter">(class in denote.backends.chroma_hmm.adapter)</a>
+</li>
         <li><a href="_autosummary/denote.backends.demucs_mlx.adapter.html#denote.backends.demucs_mlx.adapter.Adapter">(class in denote.backends.demucs_mlx.adapter)</a>
 </li>
         <li><a href="_autosummary/denote.backends.librosa_beats.adapter.html#denote.backends.librosa_beats.adapter.Adapter">(class in denote.backends.librosa_beats.adapter)</a>
@@ -204,6 +208,8 @@
       <li><a href="_autosummary/denote.align.html#denote.align.align_chroma">align_chroma() (in module denote.align)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.align_score">align_score() (in module denote.align)</a>
+</li>
+      <li><a href="_autosummary/denote.chords.html#denote.chords.align_sequence">align_sequence() (in module denote.chords)</a>
 </li>
       <li><a href="_autosummary/denote.compare.html#denote.compare.AlignedPair">AlignedPair (class in denote.compare)</a>
 </li>
@@ -257,16 +263,22 @@
 </li>
       <li><a href="_autosummary/denote.backends.roformer.config.html#denote.backends.roformer.config.CHECKPOINTS">CHECKPOINTS (in module denote.backends.roformer.config)</a>
 </li>
+      <li><a href="_autosummary/denote.chords.html#denote.chords.chord_label">chord_label() (in module denote.chords)</a>
+</li>
+      <li><a href="_autosummary/denote.chords.html#denote.chords.chord_templates">chord_templates() (in module denote.chords)</a>
+</li>
+      <li><a href="_autosummary/denote.benchmark.html#denote.benchmark.ChordItem">ChordItem (class in denote.benchmark)</a>
+</li>
       <li><a href="_autosummary/denote.base.html#denote.base.ChordResult">ChordResult (class in denote.base)</a>
 </li>
       <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.chroma_cens">chroma_cens() (in module denote.backends.librosa_key.adapter)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.compare.html#denote.compare.chroma_metric">chroma_metric() (in module denote.compare)</a>
 </li>
       <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.chroma_stft">chroma_stft() (in module denote.backends.librosa_key.adapter)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.util.html#denote.util.chunk_bounds">chunk_bounds() (in module denote.util)</a>
 </li>
       <li><a href="_autosummary/denote.util.html#denote.util.chunked_apply">chunked_apply() (in module denote.util)</a>
@@ -297,6 +309,10 @@
       <li><a href="_autosummary/denote.isolated.html#denote.isolated.data_dir">data_dir() (in module denote.isolated)</a>
 </li>
       <li><a href="_autosummary/denote.isolated.html#denote.isolated.DATA_DIR_ENVVAR">DATA_DIR_ENVVAR (in module denote.isolated)</a>
+</li>
+      <li><a href="_autosummary/denote.chords.html#denote.chords.decode_chords">decode_chords() (in module denote.chords)</a>
+</li>
+      <li><a href="_autosummary/denote.chords.html#denote.chords.default_vocabulary">default_vocabulary() (in module denote.chords)</a>
 </li>
       <li>
     denote
@@ -366,6 +382,27 @@
 
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.backends.beat_this.config.html#module-denote.backends.beat_this.config">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.chroma_hmm
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.chroma_hmm.html#module-denote.backends.chroma_hmm">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.chroma_hmm.adapter
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.chroma_hmm.adapter.html#module-denote.backends.chroma_hmm.adapter">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.backends.chroma_hmm.config
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.backends.chroma_hmm.config.html#module-denote.backends.chroma_hmm.config">module</a>
 </li>
       </ul></li>
       <li>
@@ -567,6 +604,20 @@
 </li>
       </ul></li>
       <li>
+    denote.benchmark
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.benchmark.html#module-denote.benchmark">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.chords
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.chords.html#module-denote.chords">module</a>
+</li>
+      </ul></li>
+      <li>
     denote.compare
 
       <ul style="list-style-type:none">
@@ -641,11 +692,17 @@
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.DFLT_FRAME_RATE">DFLT_FRAME_RATE (in module denote.align)</a>
 </li>
-      <li><a href="_autosummary/denote.compare.html#denote.compare.DFLT_METRICS">DFLT_METRICS (in module denote.compare)</a>
+      <li><a href="_autosummary/denote.benchmark.html#denote.benchmark.DFLT_METRICS">DFLT_METRICS (in module denote.benchmark)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.compare.html#denote.compare.DFLT_METRICS">(in module denote.compare)</a>
 </li>
+      </ul></li>
       <li><a href="_autosummary/denote.backends.librosa_key.config.html#denote.backends.librosa_key.config.DFLT_MIN_DURATION_S">DFLT_MIN_DURATION_S (in module denote.backends.librosa_key.config)</a>
 </li>
       <li><a href="_autosummary/denote.backends.librosa_key.config.html#denote.backends.librosa_key.config.DFLT_MIN_RMS">DFLT_MIN_RMS (in module denote.backends.librosa_key.config)</a>
+</li>
+      <li><a href="_autosummary/denote.chords.html#denote.chords.DFLT_NO_CHORD_COS">DFLT_NO_CHORD_COS (in module denote.chords)</a>
 </li>
   </ul></td>
   </tr>
@@ -654,6 +711,8 @@
   <h2 id="E">E</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.chords.html#denote.chords.emissions">emissions() (in module denote.chords)</a>
+</li>
       <li><a href="_autosummary/denote.util.html#denote.util.ensure_file_path">ensure_file_path() (in module denote.util)</a>
 </li>
       <li><a href="_autosummary/denote.isolated.html#denote.isolated.env_dir">env_dir() (in module denote.isolated)</a>
@@ -674,6 +733,8 @@
 </li>
       <li><a href="_autosummary/denote.isolated.html#denote.isolated.EnvNotBuilt">EnvNotBuilt</a>
 </li>
+      <li><a href="_autosummary/denote.benchmark.html#denote.benchmark.evaluate_chords">evaluate_chords() (in module denote.benchmark)</a>
+</li>
   </ul></td>
   </tr>
       </table>
@@ -693,6 +754,8 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.frame_rms">frame_rms() (in module denote.backends.librosa_key.adapter)</a>
 </li>
+      <li><a href="_autosummary/denote.base.html#denote.base.ChordResult.from_segments">from_segments() (denote.base.ChordResult class method)</a>
+</li>
   </ul></td>
   </tr>
       </table>
@@ -710,8 +773,12 @@
         <li><a href="_autosummary/denote.html#denote.get_beats">(in module denote)</a>
 </li>
       </ul></li>
-      <li><a href="_autosummary/denote.html#denote.get_chords">get_chords() (in module denote)</a>
+      <li><a href="_autosummary/denote.backends.chroma_hmm.adapter.html#denote.backends.chroma_hmm.adapter.Adapter.get_chords">get_chords() (denote.backends.chroma_hmm.adapter.Adapter method)</a>
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.html#denote.get_chords">(in module denote)</a>
 </li>
+      </ul></li>
       <li><a href="_autosummary/denote.registry.html#denote.registry.get_config">get_config() (in module denote.registry)</a>
 </li>
       <li><a href="_autosummary/denote.registry.html#denote.registry.get_default_backend">get_default_backend() (in module denote.registry)</a>
@@ -736,6 +803,8 @@
         <li><a href="_autosummary/denote.html#denote.get_pitch">(in module denote)</a>
 </li>
       </ul></li>
+      <li><a href="_autosummary/denote.benchmark.html#denote.benchmark.guitarset_items">guitarset_items() (in module denote.benchmark)</a>
+</li>
   </ul></td>
   </tr>
       </table>
@@ -804,6 +873,8 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.util.html#denote.util.load_audio">load_audio() (in module denote.util)</a>
 </li>
+      <li><a href="_autosummary/denote.benchmark.html#denote.benchmark.load_jams_chords">load_jams_chords() (in module denote.benchmark)</a>
+</li>
       <li><a href="_autosummary/denote.isolated.html#denote.isolated.lock_requirements">lock_requirements() (in module denote.isolated)</a>
 </li>
   </ul></td>
@@ -865,6 +936,12 @@
 </li>
         <li><a href="_autosummary/denote.backends.beat_this.config.html#module-denote.backends.beat_this.config">denote.backends.beat_this.config</a>
 </li>
+        <li><a href="_autosummary/denote.backends.chroma_hmm.html#module-denote.backends.chroma_hmm">denote.backends.chroma_hmm</a>
+</li>
+        <li><a href="_autosummary/denote.backends.chroma_hmm.adapter.html#module-denote.backends.chroma_hmm.adapter">denote.backends.chroma_hmm.adapter</a>
+</li>
+        <li><a href="_autosummary/denote.backends.chroma_hmm.config.html#module-denote.backends.chroma_hmm.config">denote.backends.chroma_hmm.config</a>
+</li>
         <li><a href="_autosummary/denote.backends.demucs_mlx.html#module-denote.backends.demucs_mlx">denote.backends.demucs_mlx</a>
 </li>
         <li><a href="_autosummary/denote.backends.demucs_mlx.adapter.html#module-denote.backends.demucs_mlx.adapter">denote.backends.demucs_mlx.adapter</a>
@@ -920,6 +997,10 @@
         <li><a href="_autosummary/denote.backends.torchcrepe.config.html#module-denote.backends.torchcrepe.config">denote.backends.torchcrepe.config</a>
 </li>
         <li><a href="_autosummary/denote.base.html#module-denote.base">denote.base</a>
+</li>
+        <li><a href="_autosummary/denote.benchmark.html#module-denote.benchmark">denote.benchmark</a>
+</li>
+        <li><a href="_autosummary/denote.chords.html#module-denote.chords">denote.chords</a>
 </li>
         <li><a href="_autosummary/denote.compare.html#module-denote.compare">denote.compare</a>
 </li>
@@ -981,12 +1062,18 @@
   <h2 id="P">P</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.chords.html#denote.chords.parse_chord_label">parse_chord_label() (in module denote.chords)</a>
+</li>
       <li><a href="_autosummary/denote.keys.html#denote.keys.parse_key">parse_key() (in module denote.keys)</a>
+</li>
+      <li><a href="_autosummary/denote.chords.html#denote.chords.path_to_segments">path_to_segments() (in module denote.chords)</a>
 </li>
       <li><a href="_autosummary/denote.util.html#denote.util.peak_normalize">peak_normalize() (in module denote.util)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.chords.html#denote.chords.peaks_chroma">peaks_chroma() (in module denote.chords)</a>
+</li>
       <li><a href="_autosummary/denote.keys.html#denote.keys.pitch_class_vector">pitch_class_vector() (in module denote.keys)</a>
 </li>
       <li><a href="_autosummary/denote.base.html#denote.base.PitchResult">PitchResult (class in denote.base)</a>
@@ -999,6 +1086,10 @@
   
   <h2 id="Q">Q</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.chords.html#denote.chords.QUALITY_INTERVALS">QUALITY_INTERVALS (in module denote.chords)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.query_times">query_times (denote.align.ScoreAlignment property)</a>
 </li>
@@ -1048,6 +1139,8 @@
         <li><a href="_autosummary/denote.workers.roformer_worker.html#denote.workers.roformer_worker.SAMPLE_RATE">(in module denote.workers.roformer_worker)</a>
 </li>
       </ul></li>
+      <li><a href="_autosummary/denote.benchmark.html#denote.benchmark.score_chords">score_chords() (in module denote.benchmark)</a>
+</li>
       <li><a href="_autosummary/denote.align.html#denote.align.score_chroma">score_chroma() (in module denote.align)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.score_span">score_span (denote.align.ScoreAlignment property)</a>
@@ -1057,6 +1150,8 @@
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment.score_to_audio">score_to_audio() (denote.align.ScoreAlignment method)</a>
 </li>
       <li><a href="_autosummary/denote.align.html#denote.align.ScoreAlignment">ScoreAlignment (class in denote.align)</a>
+</li>
+      <li><a href="_autosummary/denote.base.html#denote.base.ChordResult.segments">segments() (denote.base.ChordResult method)</a>
 </li>
       <li><a href="_autosummary/denote.backends.roformer.adapter.html#denote.backends.roformer.adapter.Adapter.separate">separate() (denote.backends.roformer.adapter.Adapter method)</a>
 

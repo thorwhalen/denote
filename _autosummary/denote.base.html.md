@@ -43,6 +43,20 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Result of chord recognition.
 
+#### *classmethod* from_segments(segments, , raw=None, backend='')
+
+Build a result from `[{start, end, label}]`.
+
+* **Return type:**
+  [`ChordResult`](#denote.base.ChordResult)
+
+#### segments()
+
+`[{start, end, label}]`: the shape JAMS / Harte-label consumers read.
+
+* **Return type:**
+  [`List`](https://docs.python.org/3/library/typing.html#typing.List)[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]
+
 ### *class* denote.base.KeyResult(key, tonic, mode, confidence, margin=0.0, scores=dict(), profile='', raw=None, backend='')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)

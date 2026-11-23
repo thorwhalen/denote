@@ -35,7 +35,7 @@
 <link href="../_static/epythet.css?v=885e65be" rel="stylesheet" type="text/css"/>
 <link href="../search.html" rel="search" title="Search"/>
 <link href="../genindex.html" rel="index" title="Index"/>
-<link href="denote.compare.html" rel="next" title="denote.compare"/>
+<link href="denote.benchmark.html" rel="next" title="denote.benchmark"/>
 <link href="denote.backends.torchcrepe.config.html" rel="prev" title="denote.backends.torchcrepe.config"/>
 </head>
 <body :class="{ 'overflow-hidden': showSidebar }" class="min-h-screen font-sans antialiased bg-background text-foreground" x-data="{ showSidebar: false, showScrollTop: false }">
@@ -87,6 +87,8 @@
 <li class="toctree-l3"><a class="reference internal" href="denote.align.html">denote.align</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.backends.html">denote.backends</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">denote.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.benchmark.html">denote.benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.chords.html">denote.chords</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.keys.html">denote.keys</a></li>
@@ -190,6 +192,26 @@ themselves (LGPL and the like) belong in <code class="docutils literal notransla
 <p>Result of chord recognition.</p>
 <dl class="field-list simple">
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="denote.base.ChordResult.from_segments">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segments</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/base.html#ChordResult.from_segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.base.ChordResult.from_segments" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.base.ChordResult.from_segments'">¶</a></dt>
+<dd><p>Build a result from <code class="docutils literal notranslate"><span class="pre">[{start,</span> <span class="pre">end,</span> <span class="pre">label}]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#denote.base.ChordResult" title="denote.base.ChordResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChordResult</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="denote.base.ChordResult.segments">
+<span class="sig-name descname"><span class="pre">segments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/denote/base.html#ChordResult.segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a @click.prevent="window.navigator.clipboard.writeText($el.href); $el.setAttribute('data-tooltip', 'Copied!'); setTimeout(() =&gt; $el.setAttribute('data-tooltip', 'Copy link to this element'), 2000)" aria-label="Copy link to this element" class="headerlink" data-tooltip="Copy link to this element" href="#denote.base.ChordResult.segments" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#denote.base.ChordResult.segments'">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">[{start,</span> <span class="pre">end,</span> <span class="pre">label}]</span></code>: the shape JAMS / Harte-label consumers read.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" rel="nofollow noopener" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code><svg fill="currentColor" height="1em" stroke="none" viewbox="0 96 960 960" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M188 868q-11-11-11-28t11-28l436-436H400q-17 0-28.5-11.5T360 336q0-17 11.5-28.5T400 296h320q17 0 28.5 11.5T760 336v320q0 17-11.5 28.5T720 696q-17 0-28.5-11.5T680 656V432L244 868q-11 11-28 11t-28-11Z"></path></svg></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="denote.base.KeyResult">
@@ -281,7 +303,11 @@ mode (dorian, …) gets <code class="docutils literal notranslate"><span class="
 <ul>
 <li><a :data-current="activeSection === '#denote.base.BeatResult'" class="reference internal" href="#denote.base.BeatResult"><code class="docutils literal notranslate"><span class="pre">BeatResult</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.base.COMMERCIAL_USE_VALUES'" class="reference internal" href="#denote.base.COMMERCIAL_USE_VALUES"><code class="docutils literal notranslate"><span class="pre">COMMERCIAL_USE_VALUES</span></code></a></li>
-<li><a :data-current="activeSection === '#denote.base.ChordResult'" class="reference internal" href="#denote.base.ChordResult"><code class="docutils literal notranslate"><span class="pre">ChordResult</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.base.ChordResult'" class="reference internal" href="#denote.base.ChordResult"><code class="docutils literal notranslate"><span class="pre">ChordResult</span></code></a><ul>
+<li><a :data-current="activeSection === '#denote.base.ChordResult.from_segments'" class="reference internal" href="#denote.base.ChordResult.from_segments"><code class="docutils literal notranslate"><span class="pre">ChordResult.from_segments()</span></code></a></li>
+<li><a :data-current="activeSection === '#denote.base.ChordResult.segments'" class="reference internal" href="#denote.base.ChordResult.segments"><code class="docutils literal notranslate"><span class="pre">ChordResult.segments()</span></code></a></li>
+</ul>
+</li>
 <li><a :data-current="activeSection === '#denote.base.KeyResult'" class="reference internal" href="#denote.base.KeyResult"><code class="docutils literal notranslate"><span class="pre">KeyResult</span></code></a><ul>
 <li><a :data-current="activeSection === '#denote.base.KeyResult.ranked'" class="reference internal" href="#denote.base.KeyResult.ranked"><code class="docutils literal notranslate"><span class="pre">KeyResult.ranked</span></code></a></li>
 <li><a :data-current="activeSection === '#denote.base.KeyResult.relative'" class="reference internal" href="#denote.base.KeyResult.relative"><code class="docutils literal notranslate"><span class="pre">KeyResult.relative</span></code></a></li>
