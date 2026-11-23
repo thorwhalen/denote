@@ -55,6 +55,7 @@ denote/
 │   ├── librosa_pyin/
 │   │   ├── ...
 │   ├── librosa_key/         # key: mean chroma x key profiles (denote/keys.py)
+│   ├── chroma_hmm/          # chords: peak chroma x templates x HMM (denote/chords.py)
 │   ├── librosa_beats/
 │   │   ├── ...
 │   ├── pesto/

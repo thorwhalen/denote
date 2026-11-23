@@ -43,6 +43,8 @@ Priority backends (permissive licenses, pip-installable, well-maintained):
 ## Phase 5: Higher-Level Analysis (v0.1.0)
 
 - [x] Key detection: `get_key` with the `librosa_key` backend (Krumhansl-Schmuckler over mean chroma, Krumhansl-Kessler or Temperley profiles)
+- [x] Model-free chords: `get_chords` with the `chroma_hmm` backend (peak chroma, overtone templates, HMM; `vocabulary=`, `sequence=` alignment) and `denote.benchmark` (mir_eval scoring, GuitarSet loader)
+- [ ] Learned chroma front end for full mixes behind the same `backend=` seam
 - [ ] Key detection with a learned model (e.g. a CNN key classifier) and local (windowed) keys
 - [ ] Structural segmentation (via allin1)
 - [ ] Lead sheet generation pipeline (melody + chords + lyrics)

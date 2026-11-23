@@ -27,6 +27,8 @@ See `misc/docs/docs_guide.md` for the full docs index. Key docs:
 - `denote/__init__.py` — Top-level facade: `transcribe()`, `get_chords()`, `get_pitch()`, `get_beats()`, `separate()`, `get_key()`, `backend_table()` (licences per backend, configs only)
 - `denote/align.py` — `align_score()` / `align_audio()`: chroma DTW time maps; `align_chroma()` for precomputed features
 - `denote/compare.py` — `compare_audio()`: chroma + timbre distances on one alignment, metrics as a registry
+- `denote/chords.py` — Model-free chord recognition: `peaks_chroma`, `chord_templates`, `decode_chords`, `align_sequence` (Harte labels)
+- `denote/benchmark.py` — `evaluate_chords()` / `score_chords()`: mir_eval scores per item and pooled; `guitarset_items()`, `load_jams_chords()`
 - `denote/keys.py` — Key profiles (Krumhansl-Kessler, Temperley), `key_from_chroma()` / `key_scores()` for precomputed chroma, key-name helpers
 - `denote/base.py` — Result dataclasses (incl. `KeyResult`), AudioInput type, NoteEvent
 - `denote/registry.py` — Backend discovery, registration, lazy loading
