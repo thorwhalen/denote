@@ -152,3 +152,26 @@ def test_sections_need_one_key_per_entry_and_a_sequence(audio):
         denote.get_chords(audio, sr=SR, sequence=["C", "G"], sections=[0])
     with pytest.raises(ValueError, match="belongs to sequence"):
         denote.get_chords(audio, sr=SR, sections=[0])
+
+
+def test_frontend_registry_and_callable(audio):
+    from denote.chroma_frontends import FRONTENDS, resolve_frontend
+
+    assert {"peaks", "basic_pitch"} <= set(FRONTENDS)
+    with pytest.raises(ValueError, match="unknown frontend"):
+        resolve_frontend("nope")
+    seen = {}
+
+    def front(y, sr, *, hop_s, window_s):
+        seen["hop_s"] = hop_s
+        return FRONTENDS["peaks"](y, sr, hop_s=hop_s, window_s=window_s)
+
+    result = denote.get_chords(audio, sr=SR, frontend=front)
+    assert seen["hop_s"] == 0.046 and labels_at(result, MIDDLES) == WANT
+
+
+def test_basic_pitch_frontend(audio):
+    pytest.importorskip("basic_pitch")
+    pytest.importorskip("onnxruntime")
+    result = denote.get_chords(audio, sr=SR, frontend="basic_pitch")
+    assert labels_at(result, MIDDLES) == WANT

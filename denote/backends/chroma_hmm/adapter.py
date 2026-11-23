@@ -8,8 +8,8 @@ from denote.chords import (
     decode_chords,
     default_vocabulary,
     path_to_segments,
-    peaks_chroma,
 )
+from denote.chroma_frontends import FRONTEND_TUNING, resolve_frontend
 from denote.translation import make_kwargs_translator
 from denote.util import load_audio
 
@@ -33,7 +33,8 @@ class Adapter:
                 excludes ``vocabulary`` and ``causal``), ``qualities`` (default vocabulary's
                 qualities: ``("maj", "min")``; add ``"7"``, ``"maj7"``, ``"min7"``...),
                 ``causal``, ``dwell_s``, ``kappa``, ``harmonics``, ``gate_db``, ``no_chord_cos``, ``window_s``,
-                ``hop_s``, ``audio_sr``. With ``sequence``: ``sections`` (one key per entry; the order
+                ``hop_s``, ``audio_sr``, ``frontend`` (``"peaks"`` default, ``"basic_pitch"``, or a callable;
+                see ``denote.chroma_frontends``). With ``sequence``: ``sections`` (one key per entry; the order
                 becomes tolerant: jumps between section starts at ``jump_p``, skipped entries at
                 ``skip_p``).
 
@@ -51,8 +52,15 @@ class Adapter:
                 "sequence= aligns a known chord list: it excludes vocabulary= and causal="
             )
         y, rate = load_audio(audio, sr=sr, mono=True, target_sr=native["audio_sr"])
-        chroma, level = peaks_chroma(
-            y, rate, window_s=native["window_s"], hop_s=native["hop_s"]
+        frontend = native["frontend"]
+        tuning = FRONTEND_TUNING.get(frontend, {}) if isinstance(frontend, str) else {}
+        for key, value in tuning.items():
+            if (
+                key not in kwargs
+            ):  # the front end's tuned setting, unless the caller chose one
+                native[key] = value
+        chroma, level = resolve_frontend(frontend)(
+            y, rate, hop_s=native["hop_s"], window_s=native["window_s"]
         )
         hop_s, duration = native["hop_s"], len(y) / rate
         common = dict(
