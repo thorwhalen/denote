@@ -119,6 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/denote.benchmark.html">denote.benchmark</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/denote.chords.html">denote.chords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/denote.chroma_frontends.html">denote.chroma_frontends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/denote.keys.html">denote.keys</a></li>
@@ -187,8 +188,8 @@
 </span><span id="line-8">    <span class="n">decode_chords</span><span class="p">,</span>
 </span><span id="line-9">    <span class="n">default_vocabulary</span><span class="p">,</span>
 </span><span id="line-10">    <span class="n">path_to_segments</span><span class="p">,</span>
-</span><span id="line-11">    <span class="n">peaks_chroma</span><span class="p">,</span>
-</span><span id="line-12"><span class="p">)</span>
+</span><span id="line-11"><span class="p">)</span>
+</span><span id="line-12"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.chroma_frontends</span><span class="w"> </span><span class="kn">import</span> <span class="n">FRONTEND_TUNING</span><span class="p">,</span> <span class="n">resolve_frontend</span>
 </span><span id="line-13"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_kwargs_translator</span>
 </span><span id="line-14"><span class="kn">from</span><span class="w"> </span><span class="nn">denote.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_audio</span>
 </span><span id="line-15">
@@ -216,73 +217,81 @@
 </span><span id="line-33"><span class="sd">                excludes ``vocabulary`` and ``causal``), ``qualities`` (default vocabulary's</span>
 </span><span id="line-34"><span class="sd">                qualities: ``("maj", "min")``; add ``"7"``, ``"maj7"``, ``"min7"``...),</span>
 </span><span id="line-35"><span class="sd">                ``causal``, ``dwell_s``, ``kappa``, ``harmonics``, ``gate_db``, ``no_chord_cos``, ``window_s``,</span>
-</span><span id="line-36"><span class="sd">                ``hop_s``, ``audio_sr``. With ``sequence``: ``sections`` (one key per entry; the order</span>
-</span><span id="line-37"><span class="sd">                becomes tolerant: jumps between section starts at ``jump_p``, skipped entries at</span>
-</span><span id="line-38"><span class="sd">                ``skip_p``).</span>
-</span><span id="line-39">
-</span><span id="line-40"><span class="sd">        Returns:</span>
-</span><span id="line-41"><span class="sd">            ChordResult: ``intervals`` (N, 2) seconds, Harte ``labels`` (``N`` = no chord),</span>
-</span><span id="line-42"><span class="sd">            ``segments()`` for ``[{start, end, label}]``; ``raw`` holds the per-frame path,</span>
-</span><span id="line-43"><span class="sd">            states and chroma.</span>
-</span><span id="line-44"><span class="sd">        """</span>
-</span><span id="line-45">        <span class="n">native</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="line-46">        <span class="n">sequence</span><span class="p">,</span> <span class="n">vocabulary</span> <span class="o">=</span> <span class="n">native</span><span class="p">[</span><span class="s2">"sequence"</span><span class="p">],</span> <span class="n">native</span><span class="p">[</span><span class="s2">"vocabulary"</span><span class="p">]</span>
-</span><span id="line-47">        <span class="k">if</span> <span class="n">sequence</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">native</span><span class="p">[</span><span class="s2">"sections"</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-48">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"sections= belongs to sequence="</span><span class="p">)</span>
-</span><span id="line-49">        <span class="k">if</span> <span class="n">sequence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">vocabulary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">native</span><span class="p">[</span><span class="s2">"causal"</span><span class="p">]):</span>
-</span><span id="line-50">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="line-51">                <span class="s2">"sequence= aligns a known chord list: it excludes vocabulary= and causal="</span>
-</span><span id="line-52">            <span class="p">)</span>
-</span><span id="line-53">        <span class="n">y</span><span class="p">,</span> <span class="n">rate</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"audio_sr"</span><span class="p">])</span>
-</span><span id="line-54">        <span class="n">chroma</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="n">peaks_chroma</span><span class="p">(</span>
-</span><span id="line-55">            <span class="n">y</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">window_s</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"window_s"</span><span class="p">],</span> <span class="n">hop_s</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"hop_s"</span><span class="p">]</span>
-</span><span id="line-56">        <span class="p">)</span>
-</span><span id="line-57">        <span class="n">hop_s</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="n">native</span><span class="p">[</span><span class="s2">"hop_s"</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">rate</span>
-</span><span id="line-58">        <span class="n">common</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-</span><span id="line-59">            <span class="n">hop_s</span><span class="o">=</span><span class="n">hop_s</span><span class="p">,</span>
-</span><span id="line-60">            <span class="n">kappa</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"kappa"</span><span class="p">],</span>
-</span><span id="line-61">            <span class="n">gate_db</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"gate_db"</span><span class="p">],</span>
-</span><span id="line-62">            <span class="n">no_chord_cos</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"no_chord_cos"</span><span class="p">],</span>
-</span><span id="line-63">            <span class="n">harmonics</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"harmonics"</span><span class="p">],</span>
+</span><span id="line-36"><span class="sd">                ``hop_s``, ``audio_sr``, ``frontend`` (``"peaks"`` default, ``"basic_pitch"``, or a callable;</span>
+</span><span id="line-37"><span class="sd">                see ``denote.chroma_frontends``). With ``sequence``: ``sections`` (one key per entry; the order</span>
+</span><span id="line-38"><span class="sd">                becomes tolerant: jumps between section starts at ``jump_p``, skipped entries at</span>
+</span><span id="line-39"><span class="sd">                ``skip_p``).</span>
+</span><span id="line-40">
+</span><span id="line-41"><span class="sd">        Returns:</span>
+</span><span id="line-42"><span class="sd">            ChordResult: ``intervals`` (N, 2) seconds, Harte ``labels`` (``N`` = no chord),</span>
+</span><span id="line-43"><span class="sd">            ``segments()`` for ``[{start, end, label}]``; ``raw`` holds the per-frame path,</span>
+</span><span id="line-44"><span class="sd">            states and chroma.</span>
+</span><span id="line-45"><span class="sd">        """</span>
+</span><span id="line-46">        <span class="n">native</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="line-47">        <span class="n">sequence</span><span class="p">,</span> <span class="n">vocabulary</span> <span class="o">=</span> <span class="n">native</span><span class="p">[</span><span class="s2">"sequence"</span><span class="p">],</span> <span class="n">native</span><span class="p">[</span><span class="s2">"vocabulary"</span><span class="p">]</span>
+</span><span id="line-48">        <span class="k">if</span> <span class="n">sequence</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">native</span><span class="p">[</span><span class="s2">"sections"</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-49">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"sections= belongs to sequence="</span><span class="p">)</span>
+</span><span id="line-50">        <span class="k">if</span> <span class="n">sequence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">vocabulary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">native</span><span class="p">[</span><span class="s2">"causal"</span><span class="p">]):</span>
+</span><span id="line-51">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-52">                <span class="s2">"sequence= aligns a known chord list: it excludes vocabulary= and causal="</span>
+</span><span id="line-53">            <span class="p">)</span>
+</span><span id="line-54">        <span class="n">y</span><span class="p">,</span> <span class="n">rate</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">mono</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">target_sr</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"audio_sr"</span><span class="p">])</span>
+</span><span id="line-55">        <span class="n">frontend</span> <span class="o">=</span> <span class="n">native</span><span class="p">[</span><span class="s2">"frontend"</span><span class="p">]</span>
+</span><span id="line-56">        <span class="n">tuning</span> <span class="o">=</span> <span class="n">FRONTEND_TUNING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frontend</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+</span><span id="line-57">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">tuning</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="line-58">            <span class="k">if</span> <span class="p">(</span>
+</span><span id="line-59">                <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span>
+</span><span id="line-60">            <span class="p">):</span>  <span class="c1"># the front end's tuned setting, unless the caller chose one</span>
+</span><span id="line-61">                <span class="n">native</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="line-62">        <span class="n">chroma</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="n">resolve_frontend</span><span class="p">(</span><span class="n">frontend</span><span class="p">)(</span>
+</span><span id="line-63">            <span class="n">y</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">hop_s</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"hop_s"</span><span class="p">],</span> <span class="n">window_s</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"window_s"</span><span class="p">]</span>
 </span><span id="line-64">        <span class="p">)</span>
-</span><span id="line-65">        <span class="n">raw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"chroma"</span><span class="p">:</span> <span class="n">chroma</span><span class="p">,</span> <span class="s2">"level_db"</span><span class="p">:</span> <span class="n">level</span><span class="p">,</span> <span class="s2">"hop_s"</span><span class="p">:</span> <span class="n">hop_s</span><span class="p">}</span>
-</span><span id="line-66">        <span class="k">if</span> <span class="n">sequence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-67">            <span class="n">path</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">positions</span> <span class="o">=</span> <span class="n">align_sequence</span><span class="p">(</span>
-</span><span id="line-68">                <span class="n">chroma</span><span class="p">,</span>
-</span><span id="line-69">                <span class="n">sequence</span><span class="p">,</span>
-</span><span id="line-70">                <span class="n">level</span><span class="p">,</span>
-</span><span id="line-71">                <span class="n">sections</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"sections"</span><span class="p">],</span>
-</span><span id="line-72">                <span class="n">jump_p</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"jump_p"</span><span class="p">],</span>
-</span><span id="line-73">                <span class="n">skip_p</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"skip_p"</span><span class="p">],</span>
-</span><span id="line-74">                <span class="o">**</span><span class="n">common</span><span class="p">,</span>
-</span><span id="line-75">            <span class="p">)</span>
-</span><span id="line-76">            <span class="n">segments</span> <span class="o">=</span> <span class="n">path_to_segments</span><span class="p">(</span>
-</span><span id="line-77">                <span class="n">path</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">hop_s</span><span class="o">=</span><span class="n">hop_s</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> <span class="n">split_on</span><span class="o">=</span><span class="n">positions</span>
-</span><span id="line-78">            <span class="p">)</span>
-</span><span id="line-79">            <span class="n">raw</span><span class="p">[</span><span class="s2">"positions"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_run_starts</span><span class="p">(</span><span class="n">positions</span><span class="p">)]</span>
-</span><span id="line-80">        <span class="k">else</span><span class="p">:</span>
-</span><span id="line-81">            <span class="k">if</span> <span class="n">vocabulary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-82">                <span class="n">vocabulary</span> <span class="o">=</span> <span class="n">default_vocabulary</span><span class="p">(</span><span class="n">native</span><span class="p">[</span><span class="s2">"qualities"</span><span class="p">])</span>
-</span><span id="line-83">            <span class="n">path</span><span class="p">,</span> <span class="n">states</span> <span class="o">=</span> <span class="n">decode_chords</span><span class="p">(</span>
-</span><span id="line-84">                <span class="n">chroma</span><span class="p">,</span>
-</span><span id="line-85">                <span class="n">level</span><span class="p">,</span>
-</span><span id="line-86">                <span class="n">vocabulary</span><span class="o">=</span><span class="n">vocabulary</span><span class="p">,</span>
-</span><span id="line-87">                <span class="n">dwell_s</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"dwell_s"</span><span class="p">],</span>
-</span><span id="line-88">                <span class="n">causal</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"causal"</span><span class="p">],</span>
-</span><span id="line-89">                <span class="o">**</span><span class="n">common</span><span class="p">,</span>
-</span><span id="line-90">            <span class="p">)</span>
-</span><span id="line-91">            <span class="n">segments</span> <span class="o">=</span> <span class="n">path_to_segments</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">hop_s</span><span class="o">=</span><span class="n">hop_s</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">)</span>
-</span><span id="line-92">        <span class="n">raw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">states</span><span class="p">)</span>
-</span><span id="line-93">        <span class="k">return</span> <span class="n">ChordResult</span><span class="o">.</span><span class="n">from_segments</span><span class="p">(</span>
-</span><span id="line-94">            <span class="n">segments</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
-</span><span id="line-95">        <span class="p">)</span></div>
+</span><span id="line-65">        <span class="n">hop_s</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="n">native</span><span class="p">[</span><span class="s2">"hop_s"</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">rate</span>
+</span><span id="line-66">        <span class="n">common</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+</span><span id="line-67">            <span class="n">hop_s</span><span class="o">=</span><span class="n">hop_s</span><span class="p">,</span>
+</span><span id="line-68">            <span class="n">kappa</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"kappa"</span><span class="p">],</span>
+</span><span id="line-69">            <span class="n">gate_db</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"gate_db"</span><span class="p">],</span>
+</span><span id="line-70">            <span class="n">no_chord_cos</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"no_chord_cos"</span><span class="p">],</span>
+</span><span id="line-71">            <span class="n">harmonics</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"harmonics"</span><span class="p">],</span>
+</span><span id="line-72">        <span class="p">)</span>
+</span><span id="line-73">        <span class="n">raw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"chroma"</span><span class="p">:</span> <span class="n">chroma</span><span class="p">,</span> <span class="s2">"level_db"</span><span class="p">:</span> <span class="n">level</span><span class="p">,</span> <span class="s2">"hop_s"</span><span class="p">:</span> <span class="n">hop_s</span><span class="p">}</span>
+</span><span id="line-74">        <span class="k">if</span> <span class="n">sequence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-75">            <span class="n">path</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">positions</span> <span class="o">=</span> <span class="n">align_sequence</span><span class="p">(</span>
+</span><span id="line-76">                <span class="n">chroma</span><span class="p">,</span>
+</span><span id="line-77">                <span class="n">sequence</span><span class="p">,</span>
+</span><span id="line-78">                <span class="n">level</span><span class="p">,</span>
+</span><span id="line-79">                <span class="n">sections</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"sections"</span><span class="p">],</span>
+</span><span id="line-80">                <span class="n">jump_p</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"jump_p"</span><span class="p">],</span>
+</span><span id="line-81">                <span class="n">skip_p</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"skip_p"</span><span class="p">],</span>
+</span><span id="line-82">                <span class="o">**</span><span class="n">common</span><span class="p">,</span>
+</span><span id="line-83">            <span class="p">)</span>
+</span><span id="line-84">            <span class="n">segments</span> <span class="o">=</span> <span class="n">path_to_segments</span><span class="p">(</span>
+</span><span id="line-85">                <span class="n">path</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">hop_s</span><span class="o">=</span><span class="n">hop_s</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> <span class="n">split_on</span><span class="o">=</span><span class="n">positions</span>
+</span><span id="line-86">            <span class="p">)</span>
+</span><span id="line-87">            <span class="n">raw</span><span class="p">[</span><span class="s2">"positions"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_run_starts</span><span class="p">(</span><span class="n">positions</span><span class="p">)]</span>
+</span><span id="line-88">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-89">            <span class="k">if</span> <span class="n">vocabulary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-90">                <span class="n">vocabulary</span> <span class="o">=</span> <span class="n">default_vocabulary</span><span class="p">(</span><span class="n">native</span><span class="p">[</span><span class="s2">"qualities"</span><span class="p">])</span>
+</span><span id="line-91">            <span class="n">path</span><span class="p">,</span> <span class="n">states</span> <span class="o">=</span> <span class="n">decode_chords</span><span class="p">(</span>
+</span><span id="line-92">                <span class="n">chroma</span><span class="p">,</span>
+</span><span id="line-93">                <span class="n">level</span><span class="p">,</span>
+</span><span id="line-94">                <span class="n">vocabulary</span><span class="o">=</span><span class="n">vocabulary</span><span class="p">,</span>
+</span><span id="line-95">                <span class="n">dwell_s</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"dwell_s"</span><span class="p">],</span>
+</span><span id="line-96">                <span class="n">causal</span><span class="o">=</span><span class="n">native</span><span class="p">[</span><span class="s2">"causal"</span><span class="p">],</span>
+</span><span id="line-97">                <span class="o">**</span><span class="n">common</span><span class="p">,</span>
+</span><span id="line-98">            <span class="p">)</span>
+</span><span id="line-99">            <span class="n">segments</span> <span class="o">=</span> <span class="n">path_to_segments</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">hop_s</span><span class="o">=</span><span class="n">hop_s</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">)</span>
+</span><span id="line-100">        <span class="n">raw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">states</span><span class="p">)</span>
+</span><span id="line-101">        <span class="k">return</span> <span class="n">ChordResult</span><span class="o">.</span><span class="n">from_segments</span><span class="p">(</span>
+</span><span id="line-102">            <span class="n">segments</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
+</span><span id="line-103">        <span class="p">)</span></div>
 </div>
 
-</span><span id="line-96">
-</span><span id="line-97">
-</span><span id="line-98"><span class="k">def</span><span class="w"> </span><span class="nf">_run_starts</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
-</span><span id="line-99">    <span class="n">key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span id="line-100">    <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
+</span><span id="line-104">
+</span><span id="line-105">
+</span><span id="line-106"><span class="k">def</span><span class="w"> </span><span class="nf">_run_starts</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+</span><span id="line-107">    <span class="n">key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span id="line-108">    <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
 </span></code></pre></div>
     </div></div>
           </main>
@@ -296,7 +305,7 @@
 </footer>
     </div>
     
-    <script src="../../../../_static/documentation_options.js?v=544df88d"></script>
+    <script src="../../../../_static/documentation_options.js?v=f0357c94"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>

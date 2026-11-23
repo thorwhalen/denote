@@ -1,4 +1,4 @@
-> built 2026-11-23 14:08 UTC from ad97be2 (main) · denote 0.0.14. Details: build_info.json
+> built 2026-11-23 14:18 UTC from e3d18d9 (main) · denote 0.0.15. Details: build_info.json
 
 # index.html.md
 
@@ -644,7 +644,8 @@ Recognize the chords of `audio`.
     excludes `vocabulary` and `causal`), `qualities` (default vocabulary’s
     qualities: `("maj", "min")`; add `"7"`, `"maj7"`, `"min7"`…),
     `causal`, `dwell_s`, `kappa`, `harmonics`, `gate_db`, `no_chord_cos`, `window_s`,
-    `hop_s`, `audio_sr`. With `sequence`: `sections` (one key per entry; the order
+    `hop_s`, `audio_sr`, `frontend` (`"peaks"` default, `"basic_pitch"`, or a callable;
+    see `denote.chroma_frontends`). With `sequence`: `sections` (one key per entry; the order
     becomes tolerant: jumps between section starts at `jump_p`, skipped entries at
     `skip_p`).
 * **Returns:**
@@ -1722,6 +1723,76 @@ weighted by `cos^2` of its distance in semitones, and its magnitude is compresse
   [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[`ndarray`, `ndarray`]
 
 
+# _autosummary/denote.chroma_frontends.html.md
+
+# denote.chroma_frontends
+
+Chroma front ends for chord recognition: strategies `(y, sr, *, hop_s, window_s) -> (chroma, level_db)`.
+
+`chroma` is `(frames, 12)` with frame `t` centred at `t * hop_s` seconds, `level_db` the
+frame energy in dB (for the no-chord gate). `FRONTENDS` maps a name to its function; add one
+with `FRONTENDS["mine"] = f` or pass the callable as `frontend=`.
+
+- `peaks`: spectral-peak chroma, no model (`denote.chords.peaks_chroma`); the default.
+- `basic_pitch`: Basic Pitch’s note posteriors (a learned polyphonic note model, Apache-2.0)
+  folded to 12 pitch classes. Needs `basic-pitch` (the `basic_pitch` extra).
+- madmom’s deep chroma (`DeepChromaProcessor`) is a good fit for full mixes but its weights are
+  CC BY-NC-SA: wrap it as a callable of this shape for non-commercial use; it is not a default.
+
+### Module Attributes
+
+| [`BASIC_PITCH_LOWEST_MIDI`](_autosummary/denote.chroma_frontends.html.md#denote.chroma_frontends.BASIC_PITCH_LOWEST_MIDI)   | Basic Pitch's lowest output pitch (A0) as a MIDI number; its note posteriors cover 88 semitones.                                                                                                                                         |
+|----------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`BASIC_PITCH_FPS`](_autosummary/denote.chroma_frontends.html.md#denote.chroma_frontends.BASIC_PITCH_FPS)           | 22050 Hz audio, 256-sample hop.                                                                                                                                                                                                          |
+| [`FRONTEND_TUNING`](_autosummary/denote.chroma_frontends.html.md#denote.chroma_frontends.FRONTEND_TUNING)           | Decoder settings each front end was tuned with (GuitarSet dev takes), used when the caller passes none: Basic Pitch's posteriors are sparse and already note-like, so no overtone templates, a softer match and a lower no-chord cosine. |
+
+### Functions
+
+| [`basic_pitch_chroma`](_autosummary/denote.chroma_frontends.html.md#denote.chroma_frontends.basic_pitch_chroma)(y, sr, \*, hop_s, window_s)   | Basic Pitch `posterior` ('note' or 'onset' or 'contour') folded to pitch classes, averaged to the `hop_s` grid; `power` compresses it (`< 1`) before the fold.   |
+|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`frame_level_db`](_autosummary/denote.chroma_frontends.html.md#denote.chroma_frontends.frame_level_db)(y, sr, hop_s, window_s)           | Frame energy in dB, frames centred at `t * hop_s`.                                                                                                               |
+| [`resolve_frontend`](_autosummary/denote.chroma_frontends.html.md#denote.chroma_frontends.resolve_frontend)(frontend)                       | A front-end callable from a name in `FRONTENDS` or a callable.                                                                                                   |
+
+### denote.chroma_frontends.BASIC_PITCH_FPS *= 86.1328125*
+
+22050 Hz audio, 256-sample hop.
+
+* **Type:**
+  Basic Pitch’s model output frame rate
+
+### denote.chroma_frontends.BASIC_PITCH_LOWEST_MIDI *= 21*
+
+Basic Pitch’s lowest output pitch (A0) as a MIDI number; its note posteriors cover 88 semitones.
+
+### denote.chroma_frontends.FRONTEND_TUNING *: [Dict](https://docs.python.org/3/library/typing.html#typing.Dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)]* *= {'basic_pitch': {'harmonics': 0.0, 'kappa': 10.0, 'no_chord_cos': 0.4}}*
+
+Decoder settings each front end was tuned with (GuitarSet dev takes), used when the caller
+passes none: Basic Pitch’s posteriors are sparse and already note-like, so no overtone
+templates, a softer match and a lower no-chord cosine.
+
+### denote.chroma_frontends.basic_pitch_chroma(y, sr, , hop_s, window_s, posterior='note', power=1.0)
+
+Basic Pitch `posterior` (‘note’ or ‘onset’ or ‘contour’) folded to pitch classes, averaged
+to the `hop_s` grid; `power` compresses it (`< 1`) before the fold.
+
+* **Return type:**
+  [`Tuple`](https://docs.python.org/3/library/typing.html#typing.Tuple)[`ndarray`, `ndarray`]
+
+### denote.chroma_frontends.frame_level_db(y, sr, hop_s, window_s)
+
+Frame energy in dB, frames centred at `t * hop_s`.
+
+* **Return type:**
+  `ndarray`
+
+### denote.chroma_frontends.resolve_frontend(frontend)
+
+A front-end callable from a name in `FRONTENDS` or a callable.
+
+* **Return type:**
+  [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)
+
+
 # _autosummary/denote.compare.html.md
 
 # denote.compare
@@ -2036,20 +2107,21 @@ Transcribe audio to MIDI.
 
 ### Modules
 
-| [`align`](_autosummary/denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).                                                      |
-|----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
-| [`base`](_autosummary/denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
-| [`benchmark`](_autosummary/denote.benchmark.html.md#module-denote.benchmark)     | Score chord recognition against a labelled set with `mir_eval`, the same way for any backend.                                       |
-| [`chords`](_autosummary/denote.chords.html.md#module-denote.chords)           | Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.                                         |
-| [`compare`](_autosummary/denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
-| [`isolated`](_autosummary/denote.isolated.html.md#module-denote.isolated)       | Backends that run in their own Python environment, through `ps.isolated`.                                                           |
-| [`keys`](_autosummary/denote.keys.html.md#module-denote.keys)               | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
-| [`registry`](_autosummary/denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                                                  |
-| [`services`](_autosummary/denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
-| [`translation`](_autosummary/denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                                                             |
-| [`util`](_autosummary/denote.util.html.md#module-denote.util)               | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |
-| [`workers`](_autosummary/denote.workers.html.md#module-denote.workers)         | Worker files: model code that runs in a backend's own environment (`denote.isolated`).                                              |
+| [`align`](_autosummary/denote.align.html.md#module-denote.align)                       | Align a symbolic score to a recording of the same music (audio-to-score sync).                                                      |
+|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| [`backends`](_autosummary/denote.backends.html.md#module-denote.backends)                 | Backend packages for denote.                                                                                                        |
+| [`base`](_autosummary/denote.base.html.md#module-denote.base)                         | Core types and result dataclasses for denote.                                                                                       |
+| [`benchmark`](_autosummary/denote.benchmark.html.md#module-denote.benchmark)               | Score chord recognition against a labelled set with `mir_eval`, the same way for any backend.                                       |
+| [`chords`](_autosummary/denote.chords.html.md#module-denote.chords)                     | Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.                                         |
+| [`chroma_frontends`](_autosummary/denote.chroma_frontends.html.md#module-denote.chroma_frontends) | Chroma front ends for chord recognition: strategies `(y, sr, *, hop_s, window_s) -> (chroma, level_db)`.                            |
+| [`compare`](_autosummary/denote.compare.html.md#module-denote.compare)                   | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
+| [`isolated`](_autosummary/denote.isolated.html.md#module-denote.isolated)                 | Backends that run in their own Python environment, through `ps.isolated`.                                                           |
+| [`keys`](_autosummary/denote.keys.html.md#module-denote.keys)                         | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
+| [`registry`](_autosummary/denote.registry.html.md#module-denote.registry)                 | Backend discovery, registration, and lazy loading.                                                                                  |
+| [`services`](_autosummary/denote.services.html.md#denote.services)                        | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
+| [`translation`](_autosummary/denote.translation.html.md#module-denote.translation)           | Parameter translation between normalized and native backend interfaces.                                                             |
+| [`util`](_autosummary/denote.util.html.md#module-denote.util)                         | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |
+| [`workers`](_autosummary/denote.workers.html.md#module-denote.workers)                   | Worker files: model code that runs in a backend's own environment (`denote.isolated`).                                              |
 
 
 # _autosummary/denote.isolated.html.md
@@ -2941,7 +3013,7 @@ The lower-cased stem name in an audio-separator output file name.
 
 # About this build
 
-This documentation was built on **2026-11-23 14:08 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/ad97be2366adcb5bd13cd87f85fa623a06bea484"><code>ad97be2</code></a> on branch <code>main</code>, for **denote 0.0.14** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 14:18 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/e3d18d9b87edb54b1ef6962baf8510a55bf5fba1"><code>e3d18d9</code></a> on branch <code>main</code>, for **denote 0.0.15** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -2950,7 +3022,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/ad97be2366adcb5bd13cd87f85fa623a06bea484"><code>ad97be2366adcb5bd13cd87f85fa623a06bea484</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/e3d18d9b87edb54b1ef6962baf8510a55bf5fba1"><code>e3d18d9b87edb54b1ef6962baf8510a55bf5fba1</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
 | Tags at this commit | none                                                                                                                                                     |
 | Working tree        | clean                                                                                                                                                    |
@@ -2961,9 +3033,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/45190597512">45190597512</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/45192363752">45192363752</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>ad97be2366adcb5bd13cd87f85fa623a06bea484</code> (in the history of the built commit) |
+| Event commit | <code>e3d18d9b87edb54b1ef6962baf8510a55bf5fba1</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -2988,13 +3060,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.14/">0.0.14</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.15/">0.0.15</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout ad97be2366adcb5bd13cd87f85fa623a06bea484
+git checkout e3d18d9b87edb54b1ef6962baf8510a55bf5fba1
 pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

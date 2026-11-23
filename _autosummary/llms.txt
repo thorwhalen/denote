@@ -48,6 +48,7 @@
 - [denote.base](denote.base.html.md): Core types and result dataclasses for denote.
 - [denote.benchmark](denote.benchmark.html.md): Score chord recognition against a labelled set with &#96;mir_eval&#96;, the same way for any backend.
 - [denote.chords](denote.chords.html.md): Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.
+- [denote.chroma_frontends](denote.chroma_frontends.html.md): Chroma front ends for chord recognition: strategies &#96;(y, sr, &#42;, hop_s, window_s) -&gt; (chroma, level_d...
 - [denote.compare](denote.compare.html.md): Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).
 - [denote.isolated](denote.isolated.html.md): Backends that run in their own Python environment, through &#96;ps.isolated&#96;.
 - [denote.keys](denote.keys.html.md): Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).

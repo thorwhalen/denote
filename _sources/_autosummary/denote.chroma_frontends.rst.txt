@@ -1,0 +1,22 @@
+denote.chroma\_frontends
+========================
+
+.. automodule:: denote.chroma_frontends
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      BASIC_PITCH_LOWEST_MIDI
+      BASIC_PITCH_FPS
+      FRONTEND_TUNING
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      basic_pitch_chroma
+      frame_level_db
+      resolve_frontend
+   

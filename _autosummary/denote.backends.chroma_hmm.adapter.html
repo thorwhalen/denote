@@ -89,6 +89,7 @@
 <li class="toctree-l3"><a class="reference internal" href="denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.benchmark.html">denote.benchmark</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.chords.html">denote.chords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="denote.chroma_frontends.html">denote.chroma_frontends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="denote.keys.html">denote.keys</a></li>
@@ -161,7 +162,8 @@ happens, one segment per entry, <code class="docutils literal notranslate"><span
 excludes <code class="docutils literal notranslate"><span class="pre">vocabulary</span></code> and <code class="docutils literal notranslate"><span class="pre">causal</span></code>), <code class="docutils literal notranslate"><span class="pre">qualities</span></code> (default vocabulary’s
 qualities: <code class="docutils literal notranslate"><span class="pre">("maj",</span> <span class="pre">"min")</span></code>; add <code class="docutils literal notranslate"><span class="pre">"7"</span></code>, <code class="docutils literal notranslate"><span class="pre">"maj7"</span></code>, <code class="docutils literal notranslate"><span class="pre">"min7"</span></code>…),
 <code class="docutils literal notranslate"><span class="pre">causal</span></code>, <code class="docutils literal notranslate"><span class="pre">dwell_s</span></code>, <code class="docutils literal notranslate"><span class="pre">kappa</span></code>, <code class="docutils literal notranslate"><span class="pre">harmonics</span></code>, <code class="docutils literal notranslate"><span class="pre">gate_db</span></code>, <code class="docutils literal notranslate"><span class="pre">no_chord_cos</span></code>, <code class="docutils literal notranslate"><span class="pre">window_s</span></code>,
-<code class="docutils literal notranslate"><span class="pre">hop_s</span></code>, <code class="docutils literal notranslate"><span class="pre">audio_sr</span></code>. With <code class="docutils literal notranslate"><span class="pre">sequence</span></code>: <code class="docutils literal notranslate"><span class="pre">sections</span></code> (one key per entry; the order
+<code class="docutils literal notranslate"><span class="pre">hop_s</span></code>, <code class="docutils literal notranslate"><span class="pre">audio_sr</span></code>, <code class="docutils literal notranslate"><span class="pre">frontend</span></code> (<code class="docutils literal notranslate"><span class="pre">"peaks"</span></code> default, <code class="docutils literal notranslate"><span class="pre">"basic_pitch"</span></code>, or a callable;
+see <code class="docutils literal notranslate"><span class="pre">denote.chroma_frontends</span></code>). With <code class="docutils literal notranslate"><span class="pre">sequence</span></code>: <code class="docutils literal notranslate"><span class="pre">sections</span></code> (one key per entry; the order
 becomes tolerant: jumps between section starts at <code class="docutils literal notranslate"><span class="pre">jump_p</span></code>, skipped entries at
 <code class="docutils literal notranslate"><span class="pre">skip_p</span></code>).</p></li>
 </ul>
@@ -198,7 +200,7 @@ states and chroma.</p>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=544df88d"></script>
+<script src="../_static/documentation_options.js?v=f0357c94"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

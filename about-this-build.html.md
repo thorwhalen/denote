@@ -2,7 +2,7 @@
 
 # About this build
 
-This documentation was built on **2026-11-23 14:08 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/ad97be2366adcb5bd13cd87f85fa623a06bea484"><code>ad97be2</code></a> on branch <code>main</code>, for **denote 0.0.14** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 14:18 UTC** from commit <a href="https://github.com/thorwhalen/denote/commit/e3d18d9b87edb54b1ef6962baf8510a55bf5fba1"><code>e3d18d9</code></a> on branch <code>main</code>, for **denote 0.0.15** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -11,7 +11,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                          |
 |---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/denote/commit/ad97be2366adcb5bd13cd87f85fa623a06bea484"><code>ad97be2366adcb5bd13cd87f85fa623a06bea484</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/denote/commit/e3d18d9b87edb54b1ef6962baf8510a55bf5fba1"><code>e3d18d9b87edb54b1ef6962baf8510a55bf5fba1</code></a> |
 | Branch              | <code>main</code>                                                                                                                                        |
 | Tags at this commit | none                                                                                                                                                     |
 | Working tree        | clean                                                                                                                                                    |
@@ -22,9 +22,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/denote</code>                                                             |
-| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/45190597512">45190597512</a>    |
+| Run          | <a href="https://github.com/thorwhalen/denote/actions/runs/45192363752">45192363752</a>    |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>ad97be2366adcb5bd13cd87f85fa623a06bea484</code> (in the history of the built commit) |
+| Event commit | <code>e3d18d9b87edb54b1ef6962baf8510a55bf5fba1</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -49,13 +49,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/denote/0.0.14/">0.0.14</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/denote/0.0.15/">0.0.15</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/denote && cd denote
-git checkout ad97be2366adcb5bd13cd87f85fa623a06bea484
+git checkout e3d18d9b87edb54b1ef6962baf8510a55bf5fba1
 pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

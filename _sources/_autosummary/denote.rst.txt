@@ -33,6 +33,7 @@
    base
    benchmark
    chords
+   chroma_frontends
    compare
    isolated
    keys

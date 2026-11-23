@@ -119,6 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.base.html">denote.base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.benchmark.html">denote.benchmark</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.chords.html">denote.chords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.chroma_frontends.html">denote.chroma_frontends</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.compare.html">denote.compare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.isolated.html">denote.isolated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/denote.keys.html">denote.keys</a></li>
@@ -232,10 +233,16 @@
 </li>
       <li><a href="_autosummary/denote.html#denote.BACKEND_TABLE_FIELDS">BACKEND_TABLE_FIELDS (in module denote)</a>
 </li>
-      <li><a href="_autosummary/denote.backends.beat_this.adapter.html#denote.backends.beat_this.adapter.BEAT_THIS_SR">BEAT_THIS_SR (in module denote.backends.beat_this.adapter)</a>
+      <li><a href="_autosummary/denote.chroma_frontends.html#denote.chroma_frontends.basic_pitch_chroma">basic_pitch_chroma() (in module denote.chroma_frontends)</a>
+</li>
+      <li><a href="_autosummary/denote.chroma_frontends.html#denote.chroma_frontends.BASIC_PITCH_FPS">BASIC_PITCH_FPS (in module denote.chroma_frontends)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="_autosummary/denote.chroma_frontends.html#denote.chroma_frontends.BASIC_PITCH_LOWEST_MIDI">BASIC_PITCH_LOWEST_MIDI (in module denote.chroma_frontends)</a>
+</li>
+      <li><a href="_autosummary/denote.backends.beat_this.adapter.html#denote.backends.beat_this.adapter.BEAT_THIS_SR">BEAT_THIS_SR (in module denote.backends.beat_this.adapter)</a>
+</li>
       <li><a href="_autosummary/denote.base.html#denote.base.BeatResult">BeatResult (class in denote.base)</a>
 </li>
       <li><a href="_autosummary/denote.isolated.html#denote.isolated.build_command">build_command() (in module denote.isolated)</a>
@@ -510,8 +517,6 @@
         <li><a href="_autosummary/denote.backends.pesto.config.html#module-denote.backends.pesto.config">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li>
     denote.backends.roformer
 
@@ -519,6 +524,8 @@
         <li><a href="_autosummary/denote.backends.roformer.html#module-denote.backends.roformer">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li>
     denote.backends.roformer.adapter
 
@@ -615,6 +622,13 @@
 
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.chords.html#module-denote.chords">module</a>
+</li>
+      </ul></li>
+      <li>
+    denote.chroma_frontends
+
+      <ul style="list-style-type:none">
+        <li><a href="_autosummary/denote.chroma_frontends.html#module-denote.chroma_frontends">module</a>
 </li>
       </ul></li>
       <li>
@@ -746,6 +760,8 @@
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.keys.html#denote.keys.FLAT_RTOL">FLAT_RTOL (in module denote.keys)</a>
 </li>
+      <li><a href="_autosummary/denote.chroma_frontends.html#denote.chroma_frontends.frame_level_db">frame_level_db() (in module denote.chroma_frontends)</a>
+</li>
       <li><a href="_autosummary/denote.backends.pesto.adapter.html#denote.backends.pesto.adapter.frame_period">frame_period() (in module denote.backends.pesto.adapter)</a>
 
       <ul style="list-style-type:none">
@@ -757,6 +773,8 @@
       <li><a href="_autosummary/denote.backends.librosa_key.adapter.html#denote.backends.librosa_key.adapter.frame_rms">frame_rms() (in module denote.backends.librosa_key.adapter)</a>
 </li>
       <li><a href="_autosummary/denote.base.html#denote.base.ChordResult.from_segments">from_segments() (denote.base.ChordResult class method)</a>
+</li>
+      <li><a href="_autosummary/denote.chroma_frontends.html#denote.chroma_frontends.FRONTEND_TUNING">FRONTEND_TUNING (in module denote.chroma_frontends)</a>
 </li>
   </ul></td>
   </tr>
@@ -1004,6 +1022,8 @@
 </li>
         <li><a href="_autosummary/denote.chords.html#module-denote.chords">denote.chords</a>
 </li>
+        <li><a href="_autosummary/denote.chroma_frontends.html#module-denote.chroma_frontends">denote.chroma_frontends</a>
+</li>
         <li><a href="_autosummary/denote.compare.html#module-denote.compare">denote.compare</a>
 </li>
         <li><a href="_autosummary/denote.isolated.html#module-denote.isolated">denote.isolated</a>
@@ -1112,16 +1132,18 @@
 </li>
       <li><a href="_autosummary/denote.base.html#denote.base.KeyResult.relative">relative (denote.base.KeyResult property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.keys.html#denote.keys.relative_key">relative_key() (in module denote.keys)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="_autosummary/denote.backends.demucs_mlx.adapter.html#denote.backends.demucs_mlx.adapter.Adapter.request">request() (denote.backends.demucs_mlx.adapter.Adapter method)</a>
 
       <ul style="list-style-type:none">
         <li><a href="_autosummary/denote.isolated.html#denote.isolated.IsolatedSeparator.request">(denote.isolated.IsolatedSeparator method)</a>
 </li>
       </ul></li>
+      <li><a href="_autosummary/denote.chroma_frontends.html#denote.chroma_frontends.resolve_frontend">resolve_frontend() (in module denote.chroma_frontends)</a>
+</li>
       <li><a href="_autosummary/denote.keys.html#denote.keys.resolve_profile">resolve_profile() (in module denote.keys)</a>
 </li>
       <li><a href="_autosummary/denote.backends.basic_pitch.compat.html#denote.backends.basic_pitch.compat.restore_scipy_gaussian">restore_scipy_gaussian() (in module denote.backends.basic_pitch.compat)</a>
@@ -1277,7 +1299,7 @@
 </footer>
     </div>
     
-    <script src="_static/documentation_options.js?v=544df88d"></script>
+    <script src="_static/documentation_options.js?v=f0357c94"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>

@@ -176,17 +176,18 @@ Transcribe audio to MIDI.
 
 ### Modules
 
-| [`align`](denote.align.html.md#module-denote.align)             | Align a symbolic score to a recording of the same music (audio-to-score sync).                                                      |
-|----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| [`backends`](denote.backends.html.md#module-denote.backends)       | Backend packages for denote.                                                                                                        |
-| [`base`](denote.base.html.md#module-denote.base)               | Core types and result dataclasses for denote.                                                                                       |
-| [`benchmark`](denote.benchmark.html.md#module-denote.benchmark)     | Score chord recognition against a labelled set with `mir_eval`, the same way for any backend.                                       |
-| [`chords`](denote.chords.html.md#module-denote.chords)           | Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.                                         |
-| [`compare`](denote.compare.html.md#module-denote.compare)         | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
-| [`isolated`](denote.isolated.html.md#module-denote.isolated)       | Backends that run in their own Python environment, through `ps.isolated`.                                                           |
-| [`keys`](denote.keys.html.md#module-denote.keys)               | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
-| [`registry`](denote.registry.html.md#module-denote.registry)       | Backend discovery, registration, and lazy loading.                                                                                  |
-| [`services`](denote.services.html.md#denote.services)              | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
-| [`translation`](denote.translation.html.md#module-denote.translation) | Parameter translation between normalized and native backend interfaces.                                                             |
-| [`util`](denote.util.html.md#module-denote.util)               | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |
-| [`workers`](denote.workers.html.md#module-denote.workers)         | Worker files: model code that runs in a backend's own environment (`denote.isolated`).                                              |
+| [`align`](denote.align.html.md#module-denote.align)                       | Align a symbolic score to a recording of the same music (audio-to-score sync).                                                      |
+|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| [`backends`](denote.backends.html.md#module-denote.backends)                 | Backend packages for denote.                                                                                                        |
+| [`base`](denote.base.html.md#module-denote.base)                         | Core types and result dataclasses for denote.                                                                                       |
+| [`benchmark`](denote.benchmark.html.md#module-denote.benchmark)               | Score chord recognition against a labelled set with `mir_eval`, the same way for any backend.                                       |
+| [`chords`](denote.chords.html.md#module-denote.chords)                     | Model-free chord recognition: spectral-peak chroma, chord templates, a hidden Markov model.                                         |
+| [`chroma_frontends`](denote.chroma_frontends.html.md#module-denote.chroma_frontends) | Chroma front ends for chord recognition: strategies `(y, sr, *, hop_s, window_s) -> (chroma, level_db)`.                            |
+| [`compare`](denote.compare.html.md#module-denote.compare)                   | Compare a version of a piece with a reference: harmony and sound, on the same moments (denote#3).                                   |
+| [`isolated`](denote.isolated.html.md#module-denote.isolated)                 | Backends that run in their own Python environment, through `ps.isolated`.                                                           |
+| [`keys`](denote.keys.html.md#module-denote.keys)                         | Key estimation from pitch-class profiles (the Krumhansl-Schmuckler method).                                                         |
+| [`registry`](denote.registry.html.md#module-denote.registry)                 | Backend discovery, registration, and lazy loading.                                                                                  |
+| [`services`](denote.services.html.md#denote.services)                        | Lazy mapping of backend names → ServiceHandle instances.                                                                            |
+| [`translation`](denote.translation.html.md#module-denote.translation)           | Parameter translation between normalized and native backend interfaces.                                                             |
+| [`util`](denote.util.html.md#module-denote.util)                         | Audio loading (any layout to `(channels, frames)`), and chunked overlap-add for models that take bounded lengths (`chunked_apply`). |
+| [`workers`](denote.workers.html.md#module-denote.workers)                   | Worker files: model code that runs in a backend's own environment (`denote.isolated`).                                              |
