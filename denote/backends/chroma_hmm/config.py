@@ -36,6 +36,9 @@ BACKEND_CONFIG = {
         "sections": {"native_name": "sections", "default": None},
         "jump_p": {"native_name": "jump_p", "default": DFLT_JUMP_P},
         "skip_p": {"native_name": "skip_p", "default": DFLT_SKIP_P},
+        # chroma strategy: "peaks" (no model), "basic_pitch" (learned note posteriors; needs
+        # basic-pitch), or a callable (y, sr, *, hop_s, window_s) -> (chroma, level_db)
+        "frontend": {"native_name": "frontend", "default": "peaks"},
         # chord qualities of the default vocabulary (every root x each quality)
         "qualities": {"native_name": "qualities", "default": DFLT_QUALITIES},
         # True: forward filter (decision from past frames only); False: offline Viterbi
