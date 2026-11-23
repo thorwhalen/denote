@@ -1,6 +1,11 @@
 """Configuration for the chroma_hmm chord backend (the single source of its defaults)."""
 
-from denote.chords import DFLT_NO_CHORD_COS, DFLT_QUALITIES
+from denote.chords import (
+    DFLT_JUMP_P,
+    DFLT_NO_CHORD_COS,
+    DFLT_QUALITIES,
+    DFLT_SKIP_P,
+)
 
 BACKEND_CONFIG = {
     "name": "chroma_hmm",
@@ -27,6 +32,10 @@ BACKEND_CONFIG = {
         "vocabulary": {"native_name": "vocabulary", "default": None},
         # force the decode through this ordered chord list (alignment)
         "sequence": {"native_name": "sequence", "default": None},
+        # one key per sequence entry (e.g. its score system): the decode may jump between sections
+        "sections": {"native_name": "sections", "default": None},
+        "jump_p": {"native_name": "jump_p", "default": DFLT_JUMP_P},
+        "skip_p": {"native_name": "skip_p", "default": DFLT_SKIP_P},
         # chord qualities of the default vocabulary (every root x each quality)
         "qualities": {"native_name": "qualities", "default": DFLT_QUALITIES},
         # True: forward filter (decision from past frames only); False: offline Viterbi

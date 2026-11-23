@@ -33,7 +33,9 @@ class Adapter:
                 excludes ``vocabulary`` and ``causal``), ``qualities`` (default vocabulary's
                 qualities: ``("maj", "min")``; add ``"7"``, ``"maj7"``, ``"min7"``...),
                 ``causal``, ``dwell_s``, ``kappa``, ``harmonics``, ``gate_db``, ``no_chord_cos``, ``window_s``,
-                ``hop_s``, ``audio_sr``.
+                ``hop_s``, ``audio_sr``. With ``sequence``: ``sections`` (one key per entry; the order
+                becomes tolerant: jumps between section starts at ``jump_p``, skipped entries at
+                ``skip_p``).
 
         Returns:
             ChordResult: ``intervals`` (N, 2) seconds, Harte ``labels`` (``N`` = no chord),
@@ -42,6 +44,8 @@ class Adapter:
         """
         native = self._translate(**kwargs)
         sequence, vocabulary = native["sequence"], native["vocabulary"]
+        if sequence is None and native["sections"] is not None:
+            raise ValueError("sections= belongs to sequence=")
         if sequence is not None and (vocabulary is not None or native["causal"]):
             raise ValueError(
                 "sequence= aligns a known chord list: it excludes vocabulary= and causal="
@@ -60,7 +64,15 @@ class Adapter:
         )
         raw = {"chroma": chroma, "level_db": level, "hop_s": hop_s}
         if sequence is not None:
-            path, states, positions = align_sequence(chroma, sequence, level, **common)
+            path, states, positions = align_sequence(
+                chroma,
+                sequence,
+                level,
+                sections=native["sections"],
+                jump_p=native["jump_p"],
+                skip_p=native["skip_p"],
+                **common,
+            )
             segments = path_to_segments(
                 path, states, hop_s=hop_s, duration=duration, split_on=positions
             )

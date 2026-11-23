@@ -49,6 +49,9 @@ _INTERVALS_TO_QUALITY = {iv: q for q, iv in QUALITY_INTERVALS.items()}
 DFLT_QUALITIES = ("maj", "min")
 #: Cosine a frame must beat to be a chord (measured on GuitarSet: flat between 0.4 and 0.6).
 DFLT_NO_CHORD_COS = 0.5
+#: Per-transition probabilities of the order-tolerant alignment (a jump to a section start, a skipped entry).
+DFLT_JUMP_P = 0.01
+DFLT_SKIP_P = 0.02
 #: Pitch class of harmonics 1..6 above a tone (octave, fifth, octave, third, fifth).
 _HARMONIC_SEMITONES = (0, 0, 7, 0, 4, 7)
 _SHARPS = {
@@ -307,6 +310,16 @@ def decode_chords(
     return path, states
 
 
+def _section_starts(sections: Sequence, n: int) -> List[int]:
+    """Start indices of the sections: where the per-entry key changes."""
+    keys = list(sections)
+    if len(keys) != n:
+        raise ValueError(
+            f"sections needs one key per sequence entry ({n}), got {len(keys)}"
+        )
+    return [0] + [i for i in range(1, n) if keys[i] != keys[i - 1]]
+
+
 def align_sequence(
     chroma: np.ndarray,
     sequence: Sequence[str],
@@ -318,8 +331,18 @@ def align_sequence(
     no_chord_cos: Optional[float] = DFLT_NO_CHORD_COS,
     harmonics: float = 0.6,
     stay: Optional[float] = None,
+    sections: Optional[Sequence] = None,
+    jump_p: float = DFLT_JUMP_P,
+    skip_p: float = DFLT_SKIP_P,
 ) -> Tuple[np.ndarray, List[str], List[int]]:
-    """Force the decode through ``sequence`` in order (repeats allowed): a left-to-right HMM.
+    """Force the decode through ``sequence`` (repeats allowed): a left-to-right HMM.
+
+    With ``sections`` the order is tolerant, as in JumpDTW (Fremerey et al. 2010): ``sections`` is
+    one key per entry (a system or page number, a section name): a new section starts where the
+    key changes. At the end of a section the decode may jump
+    to the start of any section (a repeat, a skip, a D.S.), at cost ``jump_p``; within a section
+    it may skip one entry (a chord the recording leaves out), at cost ``skip_p``; it may start
+    at any section and stop after any. Without ``sections`` the order is strict.
 
     Returns ``(path, labels, positions)``: ``path[t]`` indexes ``labels``, one label per
     position of ``[N, *sequence, N]`` (a no-chord state may precede and follow the sequence, for
@@ -359,9 +382,24 @@ def align_sequence(
         if i + 1 < S:
             log_A[i, i + 1] = np.log(1 - stay)
     log_A[S - 1, S - 1] = 0.0  # the trailing no-chord state is absorbing
-    log_B = np.log(B[:, state_col] + 1e-300)
     start = np.full(S, -np.inf)
     start[0] = start[1] = 0.0
+    end = np.array([S - 2, S - 1])  # the last chord, or the trailing no-chord state
+    if sections is not None:
+        starts = _section_starts(sections, n)
+        ends = [b - 1 for b in starts[1:]] + [n - 1]
+        adv = np.log(1 - stay)
+        for e in ends:  # state of entry i is i + 1
+            for b in starts:
+                if b != e + 1:
+                    log_A[e + 1, b + 1] = max(log_A[e + 1, b + 1], adv + np.log(jump_p))
+            log_A[e + 1, S - 1] = max(log_A[e + 1, S - 1], adv + np.log(jump_p))
+        for i in range(n - 1):
+            if i + 1 not in starts:  # skip entry i + 1 within the section
+                log_A[i + 1, i + 3] = max(log_A[i + 1, i + 3], adv + np.log(skip_p))
+        start[[b + 1 for b in starts]] = 0.0
+        end = np.arange(1, S)
+    log_B = np.log(B[:, state_col] + 1e-300)
     d = start + log_B[0]
     T = len(B)
     back = np.zeros((T, S), dtype=int)
@@ -369,7 +407,6 @@ def align_sequence(
         m = d[:, None] + log_A
         back[t] = m.argmax(axis=0)
         d = m.max(axis=0) + log_B[t]
-    end = np.array([S - 2, S - 1])  # the last chord, or the trailing no-chord state
     last = int(end[np.argmax(d[end])])
     path = np.zeros(T, dtype=int)
     path[-1] = last
