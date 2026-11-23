@@ -20,6 +20,7 @@ Labels are Harte syntax (``C:maj``, ``A:min7``, ``N`` for no chord), the vocabul
 
 from __future__ import annotations
 
+import re
 from typing import Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -79,7 +80,7 @@ def _root_pc(name: str) -> int:
 
 def parse_chord_label(label: str) -> Tuple[str, int, Tuple[int, ...]]:
     """``(harte_label, root_pc, intervals)`` of a chord given as Harte (``A:min7``) or in common
-    symbols (``Am7``, ``F#m``, ``Bb``; needs ``chordsym``). Raises ``ValueError`` when unreadable."""
+    symbols (``F#m``, ``Bb``; sevenths and the like need ``chordsym``). Raises ``ValueError`` when unreadable."""
     if label == NO_CHORD:
         raise ValueError("'N' is not a chord to template")
     if ":" in label:
@@ -87,6 +88,13 @@ def parse_chord_label(label: str) -> Tuple[str, int, Tuple[int, ...]]:
         if quality in QUALITY_INTERVALS:
             root = _root_pc(root_name)
             return chord_label(root, quality), root, QUALITY_INTERVALS[quality]
+    triad = re.fullmatch(
+        r"([A-Ga-g][#b]?)(m|min)?", label
+    )  # "C", "Bb", "F#m": no chordsym needed
+    if triad:
+        root = _root_pc(triad.group(1))
+        quality = "min" if triad.group(2) else "maj"
+        return chord_label(root, quality), root, QUALITY_INTERVALS[quality]
     try:
         import chordsym
     except ImportError:

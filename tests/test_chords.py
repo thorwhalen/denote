@@ -100,6 +100,7 @@ def test_silence_is_no_chord():
 def test_labels_are_harte_and_symbols_are_read():
     assert C.parse_chord_label("A:min7") == ("A:min7", 9, (0, 3, 7, 10))
     assert C.parse_chord_label("Bb")[0] == "A#:maj"
+    assert C.parse_chord_label("F#m")[0] == "F#:min"
     with pytest.raises(ValueError):
         C.parse_chord_label("H:maj")
 
@@ -117,3 +118,8 @@ def test_segments_round_trip():
 def test_default_vocabulary_is_every_root_and_quality():
     assert len(C.default_vocabulary()) == 24
     assert len(C.default_vocabulary(("maj", "min", "7"))) == 36
+
+
+def test_seventh_symbols_need_chordsym():
+    pytest.importorskip("chordsym")
+    assert C.parse_chord_label("Am7")[0] == "A:min7"
