@@ -46,6 +46,14 @@ key.key  # "A minor"
 key.confidence  # the winner's profile correlation (not a probability)
 key.margin  # lead over the runner-up: small means ambiguous
 key.ranked[:3]  # all 24 keys, best first; key.relative names the relative key
+
+# Chords (no model, no download): Harte labels with times
+chords = denote.get_chords("song.wav")
+chords.segments()  # [{"start": 0.0, "end": 2.9, "label": "C:maj"}, ...]; "N" = no chord
+denote.get_chords("song.wav", vocabulary=["C", "G", "Am", "F"])  # only these chords
+denote.get_chords("song.wav", sequence=["C", "G", "Am", "F"])  # known order: when does each happen?
+# Score any backend against labelled data (the "eval" extra):
+# from denote.benchmark import evaluate_chords, guitarset_items
 ```
 
 ## Choose Your Backend

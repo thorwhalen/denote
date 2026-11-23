@@ -52,6 +52,8 @@ docs = [
 basic_pitch = ["basic-pitch>=0.3", "onnxruntime"]
 torchcrepe = ["torchcrepe>=0.0.20"]
 pesto = ["pesto-pitch"]
+chords = ["chordsym"]  # reads chord symbols (Am7) in vocabulary= / sequence=; Harte labels need nothing
+eval = ["mir_eval", "jams"]
 madmom = ["madmom"]
 autochord = ["autochord"]
 beat_this = ["beat_this"]
